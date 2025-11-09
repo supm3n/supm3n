@@ -142,10 +142,7 @@ window.Supm3nComponents = {
   
   // Load header
   async loadHeader(selector = 'header.site-header') {
-    const node = await this.injectComponent(selector, 'header', { replace: true });
-    // Load theme script after header is loaded
-    await this.loadScript('theme');
-    return node;
+    return await this.injectComponent(selector, 'header', { replace: true });
   },
   
   // Load footer
@@ -155,20 +152,24 @@ window.Supm3nComponents = {
   
   // Load breadcrumbs
   async loadBreadcrumbs(selector = 'nav.breadcrumbs') {
-    return await this.injectComponent(selector, 'breadcrumbs', { replace: true });
-    // Load breadcrumbs script after component is loaded
+    const node = await this.injectComponent(selector, 'breadcrumbs', { replace: true });
     await this.loadScript('breadcrumbs');
+    return node;
   },
   
   // Load script
   async loadScript(name) {
     // Check if already loaded
-    if (document.querySelector(`script[data-supm3n-script="${name}"]`)) {
+    if (
+      document.querySelector(`script[data-supm3n-script="${name}"]`) ||
+      document.querySelector(`script[src*="/scripts/${name}.js"]`)
+    ) {
       return;
     }
     
     const script = document.createElement('script');
     script.src = this.withVersion(`${this.baseURL}/scripts/${name}.js`);
+    script.type = 'module';
     script.setAttribute('data-supm3n-script', name);
     document.body.appendChild(script);
   },
