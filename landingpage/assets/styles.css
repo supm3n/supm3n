@@ -6,6 +6,11 @@
 @import url('/shared/styles/variables.css');
 
 /* Additional landing-page-specific variables can go here if needed */
+:root {
+  /* Matrix hero colors derived from your accent gradient */
+  --matrix-primary: var(--color-accent-start);  /* deep purple */
+  --matrix-secondary: var(--color-accent-end);  /* cyan/teal */
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -15,6 +20,19 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  
+  /* Keep the Matrix rain animation even with reduced motion */
+  .hero::before {
+    animation-duration: 8s !important;
+    animation-iteration-count: infinite !important;
+  }
+  
+  /* Keep the Matrix glitch animation even with reduced motion */
+  .hero-title.matrix-text::before,
+  .hero-tagline.matrix-text::before {
+    animation-duration: 2s !important;
+    animation-iteration-count: infinite !important;
   }
 }
 
@@ -348,16 +366,16 @@ code {
   background: repeating-linear-gradient(
     0deg,
     transparent 0px,
-    rgba(0, 255, 0, 0.03) 1px,
-    rgba(0, 255, 0, 0.1) 2px,
-    rgba(0, 255, 0, 0.15) 3px,
+    rgba(124, 58, 237, 0.15) 1px,
+    rgba(6, 182, 212, 0.2) 2px,
+    rgba(6, 182, 212, 0.3) 3px,
     transparent 4px,
     transparent 8px
   );
   animation: rain 8s linear infinite;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 .matrix-container {
@@ -371,10 +389,13 @@ code {
 
 .hero-title.matrix-text,
 .hero-tagline.matrix-text {
-  color: #0f0;
+  color: var(--matrix-primary);
   font-family: monospace;
   position: relative;
-  text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0;
+  text-shadow:
+    0 0 10px rgba(124, 58, 237, 0.9),
+    0 0 20px rgba(124, 58, 237, 0.7),
+    0 0 30px rgba(124, 58, 237, 0.5);
   z-index: 2;
   margin-bottom: var(--space-lg);
   animation: fadeUp 0.6s var(--transition-base);
@@ -408,8 +429,10 @@ code {
   animation: glitch 2s infinite;
   clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
   transform: translate(-2px, -2px);
-  color: #0f0;
-  text-shadow: 0 0 5px #0f0, 0 0 15px #0f0;
+  color: var(--matrix-secondary);
+  text-shadow:
+    0 0 5px rgba(6, 182, 212, 0.9),
+    0 0 15px rgba(6, 182, 212, 0.7);
 }
 
 
@@ -581,7 +604,7 @@ code {
    ============================================ */
 
 .projects-section {
-  padding: calc(var(--space-2xl) * 1.25) 0;
+  padding: calc(var(--space-2xl) * 0.75) 0;
   position: relative;
 }
 
@@ -593,7 +616,7 @@ code {
   transform: translateX(-50%);
   width: 100%;
   max-width: 800px;
-  height: 1px;
+  /*height: 1px;*/
   background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
 }
 
@@ -764,7 +787,7 @@ code {
   border-radius: 20px;
   background: var(--color-surface-1);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  overflow: hidden;
+  overflow: visible;
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
   /* Simplified transforms for magnetic effect */
@@ -772,6 +795,10 @@ code {
   /* Only set will-change when magnetic effect is active */
   z-index: 0;
 }
+
+/*.project-card:hover {
+  overflow: visible;
+}*/
 
 .project-card[data-magnetic-active] {
   will-change: transform;
@@ -851,7 +878,7 @@ code {
   /* Only apply CSS transform when magnetic JS is NOT active */
   .project-card:not([data-magnetic-active]):hover {
     transform: translateY(-8px);
-  }
+  }*/
   
   .project-card:hover::after {
     opacity: 1;

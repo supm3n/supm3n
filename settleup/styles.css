@@ -185,6 +185,15 @@ select {
   margin-top: 1rem;
 }
 
+#expenses-section {
+  margin-top: 1rem;
+}
+
+#balances-section {
+  margin-top: 1rem;
+}
+
+
 @media (min-width: 960px) {
   .app-main {
     gap: 1.25rem;
@@ -193,9 +202,10 @@ select {
     padding-bottom: 3rem;
   }
 
+  /*compute transfer section to the bottom of the page
   #settlement-section {
     grid-column: 1 / -1;
-  }
+  }*/
 }
 
 .panel {
@@ -570,7 +580,7 @@ td.actions {
   gap: 1.5rem;
   border: 1px solid var(--panel-border, var(--border));
   border-radius: 14px;
-  padding: 1rem 1.25rem;
+  padding: 0.2rem 0.75rem;
   background: var(--field-bg, transparent);
   transition: all 0.2s ease;
 }
@@ -754,7 +764,7 @@ td.actions {
 
 @media (min-width: 600px) {
   .panel {
-    padding: 2rem;
+    padding: 1.2rem;
   }
 
   .app-main {
