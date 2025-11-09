@@ -349,6 +349,7 @@ class ProjectsManager {
     }
     
     container.innerHTML = this.filteredProjects.map(project => this.renderCard(project)).join('');
+    this.bindProjectLinkOpeners(container);
     
     // Add reveal animations
     const cards = container.querySelectorAll('.project-card');
@@ -373,25 +374,36 @@ class ProjectsManager {
   
   renderCard(project) {
     const tag = project.tag || 'project';
+    const safeName = this.escapeHtml(project.name);
+    const safeDescription = this.escapeHtml(project.description || '');
+    const safeTag = this.escapeHtml(tag);
+    const openLabel = this.escapeHtml(`Open ${project.name} in a new tab`);
     return `
       <article class="project-card">
-        <a href="${project.url}" class="project-card-link" aria-label="Open ${this.escapeHtml(project.name)}">
+        <a href="${project.url}" class="project-card-link" aria-label="Open ${safeName}">
           <div class="project-card-header">
             <img 
               class="project-icon" 
               src="${project.favicon}" 
-              alt="${project.name} icon"
+              alt="${safeName} icon"
               loading="lazy"
               onerror="this.src='/assets/icons/android-chrome-192x192.png'"
             />
             <div class="project-info">
-              <h3 class="project-title">${this.escapeHtml(project.name)}</h3>
-              <p class="project-description">${this.escapeHtml(project.description || '')}</p>
+              <h3 class="project-title">${safeName}</h3>
+              <p class="project-description">${safeDescription}</p>
             </div>
           </div>
           <div class="project-meta">
-            <span class="project-tag">${this.escapeHtml(tag)}</span>
-            <span class="project-link">
+            <span class="project-tag">${safeTag}</span>
+            <span 
+              class="project-link" 
+              data-project-link 
+              tabindex="0" 
+              role="link" 
+              aria-label="${openLabel}"
+              title="Open in new tab"
+            >
               Open
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
@@ -401,6 +413,35 @@ class ProjectsManager {
         </a>
       </article>
     `;
+  }
+
+  bindProjectLinkOpeners(root) {
+    if (!root) return;
+
+    const links = root.querySelectorAll('.project-link[data-project-link]');
+    links.forEach(link => {
+      if (link.dataset.linkBound === 'true') return;
+
+      const parentAnchor = link.closest('a.project-card-link');
+      if (!parentAnchor || !parentAnchor.href) return;
+
+      const openInNewTab = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation?.();
+        window.open(parentAnchor.href, '_blank', 'noopener');
+      };
+
+      link.addEventListener('click', openInNewTab);
+      link.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openInNewTab(event);
+        }
+      });
+
+      link.dataset.linkBound = 'true';
+    });
   }
   
   updateTagFilters() {

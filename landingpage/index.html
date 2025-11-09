@@ -243,34 +243,48 @@
         return;
       }
       
-      container.innerHTML = featured.map(project => `
-        <article class="project-card reveal">
-          <a href="${project.url}" class="project-card-link" aria-label="Open ${escapeHtml(project.name)}">
-            <div class="project-card-header">
-              <img 
-                class="project-icon" 
-                src="${project.favicon}" 
-                alt="${project.name} icon"
-                loading="lazy"
-                onerror="this.src='/assets/icons/android-chrome-192x192.png'"
-              />
-              <div class="project-info">
-                <h3 class="project-title">${escapeHtml(project.name)}</h3>
-                <p class="project-description">${escapeHtml(project.description || '')}</p>
+      container.innerHTML = featured.map(project => {
+        const safeName = escapeHtml(project.name);
+        const safeDescription = escapeHtml(project.description || '');
+        const safeTag = escapeHtml(project.tag || 'project');
+        const openLabel = escapeHtml(`Open ${project.name} in a new tab`);
+        return `
+          <article class="project-card reveal">
+            <a href="${project.url}" class="project-card-link" aria-label="Open ${safeName}">
+              <div class="project-card-header">
+                <img 
+                  class="project-icon" 
+                  src="${project.favicon}" 
+                  alt="${safeName} icon"
+                  loading="lazy"
+                  onerror="this.src='/assets/icons/android-chrome-192x192.png'"
+                />
+                <div class="project-info">
+                  <h3 class="project-title">${safeName}</h3>
+                  <p class="project-description">${safeDescription}</p>
+                </div>
               </div>
-            </div>
-            <div class="project-meta">
-              <span class="project-tag">${escapeHtml(project.tag || 'project')}</span>
-              <span class="project-link">
-                Open
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                </svg>
-              </span>
-            </div>
-          </a>
-        </article>
-      `).join('');
+              <div class="project-meta">
+                <span class="project-tag">${safeTag}</span>
+                <span 
+                  class="project-link" 
+                  data-project-link 
+                  tabindex="0" 
+                  role="link" 
+                  aria-label="${openLabel}"
+                  title="Open in new tab"
+                >
+                  Open
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                </span>
+              </div>
+            </a>
+          </article>
+        `;
+      }).join('');
+      bindProjectLinkOpeners(container);
       
       // Initialize magnetic effect for featured project cards
       (function initMagneticCards() {
@@ -376,6 +390,34 @@
         container.querySelectorAll('.reveal').forEach(el => observer.observe(el));
       }, 100);
     })();
+    
+    function bindProjectLinkOpeners(root) {
+      if (!root) return;
+
+      root.querySelectorAll('.project-link[data-project-link]').forEach(link => {
+        if (link.dataset.linkBound === 'true') return;
+
+        const parentAnchor = link.closest('a.project-card-link');
+        if (!parentAnchor || !parentAnchor.href) return;
+
+        const openInNewTab = (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation?.();
+          window.open(parentAnchor.href, '_blank', 'noopener');
+        };
+
+        link.addEventListener('click', openInNewTab);
+        link.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openInNewTab(event);
+          }
+        });
+
+        link.dataset.linkBound = 'true';
+      });
+    }
     
     function escapeHtml(text) {
       const div = document.createElement('div');

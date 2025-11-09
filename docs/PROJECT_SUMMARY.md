@@ -197,17 +197,29 @@ Projects must implement theme switching by:
 - `stock-viewer/assets/styles.css` - Theme-aware with cache-busting
 - All projects should follow this pattern for consistent theming
 
-### Theme System
+### Theme System (Unified - November 2025)
 
-- **Storage**: localStorage (`theme` key)
-- **Default**: Respects system preference
-- **Toggle**: Button in header
-- **Persistence**: Works across all projects
-- **Script**: `landingpage/shared/scripts/theme.js`
+- **Implementation**: ES Module (`type="module"`) for all theme scripts
+- **Storage**: Cookie (`Domain=.supm3n.com`) + localStorage fallback
+- **Cross-subdomain sync**: Cookie ensures theme persists across all subdomains
+- **Default**: Respects system preference if no saved preference
+- **Toggle**: Button in header (supports `#themeToggle`, `#theme-toggle`, `[data-theme-toggle]`)
+- **Persistence**: Works across all projects and subdomains
+- **Script**: `landingpage/shared/scripts/theme.js` (ES module, early application)
 - **Implementation**: Theme toggle sets `data-theme="light"` or `data-theme="dark"` on `<html>` element
 - **CSS Variables**: All projects must use CSS variables that respond to `[data-theme="light"]` selector
 - **Important**: Projects must define light mode overrides using `[data-theme="light"]` selector in their CSS
-- **Cache Busting**: When updating theme CSS, increment version query strings (e.g., `?v=20251109`) to force browser reload
+- **Cache Busting**: All assets use unified version query strings (e.g., `?v=20251109`)
+
+**Recent Improvements (November 2025)**:
+- ✅ Removed legacy theme code from `landingpage/assets/script.js`
+- ✅ Fixed Snake to load theme.js as ES module (was causing parse errors)
+- ✅ Normalized toggle button selectors across all projects
+- ✅ Reordered SettleUp CSS includes (shared variables first)
+- ✅ Unified cache-buster versions across all projects
+- ✅ Cross-subdomain cookie sync for theme persistence
+
+See `docs/THEME_SYSTEM.md` for complete implementation guide.
 
 ### Stock Viewer Specifics
 

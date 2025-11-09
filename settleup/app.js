@@ -41,10 +41,9 @@ function init() {
 }
 
 function updateComputeButtonState() {
-  const financials = computeFinancialSnapshot();
-  const hasBalance = financials.balances?.some((b) => b.balanceCents !== 0);
   const hasExpenses = appState.expenses.length > 0;
-  computeBtn.disabled = !(hasExpenses && hasBalance);
+  const enoughPeople = appState.people.length >= 2;
+  computeBtn.disabled = !(hasExpenses && enoughPeople);
 }
 
 function ensureMinimumPeople(count) {

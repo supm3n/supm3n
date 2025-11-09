@@ -2,23 +2,42 @@
    Theme Base - Global theme variables
    ============================================ */
 
-:root,
-[data-theme="light"] { 
-  --bg:#fff; 
-  --fg:#111; 
-  --surface:#f6f6f6; 
-  --muted:#6b7280; 
-  --link:#2563eb; 
-  --border:#e5e7eb; 
+:root {
+  --bg: var(--color-base, #0B0C10);
+  --fg: var(--color-text-primary, #E6E9F0);
+  --surface: var(--color-surface-1, #0F1115);
+  --muted: var(--color-text-muted, #A9B1C6);
+  --link: var(--color-accent-end, #06B6D4);
+  --border: var(--glass-border, rgba(255, 255, 255, 0.08));
 }
 
-[data-theme="dark"] { 
-  --bg:#0b0b0b; 
-  --fg:#f5f6f7; 
-  --surface:#161616; 
-  --muted:#a3a3a3; 
-  --link:#93c5fd; 
-  --border:#1f2937; 
+[data-theme="dark"] {
+  --bg: var(--color-base, #0B0C10);
+  --fg: var(--color-text-primary, #E6E9F0);
+  --surface: var(--color-surface-1, #0F1115);
+  --muted: var(--color-text-muted, #A9B1C6);
+  --link: var(--color-accent-end, #06B6D4);
+  --border: var(--glass-border, rgba(255, 255, 255, 0.08));
+}
+
+[data-theme="light"] {
+  --bg: var(--color-base-light, #FAFAFA);
+  --fg: var(--color-text-primary-light, #0B0C10);
+  --surface: var(--color-surface-1-light, #FFFFFF);
+  --muted: var(--color-text-muted-light, #4A5568);
+  --link: var(--color-accent-start, #2563EB);
+  --border: var(--glass-border-light, rgba(0, 0, 0, 0.08));
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --bg: var(--color-base-light, #FAFAFA);
+    --fg: var(--color-text-primary-light, #0B0C10);
+    --surface: var(--color-surface-1-light, #FFFFFF);
+    --muted: var(--color-text-muted-light, #4A5568);
+    --link: var(--color-accent-start, #2563EB);
+    --border: var(--glass-border-light, rgba(0, 0, 0, 0.08));
+  }
 }
 
 html, body { 

@@ -304,29 +304,38 @@ export async function onRequest() {
 
 ## ✅ Recently Completed Improvements
 
-### Theme System Fixes (November 2025)
+### Theme System Unification (November 2025) - COMPLETE
 
-1. ✅ **Fixed Theme Toggle Site-Wide** - Theme toggle now changes entire page, not just header
-   - Updated `settleup/styles.css` with `[data-theme="light"]` selector
-   - Updated `stock-viewer/assets/styles.css` with theme support
-   - Added cache-busting to stock-viewer CSS (`?v=20251109`)
+**Commit**: `fd77609` - "Unify theme across supm3n.com + subdomains"
+
+1. ✅ **Unified Theme System** - All projects now use ES modules for theme loading
+   - Removed legacy theme code from `landingpage/assets/script.js` (kept icon updater)
+   - Fixed Snake to load `theme.js` as `type="module"` (was causing "Unexpected token 'export'" error)
+   - Normalized toggle button selectors across all projects (`#themeToggle`, `#theme-toggle`, `[data-theme-toggle]`)
    - All projects now properly respond to theme changes
 
-2. ✅ **CSS Variable System** - Projects now use shared CSS variables
-   - Settleup references shared variables with fallbacks
-   - Stock viewer uses consistent color variables
-   - System preference fallback implemented
+2. ✅ **Cross-Subdomain Theme Sync** - Theme persists across all subdomains
+   - Cookie with `Domain=.supm3n.com` ensures theme sync
+   - localStorage fallback for same-domain persistence
+   - Early application prevents flash of unstyled content
 
-3. ✅ **Settleup Project Integration** - Added new expense splitting app
-   - Inline header/footer for better performance
-   - Theme-aware styling
-   - Favicon files added
-   - Cloudflare Pages deployment configured
+3. ✅ **CSS Load Order Fixed** - SettleUp CSS reordered for proper variable inheritance
+   - Shared `variables.css` loads first
+   - Local `theme-base.css` loads second (can override)
+   - All projects use consistent CSS variable system
 
-4. ✅ **Documentation** - Created `THEME_SYSTEM.md` for AI model reference
-   - Complete theme implementation guide
-   - Common issues and solutions
-   - Best practices and testing checklist
+4. ✅ **Cache-Buster Unification** - All assets use unified version (`?v=20251109`)
+   - Consistent versioning across all projects
+   - Prevents cache mismatches
+
+5. ✅ **Component Loader Improvements** - Fixed breadcrumbs loader and version bump
+   - Version bumped to `20251109` in `components.js`
+   - Breadcrumbs loader now checks for node before loading script
+
+6. ✅ **Documentation** - Created comprehensive documentation
+   - `docs/PROJECT_OVERVIEW.md` - Main entry point for new agents
+   - `docs/THEME_SYSTEM.md` - Complete theme implementation guide
+   - Updated `README.md` and `PROJECT_SUMMARY.md` with recent changes
 
 ## 🔧 Quick Wins (Easy to Implement)
 

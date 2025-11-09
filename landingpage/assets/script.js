@@ -128,7 +128,7 @@
     const projectCards = document.querySelectorAll('.project-card');
     projectCards.forEach(card => {
       const title = card.querySelector('.project-title')?.textContent || '';
-      const url = card.querySelector('.project-link')?.href || '';
+      const url = card.querySelector('.project-card-link')?.href || '';
       if (title.toLowerCase().includes(q)) {
         filteredCommands.push({
           title: title,
