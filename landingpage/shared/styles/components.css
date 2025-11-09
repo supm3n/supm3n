@@ -49,10 +49,17 @@ body::before {
   -webkit-backdrop-filter: blur(12px) saturate(180%);
   border-bottom: 1px solid var(--glass-border);
   transition: transform var(--transition-base);
+  container-type: scroll-state;
 }
 
 .site-header.hidden {
   transform: translateY(-100%);
+}
+
+@container (scroll-state: stuck) {
+  .site-header {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
 }
 
 .header-inner {

@@ -24,6 +24,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+  <link rel="preconnect" href="https://supm3n.com">
+  
+  <!-- Shared theme + components -->
+  <link rel="stylesheet" href="/shared/styles/variables.css?v=20251110d">
+  <link rel="stylesheet" href="/shared/styles/components.css?v=20251110d">
+  <script type="module" src="/shared/scripts/theme.js?v=20251110d"></script>
+  <script src="/shared/scripts/utils.js?v=20251110d"></script>
   
   <!-- Styles -->
   <link rel="stylesheet" href="/assets/styles.css">
@@ -31,29 +38,10 @@
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
   
-  <header class="site-header" role="banner">
-    <div class="container header-inner">
-      <a class="brand" href="/" aria-label="Supm3n Home">
-        <svg class="brand-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <circle cx="50" cy="35" r="15" fill="currentColor"/>
-          <path d="M35 50 L50 65 L65 50 L50 45 Z" fill="currentColor"/>
-          <path d="M50 45 L50 80 L40 90 L60 90 Z" fill="#EF4444"/>
-        </svg>
-      </a>
-      <nav class="main-nav" role="navigation" aria-label="Main navigation">
-        <a class="nav-link" href="/">Home</a>
-        <a class="nav-link" href="/projects">Projects</a>
-        <a class="nav-link" href="/uses">Uses</a>
-        <a class="nav-link" href="/now">Now</a>
-        <a class="nav-link" href="/contact">Contact</a>
-      </nav>
-      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-        </svg>
-      </button>
-    </div>
-  </header>
+  <!-- Placeholder for shared site header -->
+  <header class="site-header"></header>
+
+  <script src="/shared/scripts/components.js?v=20251110d" defer></script>
 
   <main id="main-content" role="main">
     <section class="projects-section">
@@ -164,6 +152,23 @@
   </div>
 
   <script src="/assets/script.js"></script>
+  <script type="module">
+    import { toggleTheme } from '/shared/scripts/theme.js?v=20251110d';
+
+    await window.Supm3nComponents.init({
+      header: true,
+      footer: false,
+      styles: false,
+      utils: false
+    });
+
+    window.Supm3nUtils?.initNavigation?.();
+
+    (document.getElementById('theme-toggle')
+      || document.getElementById('themeToggle')
+      || document.querySelector('[data-theme-toggle]'))
+      ?.addEventListener('click', toggleTheme);
+  </script>
 </body>
 </html>
 

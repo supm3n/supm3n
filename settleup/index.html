@@ -10,7 +10,7 @@
     <!-- Theme system: shared variables first, then local overrides -->
     <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251110d">
     <link rel="stylesheet" href="/styles/theme-base.css?v=20251110d">
-    <script type="module" src="/scripts/theme.js?v=20251110d"></script>
+    <script type="module" src="https://supm3n.com/shared/scripts/theme.js?v=20251110d"></script>
     
     <!-- Shared utilities for navigation -->
     <script src="https://supm3n.com/shared/scripts/utils.js?v=20251110d"></script>
@@ -22,24 +22,10 @@
     <link rel="stylesheet" href="styles.css?v=20251110d" />
   </head>
   <body>
-    <!-- Shared site header -->
-    <header class="site-header" role="banner">
-      <div class="container header-inner">
-        <a class="brand" href="https://supm3n.com/" aria-label="Supm3n Home">
-          <img src="https://supm3n.com/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
-        </a>
-        <nav class="main-nav" role="navigation" aria-label="Main navigation">
-          <a class="nav-link" href="https://supm3n.com/">Home</a>
-          <a class="nav-link" href="https://supm3n.com/projects">Projects</a>
-          <a class="nav-link" href="https://supm3n.com/uses">Uses</a>
-        </nav>
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-          </svg>
-        </button>
-      </div>
-    </header>
+    <!-- Placeholder for shared site header -->
+    <header class="site-header"></header>
+
+    <script src="https://supm3n.com/shared/scripts/components.js?v=20251110d" defer></script>
 
     <header class="app-header">
       <div class="header-brand">
@@ -95,7 +81,7 @@
 
         <div class="table-wrapper" aria-live="polite">
           <table id="expenses-table">
-            <caption>Expenses (newest first)</caption>
+            <caption>Expenses</caption>
             <thead>
               <tr>
                 <th scope="col">Payer</th>
@@ -138,8 +124,20 @@
     </footer>
 
     <script type="module">
-      import { toggleTheme } from '/scripts/theme.js?v=20251110d';
-      (document.getElementById('themeToggle') || document.querySelector('[data-theme-toggle]') || document.getElementById('theme-toggle'))
+      import { toggleTheme } from 'https://supm3n.com/shared/scripts/theme.js?v=20251110d';
+
+      await window.Supm3nComponents.init({
+        header: true,
+        footer: false,
+        styles: false,
+        utils: false
+      });
+
+      window.Supm3nUtils?.initNavigation?.();
+
+      (document.getElementById('theme-toggle')
+        || document.getElementById('themeToggle')
+        || document.querySelector('[data-theme-toggle]'))
         ?.addEventListener('click', toggleTheme);
     </script>
     

@@ -15,7 +15,7 @@ window.Supm3nComponents = {
   },
 
   // Optional version to bust caches (set when deploying landingpage)
-  version: '20251109',
+  version: '20251110d',
 
   // Helper to append ?v=
   withVersion(path) {
@@ -34,6 +34,7 @@ window.Supm3nComponents = {
     <nav class="main-nav" role="navigation" aria-label="Main navigation">
       <a class="nav-link" href="https://supm3n.com/">Home</a>
       <a class="nav-link" href="https://supm3n.com/projects">Projects</a>
+      <a class="nav-link" href="https://supm3n.com/uses">Uses</a>
     </nav>
   </div>
 </header>`,

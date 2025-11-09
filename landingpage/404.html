@@ -9,8 +9,9 @@
   <link rel="icon" href="/assets/icons/favicon.ico">
   
   <!-- Theme system -->
-  <link rel="stylesheet" href="/shared/styles/variables.css?v=20251109">
-  <script type="module" src="/shared/scripts/theme.js?v=20251109"></script>
+  <link rel="stylesheet" href="/shared/styles/variables.css?v=20251110d">
+  <link rel="stylesheet" href="/shared/styles/components.css?v=20251110d">
+  <script type="module" src="/shared/scripts/theme.js?v=20251110d"></script>
   
   <link rel="stylesheet" href="/assets/styles.css">
   
@@ -20,25 +21,10 @@
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
 </head>
 <body>
-  <header class="site-header" role="banner">
-    <div class="container header-inner">
-      <a class="brand" href="/" aria-label="Supm3n Home">
-        <img src="/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
-      </a>
-      <nav class="main-nav" role="navigation" aria-label="Main navigation">
-        <a class="nav-link" href="/">Home</a>
-        <a class="nav-link" href="/projects">Projects</a>
-        <a class="nav-link" href="/uses">Uses</a>
-        <!-- <a class="nav-link" href="/now">Now</a> -->
-        <!-- <a class="nav-link" href="/contact">Contact</a> -->
-      </nav>
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-        </svg>
-      </button>
-    </div>
-  </header>
+  <!-- Placeholder for shared site header -->
+  <header class="site-header"></header>
+
+  <script src="/shared/scripts/components.js?v=20251110d" defer></script>
 
   <main id="main-content" role="main">
     <section class="projects-section" style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
@@ -71,8 +57,20 @@
 
   <script src="/assets/script.js"></script>
   <script type="module">
-    import { toggleTheme } from '/shared/scripts/theme.js?v=20251109';
-    (document.getElementById('themeToggle') || document.querySelector('[data-theme-toggle]') || document.getElementById('theme-toggle'))
+    import { toggleTheme } from '/shared/scripts/theme.js?v=20251110d';
+
+    await window.Supm3nComponents.init({
+      header: true,
+      footer: false,
+      styles: false,
+      utils: false
+    });
+
+    window.Supm3nUtils?.initNavigation?.();
+
+    (document.getElementById('theme-toggle')
+      || document.getElementById('themeToggle')
+      || document.querySelector('[data-theme-toggle]'))
       ?.addEventListener('click', toggleTheme);
   </script>
   <script>
