@@ -7,18 +7,9 @@
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
     <link rel="alternate icon" href="/assets/icons/favicon.ico" />
     
-    <!-- Set theme immediately to prevent flash of unstyled content -->
-    <script>
-      (function() {
-        const savedTheme = localStorage.getItem('theme');
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (savedTheme) {
-          document.documentElement.setAttribute('data-theme', savedTheme);
-        } else if (!systemPrefersDark) {
-          document.documentElement.setAttribute('data-theme', 'light');
-        }
-      })();
-    </script>
+    <!-- Theme system -->
+    <link rel="stylesheet" href="/styles/theme-base.css?v=20251109">
+    <script type="module" src="/scripts/theme.js?v=20251109"></script>
     
     <!-- Shared Styles -->
     <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251108">
@@ -153,8 +144,11 @@
       </p>
     </footer>
 
-    <!-- Load theme script for theme toggle functionality -->
-    <script src="https://supm3n.com/shared/scripts/theme.js?v=20251108"></script>
+    <script type="module">
+      import { toggleTheme } from '/scripts/theme.js?v=20251109';
+      const btn = document.getElementById('theme-toggle') || document.querySelector('[data-theme-toggle]');
+      if (btn) btn.addEventListener('click', toggleTheme);
+    </script>
     
     <script type="module" src="app.js"></script>
   </body>

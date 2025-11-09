@@ -7,6 +7,11 @@
   <meta name="description" content="Privacy policy for supm3n.com">
   
   <link rel="icon" href="/assets/icons/favicon.ico">
+  
+  <!-- Theme system -->
+  <link rel="stylesheet" href="/shared/styles/variables.css?v=20251109">
+  <script type="module" src="/shared/scripts/theme.js?v=20251109"></script>
+  
   <link rel="stylesheet" href="/assets/styles.css">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -118,6 +123,11 @@
   </footer>
 
   <script src="/assets/script.js"></script>
+  <script type="module">
+    import { toggleTheme } from '/shared/scripts/theme.js?v=20251109';
+    const btn = document.getElementById('theme-toggle') || document.querySelector('[data-theme-toggle]');
+    if (btn) btn.addEventListener('click', toggleTheme);
+  </script>
   <script>
     // Update last updated dates
     document.addEventListener('DOMContentLoaded', () => {

@@ -26,6 +26,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
   
+  <!-- Theme system -->
+  <link rel="stylesheet" href="/shared/styles/variables.css?v=20251109">
+  <script type="module" src="/shared/scripts/theme.js?v=20251109"></script>
+  
   <link rel="stylesheet" href="/assets/styles.css">
   <style>
     /* Ensure footer sticks to bottom */
@@ -119,6 +123,11 @@
 
   <script src="/assets/script.js" defer></script>
   <script src="/assets/projects.js" defer></script>
+  <script type="module">
+    import { toggleTheme } from '/shared/scripts/theme.js?v=20251109';
+    const btn = document.getElementById('theme-toggle') || document.querySelector('[data-theme-toggle]');
+    if (btn) btn.addEventListener('click', toggleTheme);
+  </script>
   <script>
     // Update last updated date
     document.addEventListener('DOMContentLoaded', () => {

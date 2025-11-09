@@ -31,3 +31,4 @@ export function toggleTheme() {
   const curr = document.documentElement.getAttribute('data-theme') || 'light';
   setTheme(curr === 'dark' ? 'light' : 'dark');
 }
+

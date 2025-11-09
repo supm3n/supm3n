@@ -1,0 +1,38 @@
+/* ============================================
+   Theme Base - Global theme variables
+   ============================================ */
+
+:root,
+[data-theme="light"] { 
+  --bg:#fff; 
+  --fg:#111; 
+  --surface:#f6f6f6; 
+  --muted:#6b7280; 
+  --link:#2563eb; 
+  --border:#e5e7eb; 
+}
+
+[data-theme="dark"] { 
+  --bg:#0b0b0b; 
+  --fg:#f5f6f7; 
+  --surface:#161616; 
+  --muted:#a3a3a3; 
+  --link:#93c5fd; 
+  --border:#1f2937; 
+}
+
+html, body { 
+  background: var(--bg); 
+  color: var(--fg); 
+}
+
+a { 
+  color: var(--link); 
+}
+
+.card, .section, .panel { 
+  background: var(--surface); 
+  color: var(--fg); 
+  border-color: var(--border); 
+}
+
