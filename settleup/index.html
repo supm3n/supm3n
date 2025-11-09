@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Settle Up (Ephemeral)</title>
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/assets/icons/favicon.ico" />
+    
+    <!-- Set theme immediately to prevent flash of unstyled content -->
+    <script>
+      (function() {
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme) {
+          document.documentElement.setAttribute('data-theme', savedTheme);
+        } else if (!systemPrefersDark) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+    
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251108">
+    <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251108">
+    
+    <!-- Project-specific styles -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Shared site header -->
+    <header class="site-header" role="banner">
+      <div class="container header-inner">
+        <a class="brand" href="https://supm3n.com/" aria-label="Supm3n Home" style="text-decoration: none; color: var(--color-text-primary);">
+          <img src="https://supm3n.com/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
+          <span class="brand-name">Supm3n</span>
+        </a>
+        <nav class="main-nav" role="navigation" aria-label="Main navigation">
+          <a class="nav-link" href="https://supm3n.com/">Home</a>
+          <a class="nav-link" href="https://supm3n.com/projects">Projects</a>
+          <a class="nav-link" href="https://supm3n.com/uses">Uses</a>
+        </nav>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <header class="app-header">
+      <div class="header-brand">
+        <h1 class="app-title">Settle Up (Ephemeral)</h1>
+      </div>
+      <p class="header-note">No data is saved.</p>
+    </header>
+
+    <main class="app-main">
+      <section id="people-section" class="panel" aria-labelledby="people-title">
+        <div class="panel-header">
+          <h2 id="people-title">People</h2>
+          <button type="button" id="add-person-btn" class="primary">
+            Add Guest
+          </button>
+        </div>
+        <ul id="people-list" class="people-list" aria-live="polite"></ul>
+      </section>
+
+      <section id="expenses-section" class="panel" aria-labelledby="expense-title">
+        <h2 id="expense-title">Expense Form</h2>
+        <form id="expense-form" novalidate>
+          <div class="form-row">
+            <label for="expense-payer">Paid by</label>
+            <select id="expense-payer" required></select>
+          </div>
+          <div class="form-row">
+            <label for="expense-amount">Amount</label>
+            <input
+              id="expense-amount"
+              name="amount"
+              inputmode="decimal"
+              pattern="^[0-9]+([.,][0-9]{1,2})?$"
+              placeholder="0,00"
+              required
+              autocomplete="off"
+              aria-describedby="expense-feedback"
+              enterkeyhint="done"
+            />
+          </div>
+          <div class="form-row">
+            <label for="expense-note">Note <span class="optional">(optional)</span></label>
+            <input
+              id="expense-note"
+              name="note"
+              maxlength="120"
+              placeholder="Dinner, taxis, groceries..."
+            />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="primary" id="submit-expense-btn">
+              Add Expense
+            </button>
+            <button type="button" id="cancel-edit-btn" class="secondary" hidden>
+              Cancel
+            </button>
+          </div>
+          <p id="expense-feedback" class="form-feedback" aria-live="polite"></p>
+        </form>
+
+        <div class="table-wrapper" aria-live="polite">
+          <table id="expenses-table">
+            <caption>Expenses (newest first)</caption>
+            <thead>
+              <tr>
+                <th scope="col">Payer</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Note</th>
+                <th scope="col">Created</th>
+                <th scope="col" class="actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="expenses-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="balances-section" class="panel" aria-labelledby="balances-title">
+        <h2 id="balances-title">Balances</h2>
+        <ul id="balances-list" class="balances-list" aria-live="polite"></ul>
+      </section>
+
+      <section id="settlement-section" class="panel settlement-section" aria-labelledby="settlement-title">
+        <h2 id="settlement-title">Settlement</h2>
+        <div class="settlement-bar">
+          <div class="total-summary">
+            <span>Total recorded</span>
+            <strong id="total-amount">€0,00</strong>
+          </div>
+          <button type="button" id="compute-btn" class="primary large" disabled>
+            Compute Transfers
+          </button>
+        </div>
+        <div id="settlement-results" class="settlement-results" aria-live="polite" role="status">
+          Tap Compute to see who should pay whom.
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer" style="margin-top: 1rem; padding: 0.75rem 1rem; text-align: center; border-top: 1px solid var(--border); font-size: 0.875rem; color: var(--muted);">
+      <p style="margin: 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+        <img src="icon.svg" alt="" aria-hidden="true" style="width: 20px; height: 20px; vertical-align: middle;" />
+        <span>Built for <a href="https://supm3n.com/" style="color: inherit; text-decoration: none; font-weight: 500;">Supm3n</a> · Refresh clears everything</span>
+      </p>
+    </footer>
+
+    <!-- Load theme script for theme toggle functionality -->
+    <script src="https://supm3n.com/shared/scripts/theme.js?v=20251108"></script>
+    
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
+

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Uses — Supm3n</title>
+  <meta name="description" content="My gear, software stack, and tools I use daily.">
+  
+  <link rel="icon" href="/assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0B0C10">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+  
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a class="brand" href="/" aria-label="Supm3n Home">
+        <img src="/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Main navigation">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/projects">Projects</a>
+        <a class="nav-link active" href="/uses">Uses</a>
+        <!-- <a class="nav-link" href="/now">Now</a> -->
+        <!-- <a class="nav-link" href="/contact">Contact</a> -->
+      </nav>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content" role="main">
+    <section class="projects-section">
+      <div class="container">
+        <div class="content-page">
+          <div class="section-header">
+            <h2 class="section-title">Uses</h2>
+          </div>
+
+          <div class="reveal">
+            <h3 class="content-section">Hardware</h3>
+            <ul class="content-list">
+              <li>🖥️ <strong>CPU:</strong> AMD Ryzen 9 9950X3D 16-Core Processor</li>
+              <li>💾 <strong>RAM:</strong> 64.0 GB</li>
+              <li>🎮 <strong>GPU:</strong> NVIDIA GeForce RTX 5090 (21,760 CUDA cores, 32 GB GDDR7, 1.79 TB/s bandwidth)</li>
+              <li>💿 <strong>Storage:</strong> 931.5 GB SSD + 3.6 TB SSD</li>
+              <li>⚡ <strong>OS:</strong> Windows 11 Pro</li>
+            </ul>
+
+            <h3 class="content-section">Software</h3>
+            <ul class="content-list">
+              <li>📝 <strong>Editor:</strong> VS Code / Cursor</li>
+              <li>🌐 <strong>Browser:</strong> Chrome / Firefox</li>
+              <li>💬 <strong>Terminal:</strong> iTerm2 / Terminal.app</li>
+              <li>🔧 <strong>Version Control:</strong> Git</li>
+              <li>☁️ <strong>Hosting:</strong> Cloudflare Pages</li>
+            </ul>
+
+            <h3 class="content-section">Languages & Tools</h3>
+            <ul class="content-list">
+              <li>⚡ <strong>Frontend:</strong> HTML, CSS, JavaScript, TypeScript</li>
+              <li>🔨 <strong>Frameworks:</strong> Vanilla JS, React (when needed)</li>
+              <li>🎨 <strong>Design:</strong> Figma, CSS</li>
+              <li>🚀 <strong>Deployment:</strong> Cloudflare Workers, Pages</li>
+            </ul>
+
+            <p class="content-meta" style="margin-top: var(--space-xl);">
+              This page is a work in progress. I'll update it as my setup evolves.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div class="footer-links">
+        <a href="/uses">Uses</a>
+        <!-- <a href="/now">Now</a> -->
+        <!-- <a href="/contact">Contact</a> -->
+        <a href="/privacy">Privacy</a>
+      </div>
+      <div class="footer-social"></div>
+      <div style="font-size: var(--text-xs); color: var(--color-text-muted);">
+        Last updated: <time id="last-updated"></time>
+      </div>
+    </div>
+  </footer>
+
+  <div class="command-palette" id="command-palette" role="dialog" aria-label="Command palette" aria-modal="true">
+    <div class="command-palette-inner">
+      <input 
+        type="text" 
+        class="command-palette-input" 
+        id="command-input" 
+        placeholder="Search pages and projects..."
+        aria-label="Search"
+      />
+      <div class="command-palette-results" id="command-results" role="listbox"></div>
+    </div>
+  </div>
+
+  <script src="/assets/script.js"></script>
+  <script>
+    // Update last updated date
+    document.addEventListener('DOMContentLoaded', () => {
+      const lastUpdatedEl = document.getElementById('last-updated');
+      if (lastUpdatedEl) {
+        lastUpdatedEl.textContent = new Date().toLocaleDateString();
+      }
+    });
+  </script>
+</body>
+</html>
+

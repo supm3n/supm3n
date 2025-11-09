@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stock Chart — Supm3n</title>
+  <meta name="description" content="Fast stock chart viewer with real-time data.">
+  <link rel="icon" href="/assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0b0c10">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://supm3n.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://supm3n.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:;">
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Stock Chart — Supm3n">
+  <meta property="og:description" content="Fast stock chart viewer with real-time data.">
+  <meta property="og:image" content="/assets/icons/android-chrome-512x512.png">
+  <meta property="og:url" content="https://stocks.supm3n.com/">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://stocks.supm3n.com/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251108">
+  <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251108">
+  
+  <!-- Project-specific styles -->
+  <link rel="stylesheet" href="/assets/styles.css?v=20251109">
+  <style>
+    #chart-wrap{height:min(86vh, 920px); max-width: 1200px; margin: 1.5rem auto; padding: 1.5rem;}
+    #chart{width:100%; height:100%;}
+    
+    @media (max-width: 768px) {
+      #chart-wrap {
+        padding: 1rem;
+        margin: 1rem auto;
+      }
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .search-input {
+        width: 100%;
+        min-width: auto;
+      }
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <link rel="preconnect" href="https://supm3n.com">
+  
+  <!-- Header -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a class="brand" href="https://supm3n.com/" aria-label="Supm3n Home">
+        <img src="https://supm3n.com/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
+        <span class="brand-name">Supm3n</span>
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Main navigation">
+        <a class="nav-link" href="https://supm3n.com/">Home</a>
+        <a class="nav-link" href="https://supm3n.com/projects">Projects</a>
+        <a class="nav-link" href="https://supm3n.com/uses">Uses</a>
+      </nav>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content" class="container">
+    <section class="toolbar">
+      <label class="sr-only" for="symbol-select">Select Stock</label>
+      <select id="symbol-select" class="search-input" style="min-width: 200px; cursor: pointer;">
+        <option value="">Select a stock...</option>
+        <option value="AAPL">Apple (AAPL)</option>
+        <option value="MSFT">Microsoft (MSFT)</option>
+        <option value="GOOGL">Alphabet (GOOGL)</option>
+        <option value="AMZN">Amazon (AMZN)</option>
+        <option value="TSLA">Tesla (TSLA)</option>
+        <option value="META">Meta (META)</option>
+        <option value="NVDA">NVIDIA (NVDA)</option>
+        <option value="JPM">JPMorgan (JPM)</option>
+        <option value="V">Visa (V)</option>
+        <option value="JNJ">Johnson & Johnson (JNJ)</option>
+        <option value="WMT">Walmart (WMT)</option>
+        <option value="PG">Procter & Gamble (PG)</option>
+        <option value="MA">Mastercard (MA)</option>
+        <option value="DIS">Disney (DIS)</option>
+        <option value="NFLX">Netflix (NFLX)</option>
+      </select>
+      <label class="sr-only" for="symbol">Or enter custom symbol</label>
+      <input 
+        id="symbol" 
+        class="search-input" 
+        placeholder="Or enter symbol (e.g. TSLA)" 
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button id="load" class="btn">Load Chart</button>
+    </section>
+  </main>
+
+  <div id="chart-wrap">
+    <canvas id="chart"></canvas>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo" style="margin-top: 2rem; padding: 1rem 0; border-top: 1px solid var(--glass-border); font-size: var(--text-xs);">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div style="color: var(--color-text-muted);">
+        <a href="https://supm3n.com/" style="color: inherit; text-decoration: none;">© <span id="footer-year"></span> Supm3n</a>
+      </div>
+      <div style="display: flex; gap: 1.5rem;">
+        <a href="https://supm3n.com/uses" style="color: var(--color-text-muted); text-decoration: none; transition: color 0.2s;">Uses</a>
+        <a href="https://supm3n.com/privacy" style="color: var(--color-text-muted); text-decoration: none; transition: color 0.2s;">Privacy</a>
+      </div>
+    </div>
+  </footer>
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  
+  <!-- Load theme script for theme toggle functionality -->
+  <script src="https://supm3n.com/shared/scripts/theme.js?v=20251108"></script>
+  
+  <script>
+    // Set footer year
+    document.addEventListener('DOMContentLoaded', () => {
+      const yearEl = document.getElementById('footer-year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+    });
+  </script>
+  
+  <script src="/assets/script.js?v=20251110" defer></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Exclude from Cloudflare Pages deployment
+node_modules/
+package.json
+package-lock.json
+README.md
+PAGE_TEMPLATE.html
+*.md
+.wrangler/
+

@@ -1,0 +1,8 @@
+name = "stock-viewer"
+pages_build_output_dir = "."
+compatibility_date = "2024-11-01"
+
+# SECURITY NOTE: API keys must NOT be committed here.
+# Add ALPHA_KEY as a Pages Secret in Cloudflare Dashboard instead:
+# Pages → stock-viewer → Settings → Environment variables → Add Secret → ALPHA_KEY
+# The function reads it from env.ALPHA_KEY.

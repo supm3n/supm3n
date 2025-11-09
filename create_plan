@@ -1,0 +1,18 @@
+1. Harden security headers
+   - Update `landingpage/_headers` to include the CSP currently defined via meta tag, allowing the shared assets domain, Google Fonts, jsDelivr, and inline scripts used today.
+   - Add equivalent `_headers` files under `stock-viewer/`, `python-playground/`, and `snake/` so every sub-site sends the same protections without relying on duplicated `<meta http-equiv>` tags.
+   - Align or remove in-page CSP meta tags where necessary once the response headers are authoritative.
+
+2. Prevent accidental uploads during deploys
+   - Add a `.wranglerignore` file to each project directory to exclude `node_modules/`, caches, temporary files, and local docs from Cloudflare Pages uploads.
+   - Reference the ignore pattern in project docs so contributors keep it current.
+
+3. Lock external dependencies with SRI
+   - Replace the generic Chart.js CDN include in `stock-viewer/index.html` with a version-pinned UMD bundle URL plus `integrity`/`crossorigin` attributes; ensure the global `Chart` API remains available.
+   - Do the same for the Pyodide loader in `python-playground/index.html`, updating the `loadPyodide` `indexURL` to match the pinned version and adding the same SRI hash.
+
+4. Refresh documentation for Sonnet handoff
+   - Update `PROJECT_SUMMARY.md`, `IMPROVEMENTS.md`, and `DEPLOYMENT_ANALYSIS.md` with the new deployment checklist (CSP headers, `.wranglerignore`, shared version bump, secrets expectations) so another model can follow exact steps.
+
+5. Sanity-check locally before deploy
+   - Note in the docs to run `wrangler pages dev` (or a preview deploy) for each project to confirm shared components load, CSP allows required assets, and external scripts execute without console errors prior to any production release.

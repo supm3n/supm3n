@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact — Supm3n</title>
+  <meta name="description" content="Get in touch with Supm3n.">
+  
+  <link rel="icon" href="/assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0B0C10">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+  
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a class="brand" href="/" aria-label="Supm3n Home">
+        <img src="/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Main navigation">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/projects">Projects</a>
+        <a class="nav-link" href="/uses">Uses</a>
+        <!-- <a class="nav-link" href="/now">Now</a> -->
+        <!-- <a class="nav-link active" href="/contact">Contact</a> -->
+      </nav>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content" role="main">
+    <section class="projects-section">
+      <div class="container">
+        <div class="content-page-narrow">
+          <div class="section-header">
+            <h2 class="section-title">Contact</h2>
+          </div>
+
+          <div class="reveal">
+            <p class="content-intro">
+              Have a question, collaboration idea, or just want to say hi? I'd love to hear from you.
+            </p>
+
+            <form id="contact-form" class="form-group">
+              <div class="form-field">
+                <label for="name" class="form-label">Name</label>
+                <input 
+                  type="text" 
+                  id="name" 
+                  name="name" 
+                  required
+                  class="form-input"
+                />
+              </div>
+
+              <div class="form-field">
+                <label for="email" class="form-label">Email</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  name="email" 
+                  required
+                  class="form-input"
+                />
+              </div>
+
+              <div class="form-field">
+                <label for="message" class="form-label">Message</label>
+                <textarea 
+                  id="message" 
+                  name="message" 
+                  rows="6" 
+                  required
+                  class="form-textarea"
+                ></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary">
+                Send Message
+              </button>
+
+              <div id="form-message" class="form-message"></div>
+            </form>
+
+            <div class="content-divider">
+              <h3 style="margin-bottom: var(--space-md);">Other Ways to Reach Me</h3>
+              <p style="color: var(--color-text-muted);">
+                You can also find me on social media or through other channels. 
+                Links coming soon.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div class="footer-links">
+        <a href="/uses">Uses</a>
+        <!-- <a href="/now">Now</a> -->
+        <!-- <a href="/contact">Contact</a> -->
+        <a href="/privacy">Privacy</a>
+      </div>
+      <div class="footer-social"></div>
+      <div style="font-size: var(--text-xs); color: var(--color-text-muted);">
+        Last updated: <time>${new Date().toLocaleDateString()}</time>
+      </div>
+    </div>
+  </footer>
+
+  <div class="command-palette" id="command-palette" role="dialog" aria-label="Command palette" aria-modal="true">
+    <div class="command-palette-inner">
+      <input 
+        type="text" 
+        class="command-palette-input" 
+        id="command-input" 
+        placeholder="Search pages and projects..."
+        aria-label="Search"
+      />
+      <div class="command-palette-results" id="command-results" role="listbox"></div>
+    </div>
+  </div>
+
+  <script src="/assets/script.js"></script>
+  <script>
+    // Simple form handler (you'll need to implement backend)
+    document.getElementById('contact-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const messageEl = document.getElementById('form-message');
+      
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData);
+      
+      // For now, just show a message
+      // In production, you'd send this to your backend
+      messageEl.classList.add('show', 'success');
+      messageEl.textContent = 'Thanks for your message! I\'ll get back to you soon.';
+      
+      form.reset();
+      
+      // You can implement actual submission here:
+      // try {
+      //   const response = await fetch('/api/contact', {
+      //     method: 'POST',
+      //     headers: { 'Content-Type': 'application/json' },
+      //     body: JSON.stringify(data)
+      // });
+      //   if (response.ok) {
+      //     // Success message
+      //   }
+      // } catch (error) {
+      //   // Error message
+      // }
+    });
+  </script>
+</body>
+</html>
+

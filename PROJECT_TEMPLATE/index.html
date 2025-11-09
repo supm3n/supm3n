@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project Name — Supm3n</title>
+  <meta name="description" content="Project description">
+  
+  <!-- Favicons -->
+  <link rel="icon" href="/assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0B0C10">
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Project Name — Supm3n">
+  <meta property="og:description" content="Project description">
+  <meta property="og:image" content="/assets/icons/android-chrome-512x512.png">
+  <meta property="og:url" content="https://project.supm3n.com/">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+  
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css">
+  <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css">
+  
+  <!-- Project-specific styles -->
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <!-- Header will be injected here -->
+  <header class="site-header"></header>
+  
+  <!-- Breadcrumbs (optional) -->
+  <nav class="breadcrumbs" id="breadcrumbs"></nav>
+  
+  <main class="container">
+    <!-- Your project content here -->
+    <section>
+      <h1>Project Name</h1>
+      <p>Project description and content.</p>
+    </section>
+  </main>
+  
+  <!-- Footer will be injected here -->
+  <footer class="site-footer"></footer>
+  
+  <!-- Component Loader -->
+  <script src="https://supm3n.com/shared/scripts/components.js?v=20251108"></script>
+  <script>
+    // Initialize shared components
+    document.addEventListener('DOMContentLoaded', async () => {
+      await Supm3nComponents.init({
+        header: true,
+        footer: true,
+        breadcrumbs: true, // Set to false if you don't want breadcrumbs
+        styles: false, // Already loaded in <head>
+        utils: true
+      });
+      
+      // Your project-specific JavaScript here
+    });
+  </script>
+</body>
+</html>
+

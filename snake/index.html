@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snake Game — Supm3n</title>
+  <meta name="description" content="Classic Snake game - play with keyboard or mouse">
+  <link rel="icon" href="/assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0b0c10">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://supm3n.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://supm3n.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:;">
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Snake Game — Supm3n">
+  <meta property="og:description" content="Classic Snake game - play with keyboard or mouse">
+  <meta property="og:image" content="/assets/icons/android-chrome-512x512.png">
+  <meta property="og:url" content="https://snake.supm3n.com/">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://snake.supm3n.com/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251108">
+  <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251108">
+  
+  <!-- Project-specific styles -->
+  <link rel="stylesheet" href="/assets/styles.css?v=20251108-1">
+
+  <!-- Snake-specific overrides -->
+  <style>
+    :root {
+      /* ensure header height matches shared theme */
+      --snake-header-height: var(--header-height, 72px);
+    }
+
+    body .site-header {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 100 !important;
+      background: var(--glass-bg, rgba(15, 17, 20, 0.8)) !important;
+      backdrop-filter: blur(12px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
+      border-bottom: 1px solid var(--glass-border) !important;
+      box-shadow: var(--shadow-sm, 0 8px 24px rgba(0,0,0,0.25)) !important;
+    }
+
+    body .site-header .header-inner {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      min-height: var(--snake-header-height) !important;
+      gap: var(--space-md) !important;
+      padding: 0 var(--space-md) !important;
+    }
+
+    body .site-header .brand {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: var(--space-sm) !important;
+      font-weight: 700 !important;
+      font-size: var(--text-lg) !important;
+      letter-spacing: -0.02em !important;
+      color: var(--color-text-primary) !important;
+      text-decoration: none !important;
+    }
+
+    body .site-header .brand-logo {
+      display: block !important;
+      width: 36px !important;
+      height: 36px !important;
+      object-fit: contain !important;
+      filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.4)) !important;
+      transition: filter var(--transition-base, 0.25s ease) !important;
+      border-radius: 6px !important;
+      background: rgba(255, 255, 255, 0.06) !important;
+      padding: 4px !important;
+    }
+
+    body .site-header .brand-name {
+      font-weight: 700 !important;
+      letter-spacing: 0.2px !important;
+    }
+
+    body .site-header .main-nav {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: var(--space-xs) !important;
+    }
+
+    body .site-header .nav-link {
+      padding: var(--space-xs) var(--space-sm) !important;
+      border-radius: 8px !important;
+      font-size: var(--text-sm) !important;
+      font-weight: 500 !important;
+      color: var(--color-text-muted) !important;
+      transition: color var(--transition-fast, 0.2s), background var(--transition-fast, 0.2s) !important;
+    }
+
+    body .site-header .nav-link:hover,
+    body .site-header .nav-link:focus-visible,
+    body .site-header .nav-link.active {
+      color: var(--color-text-primary) !important;
+      background: var(--color-surface-1) !important;
+      outline: none !important;
+    }
+
+    body footer.site-footer,
+    body footer.site-footer[role="contentinfo"] {
+      position: static !important;
+      inset: auto !important;
+      z-index: 0 !important;
+      margin-top: 0.25rem !important;
+      padding: 0.5rem 0 !important;
+      border-top: 1px solid var(--glass-border) !important;
+      font-size: var(--text-xs) !important;
+      line-height: 1.1 !important;
+      box-shadow: none !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      background: transparent !important;
+      min-height: auto !important;
+    }
+
+    body footer.site-footer .snake-footer-content {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 0.75rem !important;
+      flex-wrap: wrap !important;
+      color: var(--color-text-muted) !important;
+    }
+
+    body footer.site-footer .snake-footer-content a {
+      color: var(--color-text-primary) !important;
+      text-decoration: none !important;
+      font-weight: 500 !important;
+    }
+
+    @media (max-width: 768px), (max-height: 900px) {
+      body footer.site-footer,
+      body footer.site-footer[role="contentinfo"] {
+        display: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a class="brand" href="https://supm3n.com/" aria-label="Supm3n Home">
+        <img src="https://supm3n.com/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
+        <span class="brand-name">Supm3n</span>
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Main navigation">
+        <a class="nav-link" href="https://supm3n.com/">Home</a>
+        <a class="nav-link" href="https://supm3n.com/projects">Projects</a>
+        <a class="nav-link" href="https://supm3n.com/uses">Uses</a>
+      </nav>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content" class="container">
+    <section class="game-header">
+      <h1>Snake Game</h1>
+      <p>Use arrow keys, WASD, or click/tap to change direction</p>
+    </section>
+
+    <div class="game-container">
+      <div class="game-info">
+        <div class="score-display">
+          <div class="score-item">
+            <span class="score-label">Score</span>
+            <span class="score-value" id="score">0</span>
+          </div>
+          <div class="score-item">
+            <span class="score-label">High Score</span>
+            <span class="score-value" id="high-score">0</span>
+          </div>
+        </div>
+        <div class="game-controls">
+          <button id="start-btn" class="btn btn-primary">Start</button>
+          <button id="pause-btn" class="btn btn-secondary" disabled>Pause</button>
+          <button id="reset-btn" class="btn btn-secondary">Reset</button>
+        </div>
+      </div>
+
+      <div class="game-wrapper">
+        <canvas id="game-canvas"></canvas>
+        <div id="game-over" class="game-over hidden">
+          <h2>Game Over!</h2>
+          <p class="final-score">Final Score: <span id="final-score">0</span></p>
+          <button id="play-again-btn" class="btn btn-primary">Play Again</button>
+        </div>
+        <div id="game-start" class="game-start">
+          <h2>Snake Game</h2>
+          <p>Click Start to begin</p>
+        </div>
+      </div>
+
+      <div class="controls-info">
+        <div class="control-section">
+          <h3>Keyboard Controls</h3>
+          <div class="control-grid">
+            <div class="control-item">
+              <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd>
+              <span>Arrow Keys</span>
+            </div>
+            <div class="control-item">
+              <kbd>W</kbd> <kbd>S</kbd> <kbd>A</kbd> <kbd>D</kbd>
+              <span>WASD</span>
+            </div>
+            <div class="control-item">
+              <kbd>Space</kbd>
+              <span>Pause/Resume</span>
+            </div>
+          </div>
+        </div>
+        <div class="control-section">
+          <h3>Mouse/Touch Controls</h3>
+          <p>Click or tap on the game area to change direction</p>
+          <p class="hint">Click above snake = Up, below = Down, left = Left, right = Right</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer (compact, no shared injection) -->
+  <footer class="site-footer"></footer>
+  
+  <!-- Load theme script for theme toggle functionality -->
+  <script src="https://supm3n.com/shared/scripts/theme.js?v=20251108"></script>
+  
+  <script>
+    // Setup footer
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        const footer = document.querySelector('footer.site-footer');
+        if (footer) {
+          footer.setAttribute('role', 'contentinfo');
+          footer.innerHTML = `
+            <div class="snake-footer-content">
+              <span>© ${new Date().getFullYear()} Supm3n</span>
+              <a href="https://supm3n.com/">Return to supm3n.com</a>
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('Snake footer setup failed', error);
+      }
+    });
+  </script>
+  
+  <script src="/assets/script.js" defer></script>
+</body>
+</html>
+

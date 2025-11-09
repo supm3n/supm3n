@@ -1,0 +1,465 @@
+:root {
+  color-scheme: light dark;
+  /* Use shared color variables from the main site */
+  /* These will be overridden by shared variables.css when loaded */
+  --bg: var(--color-base, #0B0C10);
+  --panel-bg: var(--color-surface-1, #0F1115);
+  --border: var(--glass-border, rgba(255, 255, 255, 0.08));
+  --text: var(--color-text-primary, #E6E9F0);
+  --muted: var(--color-text-muted, #A9B1C6);
+  --accent: var(--color-accent-start, #7C3AED);
+  --accent-text: #ffffff;
+  --positive: #16794f;
+  --negative: #b12b32;
+  --focus-ring: rgba(124, 58, 237, 0.4);
+  --shadow-panel: 0 8px 18px rgba(16, 20, 32, 0.04);
+  --shadow-sticky: 0 12px 24px rgba(16, 20, 32, 0.08);
+  font-family: var(--font-sans, "Inter", "Segoe UI", system-ui, -apple-system, sans-serif);
+}
+
+/* Light mode overrides */
+/* The shared variables.css already sets --color-base, --color-surface-1, etc. for light mode */
+/* We just need to ensure our local variables reference them correctly */
+[data-theme="light"] {
+  --bg: var(--color-base, #FAFAFA);
+  --panel-bg: var(--color-surface-1, #FFFFFF);
+  --border: var(--glass-border, rgba(0, 0, 0, 0.08));
+  --text: var(--color-text-primary, #0B0C10);
+  --muted: var(--color-text-muted, #4A5568);
+  --accent: var(--color-accent-start, #7C3AED);
+  --accent-text: #101420;
+  --positive: #16794f;
+  --negative: #b12b32;
+  --focus-ring: rgba(124, 58, 237, 0.4);
+  --shadow-panel: 0 8px 18px rgba(0, 0, 0, 0.08);
+  --shadow-sticky: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* System preference light mode */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --bg: var(--color-base, #FAFAFA);
+    --panel-bg: var(--color-surface-1, #FFFFFF);
+    --border: var(--glass-border, rgba(0, 0, 0, 0.08));
+    --text: var(--color-text-primary, #0B0C10);
+    --muted: var(--color-text-muted, #4A5568);
+    --accent-text: #101420;
+    --shadow-panel: 0 8px 18px rgba(0, 0, 0, 0.08);
+    --shadow-sticky: 0 12px 24px rgba(0, 0, 0, 0.12);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+}
+
+img {
+  display: block;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.app-header {
+  padding: 1.5rem 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.header-note {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.app-main {
+  flex: 1;
+  display: grid;
+  gap: 1.25rem;
+  padding: 0 1.25rem 5.5rem;
+}
+
+@media (min-width: 960px) {
+  .app-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: min-content;
+    padding-bottom: 3rem;
+  }
+
+  #settlement-section {
+    grid-column: 1 / -1;
+  }
+}
+
+.panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: var(--shadow-panel);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+button {
+  cursor: pointer;
+  min-height: 2.75rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 0.6rem 1.4rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+    transform 0.1s ease;
+}
+
+button.primary {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+button.secondary {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--muted);
+}
+
+button.large {
+  min-height: 3.2rem;
+  font-size: 1.05rem;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+button:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+input,
+select {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  padding: 0.55rem 0.75rem;
+  color: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-row + .form-row {
+  margin-top: 0.6rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.form-actions {
+  margin-top: 0.75rem;
+}
+
+.form-feedback {
+  min-height: 1.4rem;
+  color: var(--negative);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.optional {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.people-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.person-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  justify-content: space-between;
+}
+
+.person-row input {
+  flex: 1;
+}
+
+.person-meta {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.person-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+}
+
+caption {
+  text-align: left;
+  padding: 0.8rem 1rem;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+thead th {
+  text-align: left;
+  font-size: 0.85rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+}
+
+tbody td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+td.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.expenses-empty {
+  text-align: center;
+  padding: 1.25rem 1rem;
+  color: var(--muted);
+}
+
+.balances-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.balance-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+}
+
+.balance-name {
+  font-weight: 600;
+}
+
+.balance-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: right;
+}
+
+.balance-meta span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.balance-amount {
+  font-weight: 600;
+}
+
+.balance-positive .balance-amount {
+  color: var(--positive);
+}
+
+.balance-negative .balance-amount {
+  color: var(--negative);
+}
+
+.settlement-section {
+  position: relative;
+}
+
+.settlement-bar {
+  position: sticky;
+  bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sticky);
+  z-index: 10;
+}
+
+@media (min-width: 840px) {
+  .settlement-bar {
+    position: static;
+    box-shadow: none;
+  }
+}
+
+.total-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.total-summary strong {
+  color: var(--text);
+  font-size: 1.2rem;
+}
+
+.settlement-results {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  min-height: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.settlement-results p {
+  margin: 0;
+}
+
+.transfer-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.transfer-names {
+  font-weight: 600;
+}
+
+.transfer-amount {
+  color: var(--positive);
+  font-weight: 600;
+}
+
+.settlement-empty {
+  color: var(--muted);
+}
+
+.app-footer {
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--muted);
+  display: flex;
+  justify-content: center;
+}
+
+.app-footer p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.footer-icon {
+  width: 18px;
+  height: 18px;
+}
+
+@media (min-width: 600px) {
+  .panel {
+    padding: 1.5rem;
+  }
+
+  .app-main {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
