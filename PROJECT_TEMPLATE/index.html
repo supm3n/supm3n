@@ -12,12 +12,16 @@
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#0B0C10">
   
-  <!-- Open Graph -->
+  <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Project Name — Supm3n">
   <meta property="og:description" content="Project description">
   <meta property="og:image" content="/assets/icons/android-chrome-512x512.png">
   <meta property="og:url" content="https://project.supm3n.com/">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://project.supm3n.com/">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,21 +29,40 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
   
-  <!-- Shared Styles -->
-  <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css">
-  <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css">
+  <!-- Theme System -->
+  <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=YYYYMMDD">
+  <script type="module" src="https://supm3n.com/shared/scripts/theme.js?v=YYYYMMDD"></script>
+  
+  <!-- Shared Utilities (includes automatic nav highlighting) -->
+  <script src="https://supm3n.com/shared/scripts/utils.js?v=YYYYMMDD"></script>
+  
+  <!-- Shared Component Styles (includes header, nav, footer, background gradient) -->
+  <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=YYYYMMDD">
   
   <!-- Project-specific styles -->
   <link rel="stylesheet" href="/assets/styles.css">
 </head>
 <body>
-  <!-- Header will be injected here -->
-  <header class="site-header"></header>
+  <!-- Shared Site Header (identical across all Supm3n sites) -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a class="brand" href="https://supm3n.com/" aria-label="Supm3n Home">
+        <img src="https://supm3n.com/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Main navigation">
+        <a class="nav-link" href="https://supm3n.com/">Home</a>
+        <a class="nav-link" href="https://supm3n.com/projects">Projects</a>
+        <a class="nav-link" href="https://supm3n.com/uses">Uses</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
   
-  <!-- Breadcrumbs (optional) -->
-  <nav class="breadcrumbs" id="breadcrumbs"></nav>
-  
-  <main class="container">
+  <main class="container" id="main-content" role="main">
     <!-- Your project content here -->
     <section>
       <h1>Project Name</h1>
@@ -47,25 +70,25 @@
     </section>
   </main>
   
-  <!-- Footer will be injected here -->
-  <footer class="site-footer"></footer>
+  <!-- Footer (optional) -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div class="footer-links">
+        <a href="https://supm3n.com/uses">Uses</a>
+        <a href="https://supm3n.com/privacy">Privacy</a>
+      </div>
+      <p>&copy; 2025 Supm3n</p>
+    </div>
+  </footer>
   
-  <!-- Component Loader -->
-  <script src="https://supm3n.com/shared/scripts/components.js?v=20251108"></script>
-  <script>
-    // Initialize shared components
-    document.addEventListener('DOMContentLoaded', async () => {
-      await Supm3nComponents.init({
-        header: true,
-        footer: true,
-        breadcrumbs: true, // Set to false if you don't want breadcrumbs
-        styles: false, // Already loaded in <head>
-        utils: true
-      });
-      
-      // Your project-specific JavaScript here
-    });
+  <!-- Theme Toggle Handler -->
+  <script type="module">
+    import { toggleTheme } from 'https://supm3n.com/shared/scripts/theme.js?v=YYYYMMDD';
+    document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
   </script>
+  
+  <!-- Your project-specific JavaScript here -->
+  <script src="/assets/script.js"></script>
 </body>
 </html>
 

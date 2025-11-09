@@ -85,6 +85,63 @@ window.Supm3nUtils = {
     }
     const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
     window.history.pushState({}, '', newUrl);
+  },
+  
+  // Initialize navigation active states
+  initNavigation: () => {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const currentPath = window.location.pathname;
+    const currentHost = window.location.host;
+    
+    navLinks.forEach(link => {
+      // Remove any existing active class
+      link.classList.remove('active');
+      
+      const linkUrl = new URL(link.href);
+      const linkPath = linkUrl.pathname;
+      const linkHost = linkUrl.host;
+      
+      // Check if this link matches the current page
+      let isActive = false;
+      
+      // For same-host links, compare paths
+      if (linkHost === currentHost) {
+        if (linkPath === currentPath) {
+          isActive = true;
+        } else if (linkPath === '/' && currentPath === '/') {
+          isActive = true;
+        }
+      } 
+      // For cross-domain links (subdomains to main site)
+      else {
+        // If on a subdomain and link points to main site path
+        if (linkHost === 'supm3n.com' || linkHost.endsWith('.supm3n.com')) {
+          // Extract the page name from the link
+          const linkPage = linkPath.replace('/', '').replace(/\/$/, '');
+          
+          // Special handling for "Home" link
+          if (linkPath === '/' && linkHost === 'supm3n.com') {
+            // Home link should only be active on the main landing page
+            if (currentHost === 'supm3n.com' && (currentPath === '/' || currentPath === '')) {
+              isActive = true;
+            }
+          }
+        }
+      }
+      
+      if (isActive) {
+        link.classList.add('active');
+      }
+    });
   }
 };
+
+// Auto-initialize navigation on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    window.Supm3nUtils.initNavigation();
+  });
+} else {
+  window.Supm3nUtils.initNavigation();
+}
 

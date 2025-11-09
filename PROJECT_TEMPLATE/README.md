@@ -1,94 +1,130 @@
-# Project Template
+# Supm3n Project Template
 
-This is a template for creating new Supm3n projects with shared components and styling.
+This is the official template for creating new projects in the Supm3n ecosystem. It includes all the shared styling, navigation, and functionality needed for a consistent experience across all Supm3n sites.
 
-## Features
+## Quick Start
 
-- ✅ Shared header and footer components
-- ✅ Unified navigation with breadcrumbs
-- ✅ Theme toggle (dark/light mode)
-- ✅ Consistent styling via CSS variables
-- ✅ Shared utility functions
-- ✅ Responsive design
+1. **Copy this directory** to your new project location
+2. **Update `index.html`**:
+   - Replace `Project Name` with your project name
+   - Update `<meta name="description">` with your project description
+   - Update Open Graph meta tags (title, description, URL)
+   - Replace `https://project.supm3n.com/` with your actual subdomain
+   - Update `?v=YYYYMMDD` to today's date (e.g., `?v=20251110`)
+3. **Add your content** to the `<main>` section
+4. **Create project-specific styles** in `assets/styles.css`
+5. **Add JavaScript** (if needed) in `assets/script.js`
 
-## Setup
+## What's Included Automatically
 
-1. Copy this template to your new project directory
-2. Update the `<title>` and meta tags in `index.html`
-3. Customize `assets/styles.css` for project-specific styles
-4. Add your project-specific JavaScript
-5. Deploy!
+### 🎨 Visual Design
+- **Background gradient** - Animated multi-color gradient that adapts to light/dark theme
+- **Header with navigation** - Logo, Home/Projects/Uses links, and theme toggle
+- **Active nav highlighting** - Current page is automatically highlighted with a gradient underline
+- **Dark/Light theme** - Automatic theme switching with user preference saving
 
-## Shared Components
+### 🛠️ Functionality
+- **Automatic navigation state** - The `utils.js` automatically adds the `.active` class to the current page link
+- **Theme persistence** - User's theme choice is saved in localStorage
+- **Responsive design** - Mobile-friendly header and navigation
 
-The template automatically loads:
-- **Header**: Navigation with theme toggle
-- **Footer**: Links and branding
-- **Breadcrumbs**: Automatic breadcrumb generation
-- **Theme System**: Dark/light mode support
-- **Utilities**: Helper functions in `Supm3nUtils`
+### 📦 Shared Resources
 
-## Customization
+All projects load these shared resources from `https://supm3n.com/shared/`:
 
-### Disable Components
-
-```javascript
-await Supm3nComponents.init({
-  header: true,
-  footer: true,
-  breadcrumbs: false, // Disable breadcrumbs
-  styles: false,
-  utils: true
-});
-```
-
-### Using Utilities
-
-```javascript
-// Escape HTML
-const safe = Supm3nUtils.escapeHtml(userInput);
-
-// Format names
-const formatted = Supm3nUtils.formatName('my-project'); // "My Project"
-
-// Debounce
-const debounced = Supm3nUtils.debounce(() => {
-  // Your function
-}, 300);
-```
+1. **`variables.css`** - CSS custom properties (colors, spacing, fonts)
+2. **`components.css`** - Header, nav, footer, buttons, and the animated background gradient
+3. **`theme.js`** - Dark/light theme switching logic
+4. **`utils.js`** - Navigation highlighting and utility functions
 
 ## File Structure
 
 ```
-project-name/
-├── index.html          # Main HTML file
+your-project/
+├── index.html              # Main HTML file (use the template)
 ├── assets/
-│   ├── styles.css      # Project-specific styles
-│   └── script.js       # Project-specific JavaScript
-├── functions/          # Cloudflare Functions (optional)
-└── wrangler.toml       # Cloudflare Pages config
+│   ├── styles.css          # Your project-specific styles
+│   ├── script.js           # Your project-specific JavaScript
+│   └── icons/              # Favicons (copy from another project)
+│       ├── favicon.ico
+│       ├── apple-touch-icon.png
+│       └── android-chrome-*.png
+├── site.webmanifest        # PWA manifest (copy and update)
+├── wrangler.toml           # Cloudflare Pages config
+└── README.md               # Your project documentation
 ```
 
-## Styling
+## Header HTML (Copy this exactly)
 
-Use CSS variables for consistent theming:
+```html
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a class="brand" href="https://supm3n.com/" aria-label="Supm3n Home">
+      <img src="https://supm3n.com/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
+    </a>
+    <nav class="main-nav" role="navigation" aria-label="Main navigation">
+      <a class="nav-link" href="https://supm3n.com/">Home</a>
+      <a class="nav-link" href="https://supm3n.com/projects">Projects</a>
+      <a class="nav-link" href="https://supm3n.com/uses">Uses</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+```
+
+**Important**: Use this exact HTML structure. The `.active` class and gradient underline will be added automatically by `utils.js`.
+
+## Customization
+
+### Project-Specific Styles
+
+Add your custom styles in `assets/styles.css`. You can override any shared styles or add new ones:
 
 ```css
-.my-element {
-  background: var(--color-surface-1);
-  color: var(--color-text-primary);
-  padding: var(--space-md);
+/* Example: Custom button styles for your project */
+.my-project-button {
+  background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
+  padding: var(--space-md) var(--space-lg);
   border-radius: 12px;
-  border: 1px solid var(--glass-border);
 }
 ```
 
-## Navigation
+### Available CSS Variables
 
-The header automatically includes:
-- Link back to main site (supm3n.com)
-- Navigation to Projects page
-- Theme toggle button
+From `shared/styles/variables.css`:
+- Colors: `--color-text-primary`, `--color-text-muted`, `--color-accent-start`, `--color-accent-end`, `--color-surface-1`, `--color-surface-2`, `--color-surface-3`
+- Spacing: `--space-xs`, `--space-sm`, `--space-md`, `--space-lg`, `--space-xl`, `--space-2xl`
+- Typography: `--text-xs`, `--text-sm`, `--text-base`, `--text-lg`, `--text-xl`
+- Effects: `--glass-bg`, `--glass-border`, `--shadow-sm`, `--shadow-md`, `--shadow-lg`
 
-Breadcrumbs automatically generate based on the current page path.
+## Cache Busting
 
+Always use cache-busting query strings for shared resources:
+
+```html
+<link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251110">
+```
+
+Update the `?v=YYYYMMDD` parameter when:
+- You update any shared files
+- You deploy changes to the main site
+- You want to force browsers to fetch fresh assets
+
+## Deployment
+
+1. Create a Cloudflare Pages project for your subdomain
+2. Deploy using Wrangler: `wrangler pages deploy . --project-name=your-project`
+3. Set up custom domain: `your-project.supm3n.com`
+
+## Questions?
+
+See existing projects for reference:
+- `settleup/` - Expense splitting app
+- `snake/` - Snake game
+- `stock-viewer/` - Stock chart viewer
+
+All use this exact same header structure and shared resources!

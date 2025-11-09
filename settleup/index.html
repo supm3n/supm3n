@@ -8,23 +8,25 @@
     <link rel="alternate icon" href="/assets/icons/favicon.ico" />
     
     <!-- Theme system: shared variables first, then local overrides -->
-    <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251109">
-    <link rel="stylesheet" href="/styles/theme-base.css?v=20251109">
-    <script type="module" src="/scripts/theme.js?v=20251109"></script>
+    <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251110d">
+    <link rel="stylesheet" href="/styles/theme-base.css?v=20251110d">
+    <script type="module" src="/scripts/theme.js?v=20251110d"></script>
+    
+    <!-- Shared utilities for navigation -->
+    <script src="https://supm3n.com/shared/scripts/utils.js?v=20251110d"></script>
     
     <!-- Shared component styles -->
-    <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251109">
+    <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251110d">
     
     <!-- Project-specific styles -->
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20251110d" />
   </head>
   <body>
     <!-- Shared site header -->
     <header class="site-header" role="banner">
       <div class="container header-inner">
-        <a class="brand" href="https://supm3n.com/" aria-label="Supm3n Home" style="text-decoration: none; color: var(--color-text-primary);">
+        <a class="brand" href="https://supm3n.com/" aria-label="Supm3n Home">
           <img src="https://supm3n.com/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
-          <span class="brand-name">Supm3n</span>
         </a>
         <nav class="main-nav" role="navigation" aria-label="Main navigation">
           <a class="nav-link" href="https://supm3n.com/">Home</a>
@@ -147,7 +149,7 @@
     </footer>
 
     <script type="module">
-      import { toggleTheme } from '/scripts/theme.js?v=20251109';
+      import { toggleTheme } from '/scripts/theme.js?v=20251110d';
       (document.getElementById('themeToggle') || document.querySelector('[data-theme-toggle]') || document.getElementById('theme-toggle'))
         ?.addEventListener('click', toggleTheme);
     </script>
