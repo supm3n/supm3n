@@ -16,7 +16,6 @@ const peopleListEl = document.getElementById("people-list");
 const expenseForm = document.getElementById("expense-form");
 const payerSelect = document.getElementById("expense-payer");
 const amountInput = document.getElementById("expense-amount");
-const noteInput = document.getElementById("expense-note");
 const expenseFeedbackEl = document.getElementById("expense-feedback");
 const cancelEditBtn = document.getElementById("cancel-edit-btn");
 const expensesTbody = document.getElementById("expenses-tbody");
@@ -133,7 +132,6 @@ function handleExpenseSubmit(event) {
 
   const payerId = payerSelect.value;
   const amountRaw = amountInput.value;
-  const note = noteInput.value.trim();
 
   const amountCents = parseAmountToCents(amountRaw);
   if (amountCents === null || amountCents <= 0) {
@@ -150,13 +148,11 @@ function handleExpenseSubmit(event) {
     updateExpense(appState.editingExpenseId, {
       payerId,
       amountCents,
-      note,
     });
   } else {
     addExpense({
       payerId,
       amountCents,
-      note,
     });
   }
 
@@ -164,13 +160,12 @@ function handleExpenseSubmit(event) {
   afterExpensesChanged();
 }
 
-function addExpense({ payerId, amountCents, note }) {
+function addExpense({ payerId, amountCents }) {
   const expense = {
     id: crypto.randomUUID(),
     payerId,
     amountCents,
-    note,
-    createdAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(), // internal for sorting only
   };
   appState.expenses.push(expense);
 }
@@ -178,11 +173,8 @@ function addExpense({ payerId, amountCents, note }) {
 function updateExpense(expenseId, updates) {
   const expense = appState.expenses.find((item) => item.id === expenseId);
   if (!expense) return;
-
   expense.payerId = updates.payerId;
   expense.amountCents = updates.amountCents;
-  expense.note = updates.note;
-
   exitExpenseEditMode();
 }
 
@@ -190,7 +182,6 @@ function enterExpenseEditMode(expense) {
   appState.editingExpenseId = expense.id;
   payerSelect.value = expense.payerId;
   amountInput.value = formatAmountInput(expense.amountCents);
-  noteInput.value = expense.note ?? "";
   expenseForm.querySelector("#submit-expense-btn").textContent =
     "Update Expense";
   cancelEditBtn.hidden = false;
@@ -534,7 +525,7 @@ function renderExpenses() {
   if (!appState.expenses.length) {
     const row = document.createElement("tr");
     const cell = document.createElement("td");
-    cell.colSpan = 5;
+    cell.colSpan = 3;
     cell.className = "expenses-empty";
     cell.textContent = "No expenses recorded yet.";
     row.appendChild(cell);
@@ -557,12 +548,6 @@ function renderExpenses() {
     const amountCell = document.createElement("td");
     amountCell.textContent = formatCurrency(expense.amountCents);
 
-    const noteCell = document.createElement("td");
-    noteCell.textContent = expense.note || "—";
-
-    const createdCell = document.createElement("td");
-    createdCell.textContent = formatDateTime(expense.createdAt);
-
     const actionsCell = document.createElement("td");
     actionsCell.className = "actions";
 
@@ -577,10 +562,7 @@ function renderExpenses() {
     deleteBtn.className = "secondary";
     deleteBtn.textContent = "Delete";
     deleteBtn.addEventListener("click", () => {
-      const message = expense.note
-        ? `Delete expense "${expense.note}"?`
-        : "Delete this expense?";
-      if (window.confirm(message)) {
+      if (window.confirm("Delete this expense?")) {
         removeExpense(expense.id);
         afterExpensesChanged();
       }
@@ -588,7 +570,7 @@ function renderExpenses() {
 
     actionsCell.append(editBtn, deleteBtn);
 
-    tr.append(payerCell, amountCell, noteCell, createdCell, actionsCell);
+    tr.append(payerCell, amountCell, actionsCell);
     fragment.appendChild(tr);
   }
   expensesTbody.appendChild(fragment);
@@ -690,17 +672,6 @@ function getPersonName(personId) {
   return person ? person.name : "Unknown";
 }
 
-function formatDateTime(isoString) {
-  const date = new Date(isoString);
-  if (Number.isNaN(date.getTime())) return "—";
-  const d = date.toLocaleDateString("it-IT");
-  const t = date.toLocaleTimeString("it-IT", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-  return `${d} ${t}`;
-}
-
 function runTests() {
   const peopleTemplate = (names) =>
     names.map((name, index) => ({
@@ -718,15 +689,11 @@ function runTests() {
           id: "e1",
           payerId: "A",
           amountCents: 6000,
-          note: "",
-          createdAt: new Date(2024, 0, 1, 10).toISOString(),
         },
         {
           id: "e2",
           payerId: "B",
           amountCents: 2000,
-          note: "",
-          createdAt: new Date(2024, 0, 2, 10).toISOString(),
         },
       ],
       expected: [
@@ -742,19 +709,16 @@ function runTests() {
           id: "e1",
           payerId: "A",
           amountCents: 4000,
-          createdAt: new Date(2024, 0, 1, 9).toISOString(),
         },
         {
           id: "e2",
           payerId: "B",
           amountCents: 4000,
-          createdAt: new Date(2024, 0, 1, 10).toISOString(),
         },
         {
           id: "e3",
           payerId: "C",
           amountCents: 4000,
-          createdAt: new Date(2024, 0, 1, 11).toISOString(),
         },
       ],
       expected: [
@@ -771,7 +735,6 @@ function runTests() {
           id: "e1",
           payerId: "C",
           amountCents: 10000,
-          createdAt: new Date(2024, 0, 3, 12).toISOString(),
         },
       ],
       expected: [
@@ -787,19 +750,16 @@ function runTests() {
           id: "e1",
           payerId: "A",
           amountCents: 3000,
-          createdAt: new Date(2024, 0, 4, 9).toISOString(),
         },
         {
           id: "e2",
           payerId: "B",
           amountCents: 3000,
-          createdAt: new Date(2024, 0, 4, 10).toISOString(),
         },
         {
           id: "e3",
           payerId: "C",
           amountCents: 3000,
-          createdAt: new Date(2024, 0, 4, 11).toISOString(),
         },
       ],
       expected: [],
