@@ -1,14 +1,11 @@
 :root {
   color-scheme: light dark;
-  /* Use shared color variables from the main site */
-  /* These will be overridden by shared variables.css when loaded */
-  --bg: var(--color-base, #0B0C10);
-  --panel-bg: var(--color-surface-1, #0F1115);
-  --border: var(--glass-border, rgba(255, 255, 255, 0.08));
-  --text: var(--color-text-primary, #E6E9F0);
-  --muted: var(--color-text-muted, #A9B1C6);
+  /* theme-base.css defines --bg, --fg, --surface, --muted, --link, --border */
+  /* Use those directly, and only define SettleUp-specific variables here */
+  --panel-bg: var(--surface);
+  --text: var(--fg);
   --accent: var(--color-accent-start, #7C3AED);
-  --accent-text: #ffffff;
+  --accent-text: var(--fg);
   --positive: #16794f;
   --negative: #b12b32;
   --focus-ring: rgba(124, 58, 237, 0.4);
@@ -18,19 +15,8 @@
 }
 
 /* Light mode overrides */
-/* The shared variables.css already sets --color-base, --color-surface-1, etc. for light mode */
-/* We just need to ensure our local variables reference them correctly */
 [data-theme="light"] {
-  --bg: var(--color-base, #FAFAFA);
-  --panel-bg: var(--color-surface-1, #FFFFFF);
-  --border: var(--glass-border, rgba(0, 0, 0, 0.08));
-  --text: var(--color-text-primary, #0B0C10);
-  --muted: var(--color-text-muted, #4A5568);
-  --accent: var(--color-accent-start, #7C3AED);
   --accent-text: #101420;
-  --positive: #16794f;
-  --negative: #b12b32;
-  --focus-ring: rgba(124, 58, 237, 0.4);
   --shadow-panel: 0 8px 18px rgba(0, 0, 0, 0.08);
   --shadow-sticky: 0 12px 24px rgba(0, 0, 0, 0.12);
 }
@@ -38,11 +24,6 @@
 /* System preference light mode */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme]) {
-    --bg: var(--color-base, #FAFAFA);
-    --panel-bg: var(--color-surface-1, #FFFFFF);
-    --border: var(--glass-border, rgba(0, 0, 0, 0.08));
-    --text: var(--color-text-primary, #0B0C10);
-    --muted: var(--color-text-muted, #4A5568);
     --accent-text: #101420;
     --shadow-panel: 0 8px 18px rgba(0, 0, 0, 0.08);
     --shadow-sticky: 0 12px 24px rgba(0, 0, 0, 0.12);
@@ -59,7 +40,7 @@ body {
   margin: 0;
   min-height: 100vh;
   background: var(--bg);
-  color: var(--text);
+  color: var(--fg);
   display: flex;
   flex-direction: column;
 }
@@ -124,7 +105,7 @@ select {
 }
 
 .panel {
-  background: var(--panel-bg);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 1.25rem;
@@ -372,7 +353,7 @@ td.actions {
   gap: 1rem;
   padding: 1rem 1.25rem;
   border-radius: 16px;
-  background: var(--panel-bg);
+  background: var(--surface);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sticky);
   z-index: 10;
@@ -394,7 +375,7 @@ td.actions {
 }
 
 .total-summary strong {
-  color: var(--text);
+  color: var(--fg);
   font-size: 1.2rem;
 }
 

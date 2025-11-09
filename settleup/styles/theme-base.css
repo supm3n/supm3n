@@ -30,9 +30,9 @@ a {
   color: var(--link); 
 }
 
-.card, .section, .panel { 
-  background: var(--surface); 
-  color: var(--fg); 
-  border-color: var(--border); 
+.card, .section, .panel, .content, .wrapper, .container {
+  background: var(--surface);
+  color: var(--fg);
+  border-color: var(--border);
 }
 
