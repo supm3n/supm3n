@@ -60,23 +60,25 @@
       <section id="expenses-section" class="panel" aria-labelledby="expense-title">
         <h2 id="expense-title">Expense Form</h2>
         <form id="expense-form" novalidate>
-          <div class="form-row">
-            <label for="expense-payer">Paid by</label>
-            <select id="expense-payer" required></select>
-          </div>
-          <div class="form-row">
-            <label for="expense-amount">Amount</label>
-            <input
-              id="expense-amount"
-              name="amount"
-              inputmode="decimal"
-              pattern="^[0-9]+([.,][0-9]{1,2})?$"
-              placeholder="0,00"
-              required
-              autocomplete="off"
-              aria-describedby="expense-feedback"
-              enterkeyhint="done"
-            />
+          <div class="form-grid-2">
+            <div class="form-row">
+              <label for="expense-payer">Paid by</label>
+              <select id="expense-payer" required></select>
+            </div>
+            <div class="form-row">
+              <label for="expense-amount">Amount</label>
+              <input
+                id="expense-amount"
+                name="amount"
+                inputmode="decimal"
+                pattern="^[0-9]+([.,][0-9]{1,2})?$"
+                placeholder="0,00"
+                required
+                autocomplete="off"
+                aria-describedby="expense-feedback"
+                enterkeyhint="done"
+              />
+            </div>
           </div>
           <div class="form-row">
             <label for="expense-note">Note <span class="optional">(optional)</span></label>
@@ -137,9 +139,9 @@
       </section>
     </main>
 
-    <footer class="app-footer" style="margin-top: 1rem; padding: 0.75rem 1rem; text-align: center; border-top: 1px solid var(--border); font-size: 0.875rem; color: var(--muted);">
-      <p style="margin: 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
-        <img src="icon.svg" alt="" aria-hidden="true" style="width: 20px; height: 20px; vertical-align: middle;" />
+    <footer class="app-footer">
+      <p>
+        <img src="icon.svg" alt="" aria-hidden="true" class="footer-icon" />
         <span>Built for <a href="https://supm3n.com/" style="color: inherit; text-decoration: none; font-weight: 500;">Supm3n</a> · Refresh clears everything</span>
       </p>
     </footer>
