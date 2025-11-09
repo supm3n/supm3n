@@ -4,22 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Settle Up (Ephemeral)</title>
+
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
     <link rel="alternate icon" href="/assets/icons/favicon.ico" />
-    
-    <!-- Theme system: shared variables first, then local overrides -->
+
+    <!-- Perf: help the browser warm up the shared host -->
+    <link rel="preconnect" href="https://supm3n.com" />
+
+    <!-- Theme system: shared variables first, then local base -->
     <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251110d">
     <link rel="stylesheet" href="/styles/theme-base.css?v=20251110d">
     <script type="module" src="https://supm3n.com/shared/scripts/theme.js?v=20251110d"></script>
-    
+
     <!-- Shared utilities for navigation -->
     <script src="https://supm3n.com/shared/scripts/utils.js?v=20251110d"></script>
-    
-    <!-- Shared component styles -->
-    <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251110d">
-    
-    <!-- Project-specific styles -->
+
+    <!-- Project-specific styles (load BEFORE shared components so the shared header rules win) -->
     <link rel="stylesheet" href="styles.css?v=20251110d" />
+
+    <!-- Shared component styles (load LAST so unified header/menu/logo styles override locals) -->
+    <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251110d">
   </head>
   <body>
     <!-- Placeholder for shared site header -->
@@ -27,14 +31,13 @@
 
     <script src="https://supm3n.com/shared/scripts/components.js?v=20251110d" defer></script>
 
-    <header class="app-header">
-      <div class="header-brand">
-        <h1 class="app-title">Settle Up (Ephemeral)</h1>
-      </div>
-      <p class="header-note">No data is saved.</p>
-    </header>
-
     <main class="app-main">
+      <div class="app-header">
+        <div class="header-brand">
+          <h1 class="app-title">Settle Up (Ephemeral)</h1>
+        </div>
+        <p class="header-note">No data is saved.</p>
+      </div>
       <section id="people-section" class="panel" aria-labelledby="people-title">
         <div class="panel-header">
           <h2 id="people-title">People</h2>
@@ -122,16 +125,38 @@
         <span>Built for <a href="https://supm3n.com/" style="color: inherit; text-decoration: none; font-weight: 500;">Supm3n</a> · Refresh clears everything</span>
       </p>
     </footer>
+    
+        <!-- Your app code FIRST -->
+    <script type="module" src="app.js"></script>
 
+    <!-- THEN initialize the shared header so it wins -->
     <script type="module">
       import { toggleTheme } from 'https://supm3n.com/shared/scripts/theme.js?v=20251110d';
 
-      await window.Supm3nComponents.init({
-        header: true,
-        footer: false,
-        styles: false,
-        utils: false
-      });
+      async function waitForComponents(timeoutMs = 4000) {
+        const start = Date.now();
+        while (!window.Supm3nComponents && Date.now() - start < timeoutMs) {
+          await new Promise(r => setTimeout(r, 25));
+        }
+        return !!window.Supm3nComponents;
+      }
+
+      // Remove any legacy header markup your old code may have injected
+      document.querySelector('.site-header')?.replaceChildren();
+
+      // Yield a microtask
+      await new Promise(r => setTimeout(r, 0));
+
+      if (await waitForComponents()) {
+        await window.Supm3nComponents.init({
+          header: true,
+          footer: false,
+          styles: false,
+          utils: false
+        });
+        // Signal to app.js if it wants to hook after header render
+        document.dispatchEvent(new CustomEvent('shared:ready'));
+      }
 
       window.Supm3nUtils?.initNavigation?.();
 
@@ -140,8 +165,6 @@
         || document.querySelector('[data-theme-toggle]'))
         ?.addEventListener('click', toggleTheme);
     </script>
-    
-    <script type="module" src="app.js"></script>
   </body>
 </html>
 

@@ -113,12 +113,22 @@
   <script type="module">
     import { toggleTheme } from '/shared/scripts/theme.js?v=20251110d';
 
-    await window.Supm3nComponents.init({
-      header: true,
-      footer: false,
-      styles: false,
-      utils: false
-    });
+    async function waitForComponents(timeoutMs = 4000) {
+      const start = Date.now();
+      while (!window.Supm3nComponents && Date.now() - start < timeoutMs) {
+        await new Promise(r => setTimeout(r, 25));
+      }
+      return !!window.Supm3nComponents;
+    }
+
+    if (await waitForComponents()) {
+      await window.Supm3nComponents.init({
+        header: true,
+        footer: false,
+        styles: false,
+        utils: false
+      });
+    }
 
     window.Supm3nUtils?.initNavigation?.();
 
