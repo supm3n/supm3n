@@ -88,7 +88,7 @@ These files are **NOT** uploaded because each script changes to the project fold
 **Current (insecure):**
 ```toml
 [vars]
-ALPHA_KEY = "2ZR17ME4YRIRQS51"
+ALPHA_KEY = "xxxx"
 ```
 
 **Should be:**
