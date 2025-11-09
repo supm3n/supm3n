@@ -479,3 +479,69 @@ td.actions {
   }
 }
 
+/* =========================
+   SettleUp — layout tidy pass
+   ========================= */
+
+/* App canvas: narrower, tighter rhythm */
+.app-main{
+  max-width: 1100px;
+  margin-inline: auto;
+  gap: 1rem;                 /* was 1.25rem */
+  padding: 0 1rem 4rem;      /* tighter side + bottom */
+}
+
+/* Panels: slightly denser */
+.panel{
+  padding: 1rem;             /* was 1.25rem / 1.5rem */
+  gap: 0.75rem;              /* was 1rem */
+  border-radius: 14px;       /* subtle refinement */
+}
+
+.panel-header{ margin-bottom: 0.25rem; }
+
+/* People section: rows felt too tall */
+.people-list{ gap: 0.5rem; }                 /* was 0.65rem */
+.person-row{
+  padding: 0.6rem 0.85rem;                   /* was 0.75rem 1rem */
+}
+.person-row .secondary{
+  min-height: 2.25rem;                       /* smaller delete button */
+  padding: 0.4rem 0.9rem;
+  font-weight: 500;
+}
+
+/* Form: increase space between fields, not inside them */
+input, select{ min-height: 2.5rem; }         /* consistent control height */
+.form-row{ gap: 0.3rem; }                    /* label-to-input spacing */
+.form-row + .form-row{ margin-top: 0.9rem; } /* field-to-field spacing */
+.form-actions{ margin-top: 1rem; }
+
+/* Balances: a touch denser */
+.balances-list{ gap: 0.5rem; }               /* was 0.65rem */
+.balance-item{ padding: 0.6rem 0.85rem; }    /* was 0.75rem 1rem */
+
+/* Settlement bar: compact on mobile, unchanged on desktop */
+.settlement-bar{
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;                      /* was 1rem 1.25rem */
+  bottom: 0.5rem;                             /* was 0.75rem */
+}
+.total-summary strong{ font-size: 1.1rem; }   /* calmer number size */
+
+/* Empty states & footer: less air */
+.expenses-empty{ padding: 1rem; }
+.app-header{ padding: 1.25rem 1rem 0.75rem; } /* was 1.5 1.25 1 */
+.app-footer{ padding: 1rem; }                 /* was 1.5rem 1.25rem */
+
+/* Desktop refinements (keep your two-column grid) */
+@media (min-width: 600px){
+  .panel{ padding: 1.25rem; }
+  .app-main{ padding-inline: 1.5rem; }
+}
+@media (min-width: 960px){
+  .app-main{
+    gap: 1.25rem;          /* restore a bit of air on wide screens */
+    padding-bottom: 3rem;  /* keep your existing rule */
+  }
+}
