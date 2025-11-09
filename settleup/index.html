@@ -7,13 +7,13 @@
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
     <link rel="alternate icon" href="/assets/icons/favicon.ico" />
     
-    <!-- Theme system -->
+    <!-- Theme system: shared variables first, then local overrides -->
+    <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251109">
     <link rel="stylesheet" href="/styles/theme-base.css?v=20251109">
     <script type="module" src="/scripts/theme.js?v=20251109"></script>
     
-    <!-- Shared Styles -->
-    <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251108">
-    <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251108">
+    <!-- Shared component styles -->
+    <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251109">
     
     <!-- Project-specific styles -->
     <link rel="stylesheet" href="styles.css" />
@@ -146,7 +146,7 @@
 
     <script type="module">
       import { toggleTheme } from '/scripts/theme.js?v=20251109';
-      (document.getElementById('themeToggle') || document.querySelector('[data-theme-toggle]'))
+      (document.getElementById('themeToggle') || document.querySelector('[data-theme-toggle]') || document.getElementById('theme-toggle'))
         ?.addEventListener('click', toggleTheme);
     </script>
     

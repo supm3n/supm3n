@@ -1,44 +1,10 @@
 // ============================================
-// Theme Toggle
+// Theme Icon Updater (listens to shared theme module)
 // ============================================
 
-(function initTheme() {
-  const themeToggle = document.getElementById('theme-toggle');
-  const html = document.documentElement;
-  
-  // Get saved theme or system preference
-  const savedTheme = localStorage.getItem('theme');
-  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  
-  if (savedTheme) {
-    html.setAttribute('data-theme', savedTheme);
-  } else if (!systemPrefersDark) {
-    html.setAttribute('data-theme', 'light');
-  }
-  
-  if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const currentTheme = html.getAttribute('data-theme') || (systemPrefersDark ? 'dark' : 'light');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      updateThemeIcon(newTheme);
-    });
-    
-    // Update icon on load
-    const currentTheme = html.getAttribute('data-theme') || (systemPrefersDark ? 'dark' : 'light');
-    updateThemeIcon(currentTheme);
-    
-    // Listen for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!localStorage.getItem('theme')) {
-        html.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-        updateThemeIcon(e.matches ? 'dark' : 'light');
-      }
-    });
-  }
-  
+(function initThemeIcon() {
   function updateThemeIcon(theme) {
+    const themeToggle = document.getElementById('theme-toggle') || document.getElementById('themeToggle');
     if (!themeToggle) return;
     const icon = themeToggle.querySelector('svg');
     if (icon) {
@@ -47,6 +13,15 @@
         : '<path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>';
     }
   }
+  
+  // Update icon on load
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+  updateThemeIcon(currentTheme);
+  
+  // Listen to theme changes from shared module
+  document.addEventListener('themechange', (e) => {
+    updateThemeIcon(e.detail.theme);
+  });
 })();
 
 // ============================================

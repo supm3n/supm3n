@@ -15,7 +15,7 @@ window.Supm3nComponents = {
   },
 
   // Optional version to bust caches (set when deploying landingpage)
-  version: '20251108',
+  version: '20251109',
 
   // Helper to append ?v=
   withVersion(path) {
@@ -153,7 +153,9 @@ window.Supm3nComponents = {
   // Load breadcrumbs
   async loadBreadcrumbs(selector = 'nav.breadcrumbs') {
     const node = await this.injectComponent(selector, 'breadcrumbs', { replace: true });
-    await this.loadScript('breadcrumbs');
+    if (node) {
+      await this.loadScript('breadcrumbs');
+    }
     return node;
   },
   

@@ -118,7 +118,7 @@
   <script src="/assets/script.js"></script>
   <script type="module">
     import { toggleTheme } from '/shared/scripts/theme.js?v=20251109';
-    (document.getElementById('themeToggle') || document.querySelector('[data-theme-toggle]'))
+    (document.getElementById('themeToggle') || document.querySelector('[data-theme-toggle]') || document.getElementById('theme-toggle'))
       ?.addEventListener('click', toggleTheme);
   </script>
   <script>
