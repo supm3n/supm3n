@@ -3,6 +3,8 @@
   padding: 16px;
   max-width: 1400px;
   margin: 0 auto;
+  /* Add top padding to account for sticky header */
+  padding-top: calc(var(--header-height, 72px) + 16px);
 }
 
 .hero { margin-bottom: 8px; }
@@ -11,7 +13,7 @@
 
 .controls {
   position: sticky;
-  top: 0;
+  top: var(--header-height, 72px); /* Position below header */
   z-index: 10;
   background: var(--surface, #0b0b0b);
   border-bottom: 1px solid var(--border, #222);
@@ -46,7 +48,7 @@
 
 #map {
   width: 100%;
-  height: calc(100vh - 210px);
+  height: calc(100vh - 210px - var(--header-height, 72px)); /* Account for header */
   min-height: 480px;
   border: 1px solid var(--border, #222);
   border-radius: 10px;
@@ -54,7 +56,7 @@
 }
 
 #list {
-  height: calc(100vh - 210px);
+  height: calc(100vh - 210px - var(--header-height, 72px)); /* Account for header */
   min-height: 480px;
   border: 1px solid var(--border, #222);
   border-radius: 10px;
@@ -111,4 +113,7 @@
   .controls__row { grid-template-columns: 1fr; }
   .content { grid-template-columns: 1fr; }
   #map, #list { height: 55vh; }
+  .page--disasters {
+    padding-top: calc(var(--header-height, 72px) + 8px);
+  }
 }
