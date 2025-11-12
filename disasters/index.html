@@ -1,78 +1,142 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Disasters — Supm3n</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Disaster Explorer — Supm3n</title>
+  <meta name="description" content="Recent earthquakes and wildfire hotspots on a fast map.">
+  <link rel="icon" href="/assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0b0c10">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://supm3n.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://supm3n.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:;">
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Disaster Explorer — Supm3n">
+  <meta property="og:description" content="Recent earthquakes and wildfire hotspots on a fast map.">
+  <meta property="og:image" content="/assets/icons/android-chrome-512x512.png">
+  <meta property="og:url" content="https://disasters.supm3n.com/">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://disasters.supm3n.com/">
+  
+  <meta name="color-scheme" content="dark light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Theme system (same as stocks) -->
+  <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251110d">
+  <script type="module" src="https://supm3n.com/shared/scripts/theme.js?v=20251110d"></script>
+  
+  <!-- Shared Utilities -->
+  <script src="https://supm3n.com/shared/scripts/utils.js?v=20251110d"></script>
+  
+  <!-- Shared Components -->
+  <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251110d">
+  
+  <!-- Vendor CSS (local = CSP-safe) -->
+  <link rel="stylesheet" href="/assets/vendor/leaflet.css?v=1">
+  <link rel="stylesheet" href="/assets/vendor/markercluster.css?v=1">
+  
+  <!-- Project styles -->
+  <link rel="stylesheet" href="/assets/styles.css?v=20251112">
+</head>
+<body>
 
-    <!-- Shared theme (served from supm3n.com/shared). 
-         NOTE: If filenames differ, update the href/src to your actual shared assets.
-         Best practice: deploy landingpage first to update shared assets, then this project. -->
-    <link rel="preconnect" href="https://supm3n.com" crossorigin>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+  <link rel="preconnect" href="https://supm3n.com">
+  
+  <!-- Placeholder for shared site header -->
+  <header class="site-header"></header>
 
-    <!-- Attempt to load shared CSS from your main site.
-         Replace 'site.css' with your real shared css file if different. -->
-    <link rel="stylesheet" href="https://supm3n.com/shared/site.css?v=20251112">
-    <link rel="stylesheet" href="./styles.css?v=20251112">
-  </head>
-  <body>
-    <!-- Shared header/menu: your shared JS usually injects this. If your site uses a custom init function,
-         call it after the script loads at the bottom. This keeps the look consistent with other projects. -->
-    <header id="site-header"></header>
+  <script src="https://supm3n.com/shared/scripts/components.js?v=20251110d" defer></script>
 
-    <main class="page page--disasters">
-      <section class="hero">
-        <h1 class="page-title">Disaster Explorer</h1>
-        <p class="page-subtitle">Map of recent earthquakes and wildfires — minimal MVP</p>
-      </section>
+  <main class="page page--disasters">
+    <section class="hero">
+      <h1 class="page-title">Disaster Explorer</h1>
+      <p class="page-subtitle">Recent earthquakes and wildfire hotspots</p>
+    </section>
 
-      <section class="controls">
-        <div class="controls__row">
-          <div class="search">
-            <input id="searchBox" type="search" placeholder="Search place, hazard (e.g., 'earthquake'), or 'M≥5 last 24h'…" />
-            <button id="searchBtn" class="btn">Search</button>
-          </div>
-          <div class="chips">
-            <label><input type="checkbox" class="chip" value="eq" checked> Earthquakes</label>
-            <label><input type="checkbox" class="chip" value="wf" checked> Wildfires</label>
-          </div>
-          <div class="sort">
-            <label for="sortSelect" class="sr-only">Sort</label>
-            <select id="sortSelect" title="Sort events">
-              <option value="recent" selected>Most recent</option>
-              <option value="severe">Most severe</option>
-            </select>
-          </div>
-          <div class="toggle">
-            <label title="Show only official/scientific sources"><input type="checkbox" id="officialOnly"> Official sources only</label>
-          </div>
+    <section class="controls">
+      <div class="controls__row">
+        <div class="search">
+          <input id="searchBox" type="search" placeholder="Search place, hazard (e.g., 'earthquake'), or 'M≥5 last 24h'…">
+          <button id="searchBtn" class="btn">Search</button>
         </div>
-        <div class="status">
-          <span id="statusText">Loading…</span>
-          <span id="staleBadge" class="badge badge--hidden">Feed stale</span>
+        <div class="chips">
+          <label><input type="checkbox" class="chip" value="eq" checked> Earthquakes</label>
+          <label><input type="checkbox" class="chip" value="wf" checked> Wildfires</label>
         </div>
-      </section>
+        <div class="sort">
+          <label for="sortSelect" class="sr-only">Sort</label>
+          <select id="sortSelect" title="Sort events">
+            <option value="recent" selected>Most recent</option>
+            <option value="severe">Most severe</option>
+          </select>
+        </div>
+        <div class="toggle">
+          <label title="Show only official/scientific sources"><input type="checkbox" id="officialOnly"> Official sources only</label>
+        </div>
+      </div>
+      <div class="status">
+        <span id="statusText">Loading…</span>
+        <span id="staleBadge" class="badge badge--hidden">Feed stale</span>
+      </div>
+    </section>
 
-      <section class="content">
-        <div id="map"></div>
-        <aside id="list" aria-label="Events list"></aside>
-      </section>
-    </main>
+    <section class="content">
+      <div id="map"></div>
+      <aside id="list" aria-label="Events list"></aside>
+    </section>
+  </main>
 
-    <footer id="site-footer"></footer>
+  <footer id="site-footer"></footer>
 
-    <!-- Libs -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <!-- Leaflet & MarkerCluster JS from jsDelivr (allowed by CSP) -->
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
-    <!-- Shared JS: if you have a shared initializer (e.g., window.supm3nInit), call it in app.js.
-         Replace 'site.js' with your real shared js if different. -->
-    <script type="module" src="https://supm3n.com/shared/site.js?v=20251112"></script>
+  <!-- Shared init & theme toggle -->
+  <script type="module">
+    import { toggleTheme } from 'https://supm3n.com/shared/scripts/theme.js?v=20251110d';
 
-    <!-- App -->
-    <script type="module" src="./app.js?v=20251112"></script>
-  </body>
+    async function waitForComponents(timeoutMs = 4000) {
+      const start = Date.now();
+      while (!window.Supm3nComponents && Date.now() - start < timeoutMs) {
+        await new Promise(r => setTimeout(r, 25));
+      }
+      return !!window.Supm3nComponents;
+    }
+
+    if (await waitForComponents()) {
+      await window.Supm3nComponents.init({
+        header: true,
+        footer: false,
+        styles: false,
+        utils: false
+      });
+    }
+
+    window.Supm3nUtils?.initNavigation?.();
+
+    (document.getElementById('theme-toggle')
+      || document.getElementById('themeToggle')
+      || document.querySelector('[data-theme-toggle]'))
+      ?.addEventListener('click', toggleTheme);
+  </script>
+
+  <!-- App -->
+  <script type="module" src="/app.js?v=20251112"></script>
+
+  <!-- Footer year helper (optional) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const yearEl = document.getElementById('footer-year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+    });
+  </script>
+
+  
+
+</body>
 </html>

@@ -1,12 +1,5 @@
-// Disaster Explorer — MVP for supm3n.com/disasters
-// Uses shared CSS/JS from supm3n.com/shared (adjust includes in index.html if filenames differ).
-// Frontend calls a Cloudflare Pages Function at /api/events to fetch normalized events.
-// Hazards: earthquakes (USGS) and wildfires (FIRMS via proxy).
-// Challenge checks implemented: default sort=recent, official-only toggle, freshness badge, viewport filtering, 24–72h window.
-
 const map = L.map('map', { zoomControl: true }).setView([20, 0], 2);
 
-// Base tiles (no API key): Carto Voyager or OSM. Using OSM here.
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 18,
   attribution: '&copy; OpenStreetMap contributors'
@@ -21,18 +14,11 @@ const staleBadgeEl = document.getElementById('staleBadge');
 
 const state = {
   hazards: new Set(['eq', 'wf']),
-  sort: 'recent', // 'severe'
+  sort: 'recent',
   officialOnly: false,
   dataUpdatedAt: null,
   events: [],
 };
-
-// Shared header initializer (if your shared JS exposes one)
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.supm3n && typeof window.supm3n.init === 'function') {
-    window.supm3n.init({ current: 'disasters' });
-  }
-});
 
 document.querySelectorAll('.chip').forEach(chip => {
   chip.addEventListener('change', () => {
@@ -54,7 +40,6 @@ document.getElementById('officialOnly').addEventListener('change', (e) => {
 document.getElementById('searchBtn').addEventListener('click', () => {
   const q = document.getElementById('searchBox').value.trim();
   if (!q) return;
-  // Very naive search: forward to Nominatim geocoding.
   geocode(q).then(center => { if (center) map.setView(center, 6); });
 });
 
@@ -71,14 +56,11 @@ async function geocode(q) {
       const best = arr[0];
       return [parseFloat(best.lat), parseFloat(best.lon)];
     }
-  } catch (e) {
-    console.warn('Geocode failed', e);
-  }
+  } catch (e) { console.warn('Geocode failed', e); }
 }
 
 function getBBox() {
   const b = map.getBounds();
-  // west,south,east,north
   return [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()].map(n => +n.toFixed(4)).join(',');
 }
 
@@ -86,7 +68,7 @@ async function refresh() {
   statusEl.textContent = 'Loading…';
   const bbox = getBBox();
   const hazards = Array.from(state.hazards).join(',');
-  const params = new URLSearchParams({ hazards, bbox, since: '48h' }); // 24–72h window; use 48h here
+  const params = new URLSearchParams({ hazards, bbox, since: '48h' });
   if (state.officialOnly) params.set('official_only', 'true');
 
   try {
@@ -106,7 +88,6 @@ async function refresh() {
 }
 
 function render() {
-  // Filter by official-only if toggled
   let events = state.events.filter(ev => {
     if (state.officialOnly) {
       return (ev.source || []).some(s => s.kind === 'official' || s.kind === 'scientific');
@@ -114,14 +95,12 @@ function render() {
     return true;
   });
 
-  // Sort
   if (state.sort === 'severe') {
     events.sort((a, b) => (b.severity?.normalized || 0) - (a.severity?.normalized || 0) || new Date(b.when?.updated || 0) - new Date(a.when?.updated || 0));
   } else {
     events.sort((a, b) => new Date(b.when?.updated || 0) - new Date(a.when?.updated || 0));
   }
 
-  // Map markers
   markers.clearLayers();
   events.forEach(ev => {
     if (!ev.where?.point) return;
@@ -132,7 +111,6 @@ function render() {
     markers.addLayer(m);
   });
 
-  // List
   listEl.innerHTML = '';
   events.forEach(ev => listEl.appendChild(renderCard(ev)));
 }
@@ -179,7 +157,6 @@ function renderCard(ev) {
   el.addEventListener('mouseenter', () => {
     if (ev.where?.point) {
       const [lon, lat] = ev.where.point;
-      // subtle pan (no zoom) to draw attention
       map.panTo([lat, lon], { animate: true, duration: 0.25 });
     }
   });
@@ -188,7 +165,6 @@ function renderCard(ev) {
 }
 
 function showCard(ev) {
-  // On desktop click marker → scroll to the card
   const cards = Array.from(listEl.querySelectorAll('.event-card'));
   const idx = cards.findIndex(card => card.querySelector('h3')?.textContent === (ev.title || prettyTitle(ev)));
   if (idx >= 0) cards[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -235,7 +211,5 @@ function timeAgo(iso) {
 function firstCap(s='') { return s.slice(0,1).toUpperCase() + s.slice(1); }
 function escapeHtml(s='') { return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-// Initial load
 refresh();
-// Periodically refresh to keep data current (10 min)
 setInterval(refresh, 10 * 60 * 1000);
