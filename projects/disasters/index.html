@@ -10,14 +10,12 @@
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#0b0c10">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://supm3n.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://supm3n.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:;">
-  <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Disaster Explorer — Supm3n">
   <meta property="og:description" content="Recent earthquakes and wildfire hotspots on a fast map.">
   <meta property="og:image" content="/assets/icons/android-chrome-512x512.png">
   <meta property="og:url" content="https://disasters.supm3n.com/">
   <meta name="twitter:card" content="summary_large_image">
-  <!-- Canonical URL -->
   <link rel="canonical" href="https://disasters.supm3n.com/">
   
   <meta name="color-scheme" content="dark light">
@@ -25,30 +23,23 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Theme system (same as stocks) -->
   <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251110d">
   <script type="module" src="https://supm3n.com/shared/scripts/theme.js?v=20251110d"></script>
   
-  <!-- Shared Utilities -->
   <script src="https://supm3n.com/shared/scripts/utils.js?v=20251110d"></script>
   
   
-  <!-- Shared Components -->
   <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251110d">
   
-  <!-- Vendor CSS (local = CSP-safe) -->
   <link rel="stylesheet" href="/assets/vendor/leaflet.css?v=1">
   <link rel="stylesheet" href="/assets/vendor/markercluster.css?v=1">
   
-  <!-- Project styles -->
   <link rel="stylesheet" href="/assets/styles.css?v=20251112">
 </head>
 <body>
 
   <link rel="preconnect" href="https://supm3n.com">
   
-  <!-- Placeholder for shared site header -->
-  <!--<header class="site-header"></header>-->
   {{HEADER_PLACEHOLDER}}
 
   <main class="page page--disasters">
@@ -90,22 +81,22 @@
     </section>
   </main>
 
-  <!--<footer id="site-footer"></footer>-->
   {{FOOTER_PLACEHOLDER}}
+  
   <script src="https.://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
   <script src="https.://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   
-    <script type="module" src="/app.js?v=20251112"></script>
+  <script type="module" src="/app.js?v=20251112"></script>
   
-    <script type="module">
-      import { toggleTheme } from 'https.://supm3n.com/shared/scripts/theme.js?v=20251110d';
-      (document.getElementById('theme-toggle')
-        || document.getElementById('themeToggle')
-        || document.querySelector('[data-theme-toggle]'))
-        ?.addEventListener('click', toggleTheme);
-    </script>
+  <script type="module">
+    import { toggleTheme } from 'https.://supm3n.com/shared/scripts/theme.js?v=20251110d';
+    (document.getElementById('theme-toggle')
+      || document.getElementById('themeToggle')
+      || document.querySelector('[data-theme-toggle]'))
+      ?.addEventListener('click', toggleTheme);
+  </script>
   
-    <script>
+  <script>
   document.addEventListener('DOMContentLoaded', () => {
   const yearEl = document.getElementById('footer-year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();

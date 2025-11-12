@@ -6,52 +6,42 @@
   <title>Supm3n — Build lean tools, fast visuals, and little internet contraptions</title>
   <meta name="description" content="I build lean tools, fast visuals, and little internet contraptions. Explore my projects and get in touch.">
   
-  <!-- Favicons -->
   <link rel="icon" href="/assets/icons/favicon.ico">
   <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#0B0C10">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:;">
   
-  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Supm3n — Build lean tools, fast visuals, and little internet contraptions">
   <meta property="og:description" content="I build lean tools, fast visuals, and little internet contraptions. Explore my projects and get in touch.">
   <meta property="og:image" content="/assets/icons/android-chrome-512x512.png">
   <meta property="og:url" content="https://supm3n.com/">
   
-  <!-- Canonical URL -->
   <link rel="canonical" href="https://supm3n.com/">
   
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Supm3n">
   <meta name="twitter:description" content="I build lean tools, fast visuals, and little internet contraptions.">
   <meta name="twitter:image" content="/assets/icons/android-chrome-512x512.png">
   
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
   
-  <!-- Preload critical resources -->
   <link rel="preload" href="/assets/styles.css" as="style">
   <link rel="preload" href="/shared/styles/variables.css" as="style">
   <link rel="dns-prefetch" href="https://supm3n.com">
   
-  <!-- Theme system -->
   <link rel="stylesheet" href="/shared/styles/variables.css?v=20251110d">
   <link rel="stylesheet" href="/shared/styles/components.css?v=20251110d">
   <script type="module" src="/shared/scripts/theme.js?v=20251110d"></script>
   
-  <!-- Shared Utilities -->
   <script src="/shared/scripts/utils.js?v=20251110d"></script>
   
-  <!-- Styles -->
   <link rel="stylesheet" href="/assets/styles.css">
   
-  <!-- JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -65,13 +55,9 @@
   </script>
 </head>
 <body>
-  <!-- Placeholder for shared site header -->
-  <header class="site-header"></header>
-
-  <script src="/shared/scripts/components.js?v=20251110d" defer></script>
+  {{HEADER_PLACEHOLDER}}
 
   <main id="main-content" role="main">
-    <!-- Hero Section -->
     <section class="hero">
       <div class="container">
         <div class="matrix-container">
@@ -80,20 +66,17 @@
         </div>
         <div class="hero-cta">
           <a href="/projects" class="btn btn-primary magnetic">View Projects</a>
-          <!-- <a href="/contact" class="btn btn-secondary magnetic">Get in touch</a> -->
-        </div>
+          </div>
       </div>
     </section>
 
-    <!-- Featured Projects -->
     <section class="projects-section">
       <div class="container">
         <div class="section-header">
           <h2 class="section-title">Featured Projects</h2>
         </div>
         <div id="featured-projects" class="projects-grid">
-          <!-- Will be populated by JS -->
-        </div>
+          </div>
         <div class="text-center" style="margin-top: var(--space-xl);">
           <a href="/projects" class="btn btn-secondary">View all projects</a>
         </div>
@@ -101,24 +84,8 @@
     </section>
   </main>
 
-  <footer class="site-footer" role="contentinfo">
-    <div class="container footer-inner">
-      <div class="footer-links">
-        <a href="/uses">Uses</a>
-        <!-- <a href="/now">Now</a> -->
-        <!-- <a href="/contact">Contact</a> -->
-        <a href="/privacy">Privacy</a>
-      </div>
-      <div class="footer-social">
-        <!-- Add social links as needed -->
-      </div>
-      <div style="font-size: var(--text-xs); color: var(--color-text-muted);">
-        Last updated: <time id="last-updated"></time>
-      </div>
-    </div>
-  </footer>
+  {{FOOTER_PLACEHOLDER}}
 
-  <!-- Command Palette -->
   <div class="command-palette" id="command-palette" role="dialog" aria-label="Command palette" aria-modal="true">
     <div class="command-palette-inner">
       <input 
@@ -133,33 +100,16 @@
   </div>
 
   <script src="/assets/script.js" defer></script>
+  
   <script type="module">
     import { toggleTheme } from '/shared/scripts/theme.js?v=20251110d';
-
-    async function waitForComponents(timeoutMs = 4000) {
-      const start = Date.now();
-      while (!window.Supm3nComponents && Date.now() - start < timeoutMs) {
-        await new Promise(r => setTimeout(r, 25));
-      }
-      return !!window.Supm3nComponents;
-    }
-
-    if (await waitForComponents()) {
-      await window.Supm3nComponents.init({
-        header: true,
-        footer: false,
-        styles: false,
-        utils: false
-      });
-    }
-
-    window.Supm3nUtils?.initNavigation?.();
 
     (document.getElementById('theme-toggle')
       || document.getElementById('themeToggle')
       || document.querySelector('[data-theme-toggle]'))
       ?.addEventListener('click', toggleTheme);
   </script>
+  
   <script>
     // Load featured projects
     (async function() {

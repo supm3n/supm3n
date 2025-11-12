@@ -10,29 +10,23 @@
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#0b0c10">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://supm3n.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://supm3n.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:;">
-  <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Snake Game — Supm3n">
   <meta property="og:description" content="Classic Snake game - play with keyboard or mouse">
   <meta property="og:image" content="/assets/icons/android-chrome-512x512.png">
   <meta property="og:url" content="https://snake.supm3n.com/">
   <meta name="twitter:card" content="summary_large_image">
-  <!-- Canonical URL -->
   <link rel="canonical" href="https://snake.supm3n.com/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <!-- Shared Utilities -->
   <script src="https://supm3n.com/shared/scripts/utils.js?v=20251110d"></script>
   
-  <!-- Shared Styles -->
   <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251110d">
   <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251110d">
   
-  <!-- Project-specific styles -->
   <link rel="stylesheet" href="/assets/styles.css?v=20251110d">
 
-  <!-- Snake-specific overrides -->
   <style>
     :root {
       /* ensure header height matches shared theme */
@@ -155,24 +149,7 @@
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="site-header" role="banner">
-    <div class="container header-inner">
-      <a class="brand" href="https://supm3n.com/" aria-label="Supm3n Home">
-        <img src="https://supm3n.com/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
-      </a>
-      <nav class="main-nav" role="navigation" aria-label="Main navigation">
-        <a class="nav-link" href="https://supm3n.com/">Home</a>
-        <a class="nav-link" href="https://supm3n.com/projects">Projects</a>
-        <a class="nav-link" href="https://supm3n.com/uses">Uses</a>
-      </nav>
-      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-        </svg>
-      </button>
-    </div>
-  </header>
+  {{HEADER_PLACEHOLDER}}
 
   <main id="main-content" class="container">
     <section class="game-header">
@@ -239,10 +216,8 @@
     </div>
   </main>
 
-  <!-- Footer (compact, no shared injection) -->
   <footer class="site-footer"></footer>
   
-  <!-- Load theme script as module for theme toggle functionality -->
   <script type="module" src="https://supm3n.com/shared/scripts/theme.js?v=20251109"></script>
   
   <script type="module">
@@ -275,4 +250,3 @@
   <script src="/assets/script.js" defer></script>
 </body>
 </html>
-

@@ -10,29 +10,23 @@
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#0b0c10">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://supm3n.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://supm3n.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:;">
-  <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Stock Chart — Supm3n">
   <meta property="og:description" content="Fast stock chart viewer with real-time data.">
   <meta property="og:image" content="/assets/icons/android-chrome-512x512.png">
   <meta property="og:url" content="https://stocks.supm3n.com/">
   <meta name="twitter:card" content="summary_large_image">
-  <!-- Canonical URL -->
   <link rel="canonical" href="https://stocks.supm3n.com/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Theme system -->
   <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251110d">
   <script type="module" src="https://supm3n.com/shared/scripts/theme.js?v=20251110d"></script>
   
-  <!-- Shared Utilities -->
   <script src="https://supm3n.com/shared/scripts/utils.js?v=20251110d"></script>
   
-  <!-- Shared Styles -->
   <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251110d">
   
-  <!-- Project-specific styles -->
   <link rel="stylesheet" href="/assets/styles.css?v=20251110d">
   <style>
     #chart-wrap{height:min(86vh, 920px); max-width: 1200px; margin: 1.5rem auto; padding: 1.5rem;}
@@ -60,10 +54,7 @@
 <body>
   <link rel="preconnect" href="https://supm3n.com">
   
-  <!-- Placeholder for shared site header -->
-  <header class="site-header"></header>
-
-  <script src="https://supm3n.com/shared/scripts/components.js?v=20251110d" defer></script>
+  {{HEADER_PLACEHOLDER}}
 
   <main id="main-content" class="container">
     <section class="toolbar">
@@ -102,7 +93,6 @@
     <canvas id="chart"></canvas>
   </div>
 
-  <!-- Footer -->
   <footer class="site-footer" role="contentinfo" style="margin-top: 2rem; padding: 1rem 0; border-top: 1px solid var(--glass-border); font-size: var(--text-xs);">
     <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
       <div style="color: var(--color-text-muted);">
@@ -119,25 +109,6 @@
   
   <script type="module">
     import { toggleTheme } from 'https://supm3n.com/shared/scripts/theme.js?v=20251110d';
-
-    async function waitForComponents(timeoutMs = 4000) {
-      const start = Date.now();
-      while (!window.Supm3nComponents && Date.now() - start < timeoutMs) {
-        await new Promise(r => setTimeout(r, 25));
-      }
-      return !!window.Supm3nComponents;
-    }
-
-    if (await waitForComponents()) {
-      await window.Supm3nComponents.init({
-        header: true,
-        footer: false,
-        styles: false,
-        utils: false
-      });
-    }
-
-    window.Supm3nUtils?.initNavigation?.();
 
     (document.getElementById('theme-toggle')
       || document.getElementById('themeToggle')
