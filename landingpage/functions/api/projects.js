@@ -1,78 +1,101 @@
+// landingpage/functions/api/projects.js
+// Cloudflare Pages Function that lists Pages projects attached to supm3n.com.
+// Supports multiple env var names for backwards compatibility:
+// - CF_API_TOKEN or CF_API_TOK or CLOUDFLARE_API_TOKEN
+// - CF_ACCOUNT_ID or CLOUDFLARE_ACCOUNT_ID
+// - Optional: ZONE_ID (for filtering; not required)
+
 export async function onRequest(context) {
-  const { request, env } = context;
-  const cache = caches.default;
-  const cacheKey = new Request(new URL(request.url).origin + "/__projects_cache_v2");
-  const cached = await cache.match(cacheKey);
-  if (cached) {
-    return new Response(cached.body, { headers: { "Content-Type":"application/json", "Cache-Control":"public, max-age=300", "Access-Control-Allow-Origin":"*" } });
-  }
-  try {
-    const ZONE_ID = env.ZONE_ID;
-    const TOKEN = env.CF_API_TOKEN;
-    
-    // Check if required environment variables are set
-    if (!ZONE_ID || !TOKEN) {
-      throw new Error(`Missing environment variables: ZONE_ID=${!!ZONE_ID}, TOKEN=${!!TOKEN}`);
-    }
-    
-    const headers = { "Authorization": "Bearer " + TOKEN };
-    const r = await fetch(`https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/dns_records?type=CNAME&per_page=100`, { headers });
-    if (!r.ok) {
-      const errorData = await r.json().catch(() => ({}));
-      throw new Error(`CF API error: ${r.status} ${errorData.errors?.[0]?.message || r.statusText}`);
-    }
-    const data = await r.json();
-    const projects = (data.result || [])
-      .filter(x => x.name.endsWith(".supm3n.com"))
-      .map(x => {
-        const sub = x.name.split(".supm3n.com")[0];
-        // Format name nicely (e.g., "stock-viewer" -> "Stock Viewer")
-        const formattedName = sub.split('-').map(word => 
-          word.charAt(0).toUpperCase() + word.slice(1)
-        ).join(' ');
-        return { 
-          name: formattedName, 
-          description: `${formattedName} project`, 
-          url: `https://${x.name}/`,
-          tag: 'project',
-          favicon: `https://${x.name}/favicon.ico`
-        };
-      });
-    const body = JSON.stringify(projects);
-    const resp = new Response(body, { headers: { "Content-Type":"application/json", "Cache-Control":"public, max-age=300", "Access-Control-Allow-Origin":"*" } });
-    context.waitUntil(cache.put(cacheKey, resp.clone()));
-    return resp;
-  } catch (e) {
-    // Fallback to projects.json file
-    try {
-      // Try to read projects.json from the file system
-      // In Cloudflare Pages, we need to fetch it as a static asset
-      const url = new URL(request.url);
-      const projectsUrl = new URL('/projects.json', url.origin);
-      const projectsResponse = await fetch(projectsUrl);
-      
-      if (projectsResponse.ok) {
-        const data = await projectsResponse.json();
-        // Handle both array format and object with projects property
-        const projects = Array.isArray(data) ? data : (data.projects || []);
-        const body = JSON.stringify(projects);
-        return new Response(body, { headers: { "Content-Type":"application/json", "Cache-Control":"no-store", "Access-Control-Allow-Origin":"*" } });
+  const { env } = context;
+
+  const TOKEN = env.CF_API_TOKEN || env.CF_API_TOK || env.CLOUDFLARE_API_TOKEN;
+  const ACCOUNT = env.CF_ACCOUNT_ID || env.CLOUDFLARE_ACCOUNT_ID;
+  const ZONE_ID = env.ZONE_ID || null;
+
+  if (!TOKEN || !ACCOUNT) {
+    return new Response(JSON.stringify({
+      error: "Missing token or account id",
+      details: {
+        hasToken: !!TOKEN,
+        hasAccount: !!ACCOUNT
       }
-    } catch (jsonError) {
-      console.error('Failed to load projects.json:', jsonError);
+    }), { status: 500, headers: { "content-type": "application/json; charset=utf-8" } });
+  }
+
+  const headers = { Authorization: `Bearer ${TOKEN}` };
+  const base = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/pages/projects`;
+
+  try {
+    // 1) List Pages projects
+    const projectsRes = await fetch(`${base}?per_page=100`, { headers });
+    const projectsJson = await projectsRes.json();
+    if (!projectsJson?.success) throw new Error("Pages projects API error");
+
+    const list = [];
+    for (const p of projectsJson.result || []) {
+      // 2) For each project, list its domains
+      const domRes = await fetch(`${base}/${encodeURIComponent(p.name)}/domains`, { headers });
+      const domJson = await domRes.json();
+      const domains = (domJson?.result || []).map(d => d.domain);
+
+      // 3) Keep only our zone (supm3n.com)
+      const filtered = domains.filter(d => d === "supm3n.com" || d.endsWith(".supm3n.com"));
+      if (filtered.length === 0) continue;
+
+      // prefer subdomain for url
+      const sub = filtered.find(d => d.endsWith(".supm3n.com"));
+      const domain = sub || "supm3n.com";
+      const url = `https://${domain}`;
+      const slug = sub ? sub.split(".")[0] : "landingpage";
+
+      // 4) Optional enrichment from GitHub project manifests (public)
+      let meta = null;
+      try {
+        const gh = await fetch(`https://raw.githubusercontent.com/supm3n/supm3n/main/projects/${slug}/project.json`);
+        if (gh.ok) meta = await gh.json();
+      } catch {}
+
+      list.push({
+        project_name: p.name,
+        slug,
+        name: meta?.name || (slug.charAt(0).toUpperCase() + slug.slice(1)),
+        description: meta?.description || "",
+        domain,
+        url: url.endsWith("/") ? url : url + "/",
+        tags: meta?.tags || [],
+        favicon: `${url}/favicon.ico`
+      });
     }
-    
-    // Final fallback to default projects
-    const projects = [
-      { 
-        "name": "Stock Viewer", 
-        "description": "Real-time stock price viewer and tracker", 
-        "url": "https://stocks.supm3n.com/",
-        "tag": "tool",
-        "favicon": "https://stocks.supm3n.com/favicon.ico"
+
+    list.sort((a, b) => a.slug.localeCompare(b.slug));
+
+    return new Response(JSON.stringify(list, null, 2), {
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store",
+        "access-control-allow-origin": "*"
+      }
+    });
+  } catch (err) {
+    // Minimal safe fallback (still show something on the site)
+    const fallback = [
+      {
+        slug: "stock-viewer",
+        name: "Stock Viewer",
+        description: "Real-time stock price viewer and tracker",
+        domain: "stocks.supm3n.com",
+        url: "https://stocks.supm3n.com/",
+        tags: ["tool"],
+        favicon: "https://stocks.supm3n.com/favicon.ico"
       }
     ];
-    const body = JSON.stringify(projects);
-    return new Response(body, { headers: { "Content-Type":"application/json", "Cache-Control":"no-store", "Access-Control-Allow-Origin":"*" } });
+    return new Response(JSON.stringify(fallback, null, 2), {
+      status: 200,
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store",
+        "access-control-allow-origin": "*"
+      }
+    });
   }
 }
