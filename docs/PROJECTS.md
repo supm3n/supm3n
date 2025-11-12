@@ -1,24 +1,26 @@
-# Projects Matrix
+# Projects & Deploy Settings
 
-Last updated: **2025-11-12**
+Each directory maps to a Cloudflare Pages project (Git-integrated). Pushing to the default branch triggers build & deploy.
 
-| Project        | Path                         | Domain                    | Functions | Env Vars             | Notes |
-|----------------|------------------------------|---------------------------|-----------|----------------------|-------|
-| landingpage    | `landingpage/`               | supm3n.com                | No        | —                    | Hosts `/shared/*` for theme/components |
-| disasters      | `projects/disasters/`        | disasters.supm3n.com      | Yes       | `FIRMS_MAP_KEY`      | USGS + NASA FIRMS feeds |
-| stock-viewer   | `projects/stock-viewer/`     | stocks.supm3n.com         | No*       | `ALPHA_KEY` (if used)| Uses Chart.js; add a small Function if you need to proxy secrets |
-| snake          | `projects/snake/`            | snake.supm3n.com          | No        | —                    | Static |
-| settleup       | `projects/settleup/`         | settleup.supm3n.com       | No        | —                    | Static |
+## landingpage/  → supm3n.com
+- **Root directory:** `landingpage/`
+- **Build:** none (static) unless you add one later
+- **Publish includes:** `_headers`, `shared/*`, index and static files
+- **Serves shared assets:** `https://supm3n.com/shared/*` (consumed by other sites)
 
-\* If you want to keep API keys private, add a tiny Pages Function (see `docs/shared/ADD_FUNCTION.md`).
+## projects/disasters/  → disasters.supm3n.com
+- **Root directory:** `projects/disasters/`
+- **Build:** depends on app; for Pages Functions, ensure `/functions` is present
+- **Notes:** If function responses need custom headers, set them in code (static `_headers` only applies to static assets)
 
-## Standard Head & Init (copy-paste)
-Use the same includes across projects (adjust titles/OG/URLs):
-- Theme variables: `https://supm3n.com/shared/styles/variables.css?...`
-- Theme script: `https://supm3n.com/shared/scripts/theme.js?...`
-- Utilities: `https://supm3n.com/shared/scripts/utils.js?...`
-- Components CSS: `https://supm3n.com/shared/styles/components.css?...`
-- Components loader (after header placeholder): `https://supm3n.com/shared/scripts/components.js?...`
+## projects/stock-viewer/  → stocks.supm3n.com
+- **Root directory:** `projects/stock-viewer/`
+- **Build:** none or project-specific
 
-Header placeholder must be: `<header class="site-header"></header>`
-Initialize like stocks (wait → `Supm3nComponents.init({...})`, then `Supm3nUtils.initNavigation()`).
+## projects/snake/  → snake.supm3n.com
+- **Root directory:** `projects/snake/`
+- **Build:** none or project-specific
+
+## projects/settleup/  → settleup.supm3n.com
+- **Root directory:** `projects/settleup/`
+- **Build:** none or project-specific
