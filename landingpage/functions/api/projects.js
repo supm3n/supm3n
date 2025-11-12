@@ -1,101 +1,54 @@
 // landingpage/functions/api/projects.js
-// Cloudflare Pages Function that lists Pages projects attached to supm3n.com.
+//
+// IMPROVED VERSION:
+// This function now serves the static 'projects.json' file directly.
+// This is much faster, more reliable, and doesn't require any API tokens.
+// Just update your 'landingpage/projects.json' file when you add a new project.
 
 export async function onRequest(context) {
-  const { env } = context;
-
-  const TOKEN = env.CF_API_TOKEN || env.CF_API_TOK || env.CLOUDFLARE_API_TOKEN;
-  const ACCOUNT = env.CF_ACCOUNT_ID || env.CLOUDFLARE_ACCOUNT_ID;
-
-  if (!TOKEN || !ACCOUNT) {
-    return new Response(JSON.stringify({
-      error: "Missing token or account id",
-      details: {
-        hasToken: !!TOKEN,
-        hasAccount: !!ACCOUNT
-      }
-    }), { status: 500, headers: { "content-type": "application/json; charset=utf-8" } });
-  }
-
-  const headers = { Authorization: `Bearer ${TOKEN}` };
-  const base = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/pages/projects`;
-
   try {
-    // 1) List Pages projects (no pagination params - not supported by Pages API)
-    const projectsRes = await fetch(base, { headers });
-    const projectsJson = await projectsRes.json();
-    if (!projectsJson?.success) throw new Error("Pages projects API error");
+    // 1. Get the 'ASSETS' binding from the environment
+    const { env } = context;
 
-    const list = [];
-    for (const p of projectsJson.result || []) {
-      // Skip the landingpage project (it's the homepage, not a project)
-      if (p.name === "landingpage") continue;
-      
-      // 2) For each project, list its domains
-      const domRes = await fetch(`${base}/${encodeURIComponent(p.name)}/domains`, { headers });
-      const domJson = await domRes.json();
-      
-      // Domain objects have 'name' property (not 'domain')
-      const domains = (domJson?.result || []).map(d => d.name || d.domain).filter(Boolean);
+    // 2. Create a URL to the static projects.json file in your repo
+    const url = new URL(context.request.url);
+    url.pathname = '/projects.json';
 
-      // 3) Keep only our zone (supm3n.com)
-      const filtered = domains.filter(d => d === "supm3n.com" || d.endsWith(".supm3n.com"));
-      if (filtered.length === 0) continue;
+    // 3. Fetch the asset directly from the project's static files
+    // This is the official and most reliable way to read a file
+    // from inside a Pages Function.
+    const response = await env.ASSETS.fetch(url);
 
-      // prefer subdomain for url
-      const sub = filtered.find(d => d.endsWith(".supm3n.com"));
-      const domain = sub || "supm3n.com";
-      const url = `https://${domain}`;
-      const slug = sub ? sub.split(".")[0] : "landingpage";
-
-      // 4) Optional enrichment from GitHub project manifests (public)
-      let meta = null;
-      try {
-        const gh = await fetch(`https://raw.githubusercontent.com/supm3n/supm3n/main/projects/${slug}/project.json`);
-        if (gh.ok) meta = await gh.json();
-      } catch {}
-
-      list.push({
-        project_name: p.name,
-        slug,
-        name: meta?.name || (slug.charAt(0).toUpperCase() + slug.slice(1)),
-        description: meta?.description || "",
-        domain,
-        url: url.endsWith("/") ? url : url + "/",
-        tags: meta?.tags || [],
-        favicon: `${url}/favicon.ico`
-      });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch projects.json: ${response.status}`);
     }
 
-    list.sort((a, b) => a.slug.localeCompare(b.slug));
-
-    return new Response(JSON.stringify(list, null, 2), {
+    // 4. Get the JSON content
+    // Note: .json() is not needed here, we return the raw response
+    // which is already the JSON file.
+    
+    // 5. Return the projects list directly
+    return new Response(response.body, {
       headers: {
-        "content-type": "application/json; charset=utf-8",
-        "cache-control": "no-store",
-        "access-control-allow-origin": "*"
+        'content-type': 'application/json; charset=utf-8',
+        // It's a static file, but let's cache it for 5 minutes
+        // so changes in projects.json appear reasonably quickly.
+        'cache-control': 'public, max-age=300',
+        'access-control-allow-origin': '*'
       }
     });
+
   } catch (err) {
     console.error('Projects API error:', err);
-    // Minimal safe fallback
-    const fallback = [
-      {
-        slug: "disasters",
-        name: "Disasters",
-        description: "Real-time earthquake and wildfire tracking",
-        domain: "disasters.supm3n.com",
-        url: "https://disasters.supm3n.com/",
-        tags: ["tool"],
-        favicon: "https://disasters.supm3n.com/favicon.ico"
-      }
-    ];
-    return new Response(JSON.stringify(fallback, null, 2), {
-      status: 200,
+    return new Response(JSON.stringify({
+      error: "Could not load projects list.",
+      details: err.message
+    }), {
+      status: 500,
       headers: {
-        "content-type": "application/json; charset=utf-8",
-        "cache-control": "no-store",
-        "access-control-allow-origin": "*"
+        'content-type': 'application/json; charset=utf-8',
+        'cache-control': 'no-store',
+        'access-control-allow-origin': '*'
       }
     });
   }

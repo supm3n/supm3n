@@ -19,8 +19,12 @@
     "url": "https://snake.supm3n.com/",
     "tag": "game",
     "favicon": "https://snake.supm3n.com/favicon.ico"
+  },
+  {
+    "name": "Disaster Explorer",
+    "description": "Recent earthquakes & wildfire hotspots",
+    "url": "https://disasters.supm3n.com/",
+    "tag": "tool",
+    "favicon": "https://disasters.supm3n.com/favicon.ico"
   }
 ]
-
-
-
