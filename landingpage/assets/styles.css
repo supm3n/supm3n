@@ -735,7 +735,7 @@ code {
   /* Only apply CSS transform when magnetic JS is NOT active */
   .project-card:not([data-magnetic-active]):hover {
     transform: translateY(-8px);
-  }*/
+  }
   
   .project-card:hover::after {
     opacity: 1;
@@ -795,6 +795,7 @@ code {
   align-items: flex-start;
   gap: var(--space-md);
 }
+
 
 .project-icon {
   width: 56px;

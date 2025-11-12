@@ -237,8 +237,15 @@
         };
       });
       
-      // Show first 3 projects
-      const featured = projects.slice(0, 6);
+      // Show first 6 projects
+      const FEATURED_COUNT = 6;
+      const featured = projects.slice(0, FEATURED_COUNT);
+
+      const viewAll = document.querySelector('[data-view-all]');
+      if (viewAll && projects.length <= FEATURED_COUNT) {
+        viewAll.hidden = true;
+      }
+
       
       // Small delay to show skeleton, then load actual content
       await new Promise(resolve => setTimeout(resolve, 300));
