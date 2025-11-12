@@ -1,11 +1,16 @@
 // landingpage/functions/api/projects.js
 // Cloudflare Pages Function that lists Pages projects attached to supm3n.com.
+// Supports multiple env var names for backwards compatibility:
+// - CF_API_TOKEN or CF_API_TOK or CLOUDFLARE_API_TOKEN
+// - CF_ACCOUNT_ID or CLOUDFLARE_ACCOUNT_ID
+// - Optional: ZONE_ID (for filtering; not required)
 
 export async function onRequest(context) {
   const { env } = context;
 
   const TOKEN = env.CF_API_TOKEN || env.CF_API_TOK || env.CLOUDFLARE_API_TOKEN;
   const ACCOUNT = env.CF_ACCOUNT_ID || env.CLOUDFLARE_ACCOUNT_ID;
+  const ZONE_ID = env.ZONE_ID || null;
 
   if (!TOKEN || !ACCOUNT) {
     return new Response(JSON.stringify({
@@ -21,22 +26,17 @@ export async function onRequest(context) {
   const base = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/pages/projects`;
 
   try {
-    // 1) List Pages projects (no pagination params - not supported by Pages API)
-    const projectsRes = await fetch(base, { headers });
+    // 1) List Pages projects
+    const projectsRes = await fetch(`${base}?per_page=100`, { headers });
     const projectsJson = await projectsRes.json();
     if (!projectsJson?.success) throw new Error("Pages projects API error");
 
     const list = [];
     for (const p of projectsJson.result || []) {
-      // Skip the landingpage project (it's the homepage, not a project)
-      if (p.name === "landingpage") continue;
-      
       // 2) For each project, list its domains
       const domRes = await fetch(`${base}/${encodeURIComponent(p.name)}/domains`, { headers });
       const domJson = await domRes.json();
-      
-      // Domain objects have 'name' property (not 'domain')
-      const domains = (domJson?.result || []).map(d => d.name || d.domain).filter(Boolean);
+      const domains = (domJson?.result || []).map(d => d.domain);
 
       // 3) Keep only our zone (supm3n.com)
       const filtered = domains.filter(d => d === "supm3n.com" || d.endsWith(".supm3n.com"));
@@ -77,17 +77,16 @@ export async function onRequest(context) {
       }
     });
   } catch (err) {
-    console.error('Projects API error:', err);
-    // Minimal safe fallback
+    // Minimal safe fallback (still show something on the site)
     const fallback = [
       {
-        slug: "disasters",
-        name: "Disasters",
-        description: "Real-time earthquake and wildfire tracking",
-        domain: "disasters.supm3n.com",
-        url: "https://disasters.supm3n.com/",
+        slug: "stock-viewer",
+        name: "Stock Viewer",
+        description: "Real-time stock price viewer and tracker",
+        domain: "stocks.supm3n.com",
+        url: "https://stocks.supm3n.com/",
         tags: ["tool"],
-        favicon: "https://disasters.supm3n.com/favicon.ico"
+        favicon: "https://stocks.supm3n.com/favicon.ico"
       }
     ];
     return new Response(JSON.stringify(fallback, null, 2), {
