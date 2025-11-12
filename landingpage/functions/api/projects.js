@@ -1,90 +1,100 @@
-// landingpage/functions/api/projects.js - SIMPLIFIED DEBUG
-// Test basic connectivity first
+// landingpage/functions/api/projects.js
+// Cloudflare Pages Function that lists Pages projects attached to supm3n.com.
+// Supports multiple env var names for backwards compatibility:
+// - CF_API_TOKEN or CF_API_TOK or CLOUDFLARE_API_TOKEN
+// - CF_ACCOUNT_ID or CLOUDFLARE_ACCOUNT_ID
+// - Optional: ZONE_ID (for filtering; not required)
 
 export async function onRequest(context) {
   const { env } = context;
 
   const TOKEN = env.CF_API_TOKEN || env.CF_API_TOK || env.CLOUDFLARE_API_TOKEN;
   const ACCOUNT = env.CF_ACCOUNT_ID || env.CLOUDFLARE_ACCOUNT_ID;
+  const ZONE_ID = env.ZONE_ID || null;
 
-  // Return config status
   if (!TOKEN || !ACCOUNT) {
     return new Response(JSON.stringify({
-      error: "Missing credentials",
-      has_token: !!TOKEN,
-      has_account: !!ACCOUNT,
-      env_keys: Object.keys(env)
-    }, null, 2), { 
-      status: 500, 
-      headers: { 
-        "content-type": "application/json; charset=utf-8",
-        "cache-control": "no-store"
-      } 
-    });
+      error: "Missing token or account id",
+      details: {
+        hasToken: !!TOKEN,
+        hasAccount: !!ACCOUNT
+      }
+    }), { status: 500, headers: { "content-type": "application/json; charset=utf-8" } });
   }
 
   const headers = { Authorization: `Bearer ${TOKEN}` };
   const base = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/pages/projects`;
 
   try {
-    // Step 1: Just list projects (no domain fetching yet)
-    const startTime = Date.now();
+    // 1) List Pages projects
     const projectsRes = await fetch(`${base}?per_page=100`, { headers });
-    const fetchTime = Date.now() - startTime;
-    
     const projectsJson = await projectsRes.json();
-    const parseTime = Date.now() - startTime;
+    if (!projectsJson?.success) throw new Error("Pages projects API error");
 
-    if (!projectsRes.ok || !projectsJson?.success) {
-      return new Response(JSON.stringify({
-        error: "Cloudflare API failed",
-        status: projectsRes.status,
-        statusText: projectsRes.statusText,
-        success: projectsJson?.success,
-        cf_errors: projectsJson?.errors || [],
-        cf_messages: projectsJson?.messages || [],
-        timing: { fetch: fetchTime, parse: parseTime }
-      }, null, 2), { 
-        status: 502,
-        headers: { 
-          "content-type": "application/json; charset=utf-8",
-          "cache-control": "no-store"
-        }
+    const list = [];
+    for (const p of projectsJson.result || []) {
+      // 2) For each project, list its domains
+      const domRes = await fetch(`${base}/${encodeURIComponent(p.name)}/domains`, { headers });
+      const domJson = await domRes.json();
+      const domains = (domJson?.result || []).map(d => d.domain);
+
+      // 3) Keep only our zone (supm3n.com)
+      const filtered = domains.filter(d => d === "supm3n.com" || d.endsWith(".supm3n.com"));
+      if (filtered.length === 0) continue;
+
+      // prefer subdomain for url
+      const sub = filtered.find(d => d.endsWith(".supm3n.com"));
+      const domain = sub || "supm3n.com";
+      const url = `https://${domain}`;
+      const slug = sub ? sub.split(".")[0] : "landingpage";
+
+      // 4) Optional enrichment from GitHub project manifests (public)
+      let meta = null;
+      try {
+        const gh = await fetch(`https://raw.githubusercontent.com/supm3n/supm3n/main/projects/${slug}/project.json`);
+        if (gh.ok) meta = await gh.json();
+      } catch {}
+
+      list.push({
+        project_name: p.name,
+        slug,
+        name: meta?.name || (slug.charAt(0).toUpperCase() + slug.slice(1)),
+        description: meta?.description || "",
+        domain,
+        url: url.endsWith("/") ? url : url + "/",
+        tags: meta?.tags || [],
+        favicon: `${url}/favicon.ico`
       });
     }
 
-    // Just return project names for now
-    const projects = (projectsJson.result || []).map(p => ({
-      name: p.name,
-      created_at: p.created_on,
-      production_branch: p.production_branch
-    }));
+    list.sort((a, b) => a.slug.localeCompare(b.slug));
 
-    return new Response(JSON.stringify({
-      success: true,
-      total_projects: projects.length,
-      projects: projects,
-      timing: { fetch: fetchTime, parse: parseTime },
-      next_step: "If this works, we'll add domain fetching"
-    }, null, 2), {
+    return new Response(JSON.stringify(list, null, 2), {
       headers: {
         "content-type": "application/json; charset=utf-8",
         "cache-control": "no-store",
         "access-control-allow-origin": "*"
       }
     });
-
   } catch (err) {
-    return new Response(JSON.stringify({
-      error: "Exception caught",
-      message: err.message,
-      stack: err.stack,
-      name: err.name
-    }, null, 2), {
-      status: 500,
+    // Minimal safe fallback (still show something on the site)
+    const fallback = [
+      {
+        slug: "stock-viewer",
+        name: "Stock Viewer",
+        description: "Real-time stock price viewer and tracker",
+        domain: "stocks.supm3n.com",
+        url: "https://stocks.supm3n.com/",
+        tags: ["tool"],
+        favicon: "https://stocks.supm3n.com/favicon.ico"
+      }
+    ];
+    return new Response(JSON.stringify(fallback, null, 2), {
+      status: 200,
       headers: {
         "content-type": "application/json; charset=utf-8",
-        "cache-control": "no-store"
+        "cache-control": "no-store",
+        "access-control-allow-origin": "*"
       }
     });
   }
