@@ -1,9 +1,19 @@
 {
-  "name": "landingpage",
+  "name": "supm3n",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node build.js",
+    "deploy:landingpage": "npm run build && wrangler pages deploy ./dist/landingpage --project-name=landingpage",
+    "deploy:stock-viewer": "npm run build && wrangler pages deploy ./dist/stock-viewer --project-name=stock-viewer",
+    "deploy:snake": "npm run build && wrangler pages deploy ./dist/snake --project-name=snake",
+    "deploy:settleup": "npm run build && wrangler pages deploy ./dist/settleup --project-name=settleup",
+    "deploy:disasters": "npm run build && wrangler pages deploy ./dist/disasters --project-name=disasters",
+    "dev:landingpage": "wrangler pages dev ./landingpage",
+    "dev:stock-viewer": "wrangler pages dev ./projects/stock-viewer",
+    "dev:snake": "wrangler pages dev ./projects/snake",
+    "dev:settleup": "wrangler pages dev ./projects/settleup",
+    "dev:disasters": "wrangler pages dev ./projects/disasters"
   },
   "keywords": [],
   "author": "",

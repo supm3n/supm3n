@@ -30,7 +30,8 @@
   <script type="module" src="https://supm3n.com/shared/scripts/theme.js?v=20251110d"></script>
   
   <!-- Shared Utilities -->
-  <script src="https://supm3n.com/shared/scripts/utils.js?v=20251110d"></script>
+  <!--<script src="https://supm3n.com/shared/scripts/utils.js?v=20251110d"></script>-->
+  
   
   <!-- Shared Components -->
   <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251110d">
@@ -47,7 +48,8 @@
   <link rel="preconnect" href="https://supm3n.com">
   
   <!-- Placeholder for shared site header -->
-  <header class="site-header"></header>
+  <!--<header class="site-header"></header>-->
+  {{HEADER_PLACEHOLDER}}
 
   <script src="https://supm3n.com/shared/scripts/components.js?v=20251110d" defer></script>
 
@@ -90,7 +92,8 @@
     </section>
   </main>
 
-  <footer id="site-footer"></footer>
+  <!--<footer id="site-footer"></footer>-->
+  {{FOOTER_PLACEHOLDER}}
 
   <!-- Leaflet & MarkerCluster JS from jsDelivr (allowed by CSP) -->
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
@@ -161,16 +164,17 @@
   initHeader();
 </script>
 
-  <!-- App -->
-  <script type="module" src="/app.js?v=20251112"></script>
-
-  <!-- Footer year helper (optional) -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const yearEl = document.getElementById('footer-year');
-      if (yearEl) yearEl.textContent = new Date().getFullYear();
-    });
-  </script>
+<!-- App -->
+<script type="module">
+  // Import the shared theme module
+  import { toggleTheme } from 'https://supm3n.com/shared/scripts/theme.js?v=20251110d';
+    
+  // Find the button (which now exists) and add the click listener
+  (document.getElementById('theme-toggle')
+    || document.getElementById('themeToggle')
+    || document.querySelector('[data-theme-toggle]'))
+    ?.addEventListener('click', toggleTheme);
+</script>
 
   
 
