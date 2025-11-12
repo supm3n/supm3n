@@ -1,0 +1,47 @@
+{
+  "updated": "2025-11-12",
+  "projects": [
+    {
+      "id": "landingpage",
+      "path": "landingpage",
+      "domain": "supm3n.com",
+      "functions": false,
+      "env": []
+    },
+    {
+      "id": "disasters",
+      "path": "projects/disasters",
+      "domain": "disasters.supm3n.com",
+      "functions": true,
+      "env": [
+        "FIRMS_MAP_KEY"
+      ],
+      "endpoints": [
+        "/api/events"
+      ]
+    },
+    {
+      "id": "stock-viewer",
+      "path": "projects/stock-viewer",
+      "domain": "stocks.supm3n.com",
+      "functions": false,
+      "env": [
+        "ALPHA_KEY"
+      ]
+    },
+    {
+      "id": "snake",
+      "path": "projects/snake",
+      "domain": "snake.supm3n.com",
+      "functions": false,
+      "env": []
+    },
+    {
+      "id": "settleup",
+      "path": "projects/settleup",
+      "domain": "settleup.supm3n.com",
+      "functions": false,
+      "env": []
+    }
+  ]
+}
