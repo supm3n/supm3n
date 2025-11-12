@@ -30,7 +30,7 @@
   <script type="module" src="https://supm3n.com/shared/scripts/theme.js?v=20251110d"></script>
   
   <!-- Shared Utilities -->
-  <!--<script src="https://supm3n.com/shared/scripts/utils.js?v=20251110d"></script>-->
+  <script src="https://supm3n.com/shared/scripts/utils.js?v=20251110d"></script>
   
   
   <!-- Shared Components -->
@@ -50,8 +50,6 @@
   <!-- Placeholder for shared site header -->
   <!--<header class="site-header"></header>-->
   {{HEADER_PLACEHOLDER}}
-
-  <script src="https://supm3n.com/shared/scripts/components.js?v=20251110d" defer></script>
 
   <main class="page page--disasters">
     <section class="hero">
@@ -94,89 +92,24 @@
 
   <!--<footer id="site-footer"></footer>-->
   {{FOOTER_PLACEHOLDER}}
-
-  <!-- Leaflet & MarkerCluster JS from jsDelivr (allowed by CSP) -->
-  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-
-<!-- Shared init & theme toggle -->
-<script type="module">
-  import { toggleTheme } from 'https://supm3n.com/shared/scripts/theme.js?v=20251110d';
-
-  async function waitForComponents(timeoutMs = 5000) {
-    const start = Date.now();
-    while (!window.Supm3nComponents && Date.now() - start < timeoutMs) {
-      await new Promise(r => setTimeout(r, 50));
-    }
-    return !!window.Supm3nComponents;
-  }
-
-  async function initHeader() {
-    try {
-      console.log('Waiting for Supm3nComponents...');
-      const loaded = await waitForComponents();
-      
-      if (!loaded) {
-        console.error('Supm3nComponents failed to load within timeout');
-        const header = document.querySelector('.site-header');
-        if (header) {
-          header.innerHTML = `
-            <div class="header-container">
-              <a href="https://supm3n.com" class="logo">supm3n</a>
-              <nav>
-                <a href="https://supm3n.com/projects">Projects</a>
-              </nav>
-            </div>
-          `;
-          header.style.cssText = 'display:flex;justify-content:space-between;padding:1rem;border-bottom:1px solid #333;';
-        }
-        return;
-      }
-
-      console.log('Supm3nComponents loaded, initializing...');
-      await window.Supm3nComponents.init({
-        header: true,
-        footer: false,
-        styles: false,
-        utils: false
-      });
-      console.log('Header initialized successfully');
-
-      window.Supm3nUtils?.initNavigation?.();
-
-      const themeToggle = document.getElementById('theme-toggle')
-        || document.getElementById('themeToggle')
-        || document.querySelector('[data-theme-toggle]');
-      
-      if (themeToggle) {
-        themeToggle.addEventListener('click', toggleTheme);
-        console.log('Theme toggle initialized');
-      }
-    } catch (error) {
-      console.error('Error initializing header:', error);
-      const header = document.querySelector('.site-header');
-      if (header && !header.innerHTML.trim()) {
-        header.innerHTML = '<div style="padding:1rem"><a href="https://supm3n.com">← Back to Home</a></div>';
-      }
-    }
-  }
-
-  initHeader();
-</script>
-
-<!-- App -->
-<script type="module">
-  // Import the shared theme module
-  import { toggleTheme } from 'https://supm3n.com/shared/scripts/theme.js?v=20251110d';
-    
-  // Find the button (which now exists) and add the click listener
-  (document.getElementById('theme-toggle')
-    || document.getElementById('themeToggle')
-    || document.querySelector('[data-theme-toggle]'))
-    ?.addEventListener('click', toggleTheme);
-</script>
-
+  <script src="https.://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+  <script src="https.://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   
-
+    <script type="module" src="/app.js?v=20251112"></script>
+  
+    <script type="module">
+      import { toggleTheme } from 'https.://supm3n.com/shared/scripts/theme.js?v=20251110d';
+      (document.getElementById('theme-toggle')
+        || document.getElementById('themeToggle')
+        || document.querySelector('[data-theme-toggle]'))
+        ?.addEventListener('click', toggleTheme);
+    </script>
+  
+    <script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const yearEl = document.getElementById('footer-year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+  });
+  </script>
 </body>
 </html>
