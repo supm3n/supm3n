@@ -1,16 +1,24 @@
-// landingpage/functions/api/projects.js - DEBUG VERSION
-// Add this temporarily to diagnose the issue
+// landingpage/functions/api/projects.js
+// Cloudflare Pages Function that lists Pages projects attached to supm3n.com.
+// Supports multiple env var names for backwards compatibility:
+// - CF_API_TOKEN or CF_API_TOK or CLOUDFLARE_API_TOKEN
+// - CF_ACCOUNT_ID or CLOUDFLARE_ACCOUNT_ID
+// - Optional: ZONE_ID (for filtering; not required)
 
 export async function onRequest(context) {
   const { env } = context;
 
   const TOKEN = env.CF_API_TOKEN || env.CF_API_TOK || env.CLOUDFLARE_API_TOKEN;
   const ACCOUNT = env.CF_ACCOUNT_ID || env.CLOUDFLARE_ACCOUNT_ID;
+  const ZONE_ID = env.ZONE_ID || null;
 
   if (!TOKEN || !ACCOUNT) {
     return new Response(JSON.stringify({
       error: "Missing token or account id",
-      details: { hasToken: !!TOKEN, hasAccount: !!ACCOUNT }
+      details: {
+        hasToken: !!TOKEN,
+        hasAccount: !!ACCOUNT
+      }
     }), { status: 500, headers: { "content-type": "application/json; charset=utf-8" } });
   }
 
@@ -24,27 +32,14 @@ export async function onRequest(context) {
     if (!projectsJson?.success) throw new Error("Pages projects API error");
 
     const list = [];
-    const debugInfo = []; // ADD DEBUG INFO
-
     for (const p of projectsJson.result || []) {
       // 2) For each project, list its domains
       const domRes = await fetch(`${base}/${encodeURIComponent(p.name)}/domains`, { headers });
       const domJson = await domRes.json();
       const domains = (domJson?.result || []).map(d => d.domain);
 
-      // DEBUG: Log all projects and their domains
-      debugInfo.push({
-        project_name: p.name,
-        all_domains: domains,
-      });
-
       // 3) Keep only our zone (supm3n.com)
       const filtered = domains.filter(d => d === "supm3n.com" || d.endsWith(".supm3n.com"));
-      
-      // DEBUG: Log filtered result
-      debugInfo[debugInfo.length - 1].filtered_domains = filtered;
-      debugInfo[debugInfo.length - 1].skipped = filtered.length === 0;
-      
       if (filtered.length === 0) continue;
 
       // prefer subdomain for url
@@ -53,18 +48,12 @@ export async function onRequest(context) {
       const url = `https://${domain}`;
       const slug = sub ? sub.split(".")[0] : "landingpage";
 
-      debugInfo[debugInfo.length - 1].extracted_slug = slug;
-      debugInfo[debugInfo.length - 1].will_fetch_from_github = `https://raw.githubusercontent.com/supm3n/supm3n/main/projects/${slug}/project.json`;
-
       // 4) Optional enrichment from GitHub project manifests (public)
       let meta = null;
       try {
         const gh = await fetch(`https://raw.githubusercontent.com/supm3n/supm3n/main/projects/${slug}/project.json`);
-        debugInfo[debugInfo.length - 1].github_response_ok = gh.ok;
         if (gh.ok) meta = await gh.json();
-      } catch (e) {
-        debugInfo[debugInfo.length - 1].github_error = e.message;
-      }
+      } catch {}
 
       list.push({
         project_name: p.name,
@@ -80,13 +69,7 @@ export async function onRequest(context) {
 
     list.sort((a, b) => a.slug.localeCompare(b.slug));
 
-    // RETURN DEBUG INFO
-    return new Response(JSON.stringify({
-      projects: list,
-      debug: debugInfo,
-      total_projects_found: projectsJson.result?.length || 0,
-      projects_after_filter: list.length
-    }, null, 2), {
+    return new Response(JSON.stringify(list, null, 2), {
       headers: {
         "content-type": "application/json; charset=utf-8",
         "cache-control": "no-store",
@@ -94,11 +77,20 @@ export async function onRequest(context) {
       }
     });
   } catch (err) {
-    return new Response(JSON.stringify({
-      error: err.message,
-      stack: err.stack
-    }, null, 2), {
-      status: 500,
+    // Minimal safe fallback (still show something on the site)
+    const fallback = [
+      {
+        slug: "stock-viewer",
+        name: "Stock Viewer",
+        description: "Real-time stock price viewer and tracker",
+        domain: "stocks.supm3n.com",
+        url: "https://stocks.supm3n.com/",
+        tags: ["tool"],
+        favicon: "https://stocks.supm3n.com/favicon.ico"
+      }
+    ];
+    return new Response(JSON.stringify(fallback, null, 2), {
+      status: 200,
       headers: {
         "content-type": "application/json; charset=utf-8",
         "cache-control": "no-store",
