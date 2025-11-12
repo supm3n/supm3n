@@ -138,4 +138,9 @@ function normalizeFrp(frp, conf){ if(!Number.isFinite(frp)) return 0; const min=
   return score;}
 function parseSince(s){const m=/^([0-9]+)\s*(h|d)$/.exec(s); if(!m) return 48*3600*1000; const num=parseInt(m[1],10); const unit=m[2]; return (unit==='d'?num*24:num)*3600*1000;}
 function dedupe(events){const key=(ev)=>`${ev.type}:${ev.where?.point?.map(n=>n.toFixed(2)).join(',')}:${(ev.when?.detected||'').slice(0,13)}`; const seen=new Set(); const out=[]; for(const ev of events){const k=key(ev); if(!seen.has(k)){seen.add(k); out.push(ev);}} return out;}
-function cryptoRandomId(){const arr=new Uint8Array(8); (globalThis.crypto||require('crypto').webcrypto).getRandomValues(arr); return Array.from(arr).map(b=>b.toString(16).padStart(2,'0')).join('');}
+
+function cryptoRandomId() {
+   const arr = new Uint8Array(8);
+   globalThis.crypto.getRandomValues(arr);
+   return Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
+ }
