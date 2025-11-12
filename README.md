@@ -31,12 +31,12 @@ See `docs/PROJECTS.md` for per-project settings.
 All sites are Cloudflare Pages projects connected to this repo (monorepo). Pushing to the default branch builds & deploys automatically:
 
 | Directory                   | Pages project            | Domain                   |
-|----------------------------|--------------------------|--------------------------|
-| `landingpage/`             | `supm3n-com`             | `supm3n.com`             |
-| `projects/disasters/`      | `disasters-supm3n-com`   | `disasters.supm3n.com`   |
-| `projects/stock-viewer/`   | `stocks-supm3n-com`      | `stocks.supm3n.com`      |
-| `projects/snake/`          | `snake-supm3n-com`       | `snake.supm3n.com`       |
-| `projects/settleup/`       | `settleup-supm3n-com`    | `settleup.supm3n.com`    |
+|----------------------------|---------------------------|--------------------------|
+| `landingpage/`             | `landingpage`             | `supm3n.com`             |
+| `projects/disasters/`      | `disasters`               | `disasters.supm3n.com`   |
+| `projects/stock-viewer/`   | `stocks-viewer`           | `stocks.supm3n.com`      |
+| `projects/snake/`          | `snake`                   | `snake.supm3n.com`       |
+| `projects/settleup/`       | `settleup`                | `settleup.supm3n.com`    |
 
 > Each Pages project uses the **root directory** shown above. If a project has a build step, ensure its **build output** contains `_headers`.
 
