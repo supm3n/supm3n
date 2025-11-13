@@ -26,9 +26,7 @@
 </head>
 <body>
   <!-- Placeholder for shared site header -->
-  <header class="site-header"></header>
-
-  <script src="/shared/scripts/components.js?v=20251110d" defer></script>
+  {{HEADER_PLACEHOLDER}}
 
   <main id="main-content" role="main">
     <section class="projects-section">
@@ -74,20 +72,7 @@
     </section>
   </main>
 
-  <footer class="site-footer" role="contentinfo">
-    <div class="container footer-inner">
-      <div class="footer-links">
-        <a href="/uses">Uses</a>
-        <!-- <a href="/now">Now</a> -->
-        <!-- <a href="/contact">Contact</a> -->
-        <a href="/privacy">Privacy</a>
-      </div>
-      <div class="footer-social"></div>
-      <div style="font-size: var(--text-xs); color: var(--color-text-muted);">
-        Last updated: <time id="last-updated"></time>
-      </div>
-    </div>
-  </footer>
+  {{FOOTER_PLACEHOLDER}}
 
   <div class="command-palette" id="command-palette" role="dialog" aria-label="Command palette" aria-modal="true">
     <div class="command-palette-inner">
@@ -105,23 +90,6 @@
   <script src="/assets/script.js"></script>
   <script type="module">
     import { toggleTheme } from '/shared/scripts/theme.js?v=20251110d';
-
-    async function waitForComponents(timeoutMs = 4000) {
-      const start = Date.now();
-      while (!window.Supm3nComponents && Date.now() - start < timeoutMs) {
-        await new Promise(r => setTimeout(r, 25));
-      }
-      return !!window.Supm3nComponents;
-    }
-
-    if (await waitForComponents()) {
-      await window.Supm3nComponents.init({
-        header: true,
-        footer: false,
-        styles: false,
-        utils: false
-      });
-    }
 
     window.Supm3nUtils?.initNavigation?.();
 

@@ -23,36 +23,52 @@ const buildDir = path.join(__dirname, 'dist');
 // --- Helper Functions ---
 
 /**
+ * Recursively finds all files with a specific extension in a directory.
+ */
+function findAllFiles(dir, ext, fileList = []) {
+  const files = fs.readdirSync(dir);
+  files.forEach((file) => {
+    const filePath = path.join(dir, file);
+    if (fs.statSync(filePath).isDirectory()) {
+      findAllFiles(filePath, ext, fileList);
+    } else if (path.extname(file).toLowerCase() === ext) {
+      fileList.push(filePath);
+    }
+  });
+  return fileList;
+}
+
+/**
  * Copies all files and directories from a source to a destination,
- * but skips 'index.html' which we process separately.
+ * but skips all .html files, which we process separately.
  */
 function copyRecursiveSync(src, dest) {
   const exists = fs.existsSync(src);
-  const stats = exists && fs.statSync(src);
-  const isDirectory = exists && stats.isDirectory();
+  if (!exists) return;
+
+  const stats = fs.statSync(src);
+  const isDirectory = stats.isDirectory();
 
   if (isDirectory) {
     if (!fs.existsSync(dest)) {
       fs.mkdirSync(dest, { recursive: true });
     }
     fs.readdirSync(src).forEach((childItemName) => {
-      // Skip node_modules and other junk
-      if (childItemName === 'node_modules' || childItemName === '.git') {
+      // Skip node_modules, .git, and all .html files
+      if (
+        childItemName === 'node_modules' ||
+        childItemName === '.git' ||
+        path.extname(childItemName).toLowerCase() === '.html'
+      ) {
         return;
       }
-      
-      // We skip index.html because we process it separately
-      if (childItemName.toLowerCase() === 'index.html') {
-        return;
-      }
-
       copyRecursiveSync(
         path.join(src, childItemName),
         path.join(dest, childItemName)
       );
     });
   } else {
-    // It's a file. Copy it.
+    // It's a file (and not .html). Copy it.
     if (!fs.existsSync(path.dirname(dest))) {
       fs.mkdirSync(path.dirname(dest), { recursive: true });
     }
@@ -95,29 +111,42 @@ function runBuild() {
     }
     
     // 4. Copy all assets (CSS, JS, images, etc.)
-    // This skips index.html
+    // This now skips all .html files
     copyRecursiveSync(srcPath, destPath);
     console.log(`    Copied assets for ${project.name}.`);
 
-    // 5. Read, process, and write index.html
-    const indexFile = path.join(srcPath, 'index.html');
-    if (fs.existsSync(indexFile)) {
-      let indexContent = fs.readFileSync(indexFile, 'utf8');
+    // 5. Find, process, and write ALL .html files
+    const htmlFiles = findAllFiles(srcPath, '.html');
+    
+    if (htmlFiles.length > 0) {
+      htmlFiles.forEach(htmlFile => {
+        let fileContent = fs.readFileSync(htmlFile, 'utf8');
 
-      // Do the magic replacement
-      indexContent = indexContent.replace(
-        /\{\{HEADER_PLACEHOLDER\}\}/g,
-        headerHtml
-      );
-      indexContent = indexContent.replace(
-        /\{\{FOOTER_PLACEHOLDER\}\}/g,
-        footerHtml
-      );
-
-      fs.writeFileSync(path.join(destPath, 'index.html'), indexContent);
-      console.log(`    Processed index.html for ${project.name}.`);
+        // Do the magic replacement
+        fileContent = fileContent.replace(
+          /\{\{HEADER_PLACEHOLDER\}\}/g,
+          headerHtml
+        );
+        fileContent = fileContent.replace(
+          /\{\{FOOTER_PLACEHOLDER\}\}/g,
+          footerHtml
+        );
+        
+        // Calculate destination path
+        const relativePath = path.relative(srcPath, htmlFile);
+        const destHtmlFile = path.join(destPath, relativePath);
+        
+        // Ensure destination directory exists
+        const destDir = path.dirname(destHtmlFile);
+        if (!fs.existsSync(destDir)) {
+          fs.mkdirSync(destDir, { recursive: true });
+        }
+        
+        fs.writeFileSync(destHtmlFile, fileContent);
+        console.log(`    Processed ${relativePath}`);
+      });
     } else {
-      console.warn(`    No index.html found for ${project.name}.`);
+      console.warn(`    No .html files found for ${project.name}.`);
     }
   }
 
