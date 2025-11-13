@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Disaster Explorer — Supm3n</title>
+  <meta name="description" content="Recent earthquakes and wildfire hotspots on a fast map.">
+  <link rel="icon" href="/assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0b0c10">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://supm3n.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://supm3n.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:;">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Disaster Explorer — Supm3n">
+  <meta property="og:description" content="Recent earthquakes and wildfire hotspots on a fast map.">
+  <meta property="og:image" content="/assets/icons/android-chrome-512x512.png">
+  <meta property="og:url" content="https://disasters.supm3n.com/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://disasters.supm3n.com/">
+  
+  <meta name="color-scheme" content="dark light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://supm3n.com/shared/styles/variables.css?v=20251113d">
+  <script type="module" src="https://supm3n.com/shared/scripts/theme.js?v=20251113d"></script>
+  
+  <script src="https://supm3n.com/shared/scripts/utils.js?v=20251113d"></script>
+  
+  
+  <link rel="stylesheet" href="https://supm3n.com/shared/styles/components.css?v=20251113d">
+  
+  <link rel="stylesheet" href="/assets/vendor/leaflet.css?v=1">
+  <link rel="stylesheet" href="/assets/vendor/markercluster.css?v=1">
+  
+  <link rel="stylesheet" href="/assets/styles.css?v=20251112">
+</head>
+<body>
+
+  <link rel="preconnect" href="https://supm3n.com">
+  
+  <!-- Shared Header Component -->
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a class="brand" href="https://supm3n.com/" aria-label="Supm3n Home">
+      <img src="https://supm3n.com/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
+    </a>
+    <nav class="main-nav" role="navigation" aria-label="Main navigation">
+      <a class="nav-link" href="https://supm3n.com/">Home</a>
+      <a class="nav-link" href="https://supm3n.com/projects">Projects</a>
+      <a class="nav-link" href="https://supm3n.com/uses">Uses</a>
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+
+
+  <main class="page page--disasters">
+    <section class="hero">
+      <h1 class="page-title">Disaster Explorer</h1>
+      <p class="page-subtitle">Recent earthquakes and wildfire hotspots</p>
+    </section>
+
+    <section class="controls">
+      <div class="controls__row">
+        <div class="search">
+          <input id="searchBox" type="search" placeholder="Search place, hazard (e.g., 'earthquake'), or 'M≥5 last 24h'…">
+          <button id="searchBtn" class="btn">Search</button>
+        </div>
+        <div class="chips">
+          <label><input type="checkbox" class="chip" value="eq" checked> Earthquakes</label>
+          <label><input type="checkbox" class="chip" value="wf" checked> Wildfires</label>
+        </div>
+        <div class="sort">
+          <label for="sortSelect" class="sr-only">Sort</label>
+          <select id="sortSelect" title="Sort events">
+            <option value="recent" selected>Most recent</option>
+            <option value="severe">Most severe</option>
+          </select>
+        </div>
+        <div class="toggle">
+          <label title="Show only official/scientific sources"><input type="checkbox" id="officialOnly"> Official sources only</label>
+        </div>
+      </div>
+      <div class="status">
+        <span id="statusText">Loading…</span>
+        <span id="staleBadge" class="badge badge--hidden">Feed stale</span>
+      </div>
+    </section>
+
+    <section class="content">
+      <div id="map"></div>
+      <aside id="list" aria-label="Events list"></aside>
+    </section>
+  </main>
+
+  <!-- Shared Footer Component -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container footer-inner">
+    <div class="footer-links">
+      <a href="https://supm3n.com/uses">Uses</a>
+      <a href="https://supm3n.com/privacy">Privacy</a>
+    </div>
+    <div class="footer-social"></div>
+    <div style="font-size: var(--text-xs); color: var(--color-text-muted);">
+      <a href="https://supm3n.com/" style="color: inherit;">© Supm3n</a>
+    </div>
+  </div>
+</footer>
+
+
+  
+  <script src="https.://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+  <script src="https.://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  
+  <script type="module" src="/app.js?v=20251112"></script>
+  
+  <script type="module">
+    import { toggleTheme } from 'https.://supm3n.com/shared/scripts/theme.js?v=20251113d';
+    (document.getElementById('theme-toggle')
+      || document.getElementById('themeToggle')
+      || document.querySelector('[data-theme-toggle]'))
+      ?.addEventListener('click', toggleTheme);
+  </script>
+  
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const yearEl = document.getElementById('footer-year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+  });
+  </script>
+</body>
+</html>

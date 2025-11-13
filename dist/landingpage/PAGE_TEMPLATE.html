@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page Title — Supm3n</title>
+  <meta name="description" content="Page description">
+  
+  <!-- Favicons -->
+  <link rel="icon" href="/assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0B0C10">
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Page Title — Supm3n">
+  <meta property="og:description" content="Page description">
+  <meta property="og:image" content="/assets/icons/android-chrome-512x512.png">
+  <meta property="og:url" content="https://supm3n.com/page">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+  <link rel="preconnect" href="https://supm3n.com">
+  
+  <!-- Shared theme + components -->
+  <link rel="stylesheet" href="/shared/styles/variables.css?v=20251113d">
+  <link rel="stylesheet" href="/shared/styles/components.css?v=20251113d">
+  <script type="module" src="/shared/scripts/theme.js?v=20251113d"></script>
+  <script src="/shared/scripts/utils.js?v=20251113d"></script>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <!-- Placeholder for shared site header -->
+  <header class="site-header"></header>
+
+  <script src="/shared/scripts/components.js?v=20251113d" defer></script>
+
+  <main id="main-content" role="main">
+    <section class="projects-section">
+      <div class="container">
+        <!-- Use content-page for standard width (800px) -->
+        <!-- Use content-page-narrow for narrow width (600px) -->
+        <!-- Use content-page-wide for wide width (1000px) -->
+        <div class="content-page">
+          <div class="section-header">
+            <h2 class="section-title">Page Title</h2>
+          </div>
+
+          <div class="reveal">
+            <!-- Intro paragraph -->
+            <p class="content-intro">
+              This is an introductory paragraph that describes what this page is about.
+            </p>
+
+            <!-- Content sections -->
+            <div class="content-section">
+              <h3 style="margin-bottom: var(--space-md);">Section Title</h3>
+              <p>
+                Your content goes here. Use paragraphs, lists, and other elements as needed.
+              </p>
+            </div>
+
+            <!-- Lists without bullets (for emoji lists, etc.) -->
+            <div class="content-section">
+              <h3 style="margin-bottom: var(--space-md);">List Example</h3>
+              <ul class="content-list">
+                <li>✨ <strong>Item:</strong> Description</li>
+                <li>🚀 <strong>Item:</strong> Description</li>
+                <li>⚡ <strong>Item:</strong> Description</li>
+              </ul>
+            </div>
+
+            <!-- Lists with bullets -->
+            <div class="content-section">
+              <h3 style="margin-bottom: var(--space-md);">Bulleted List</h3>
+              <ul class="content-list-bulleted">
+                <li>First item</li>
+                <li>Second item</li>
+                <li>Third item</li>
+              </ul>
+            </div>
+
+            <!-- Form example -->
+            <div class="content-section">
+              <h3 style="margin-bottom: var(--space-md);">Form Example</h3>
+              <form class="form-group">
+                <div class="form-field">
+                  <label for="example-input" class="form-label">Label</label>
+                  <input type="text" id="example-input" class="form-input" />
+                </div>
+                <div class="form-field">
+                  <label for="example-textarea" class="form-label">Textarea</label>
+                  <textarea id="example-textarea" class="form-textarea" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+
+            <!-- Content divider for separating sections -->
+            <div class="content-divider">
+              <h3 style="margin-bottom: var(--space-md);">Separated Section</h3>
+              <p style="color: var(--color-text-muted);">
+                This section is visually separated with a divider.
+              </p>
+            </div>
+
+            <!-- Meta information -->
+            <p class="content-meta" style="margin-top: var(--space-xl);">
+              Last updated: <time>${new Date().toLocaleDateString()}</time>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div class="footer-links">
+        <a href="/uses">Uses</a>
+        <a href="/now">Now</a>
+        <a href="/contact">Contact</a>
+        <a href="/privacy">Privacy</a>
+      </div>
+      <div class="footer-social"></div>
+      <div style="font-size: var(--text-xs); color: var(--color-text-muted);">
+        Last updated: <time>${new Date().toLocaleDateString()}</time>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Command Palette -->
+  <div class="command-palette" id="command-palette" role="dialog" aria-label="Command palette" aria-modal="true">
+    <div class="command-palette-inner">
+      <input 
+        type="text" 
+        class="command-palette-input" 
+        id="command-input" 
+        placeholder="Search pages and projects..."
+        aria-label="Search"
+      />
+      <div class="command-palette-results" id="command-results" role="listbox"></div>
+    </div>
+  </div>
+
+  <script src="/assets/script.js"></script>
+  <script type="module">
+    import { toggleTheme } from '/shared/scripts/theme.js?v=20251113d';
+
+    async function waitForComponents(timeoutMs = 4000) {
+      const start = Date.now();
+      while (!window.Supm3nComponents && Date.now() - start < timeoutMs) {
+        await new Promise(r => setTimeout(r, 25));
+      }
+      return !!window.Supm3nComponents;
+    }
+
+    if (await waitForComponents()) {
+      await window.Supm3nComponents.init({
+        header: true,
+        footer: false,
+        styles: false,
+        utils: false
+      });
+    }
+
+    window.Supm3nUtils?.initNavigation?.();
+
+    (document.getElementById('theme-toggle')
+      || document.getElementById('themeToggle')
+      || document.querySelector('[data-theme-toggle]'))
+      ?.addEventListener('click', toggleTheme);
+  </script>
+</body>
+</html>
+

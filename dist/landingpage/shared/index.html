@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shared Components — Supm3n</title>
+  <meta name="description" content="Shared components, styles, and scripts for Supm3n projects">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      line-height: 1.6;
+      background: #0B0C10;
+      color: #E6E9F0;
+    }
+    h1 { color: #7C3AED; }
+    h2 { color: #06B6D4; margin-top: 2rem; }
+    code {
+      background: #151820;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    pre {
+      background: #151820;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    a { color: #06B6D4; }
+    .note {
+      background: rgba(124, 58, 237, 0.1);
+      border-left: 3px solid #7C3AED;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Supm3n Shared Components</h1>
+  
+  <p>This directory contains shared components, styles, and scripts used across Supm3n projects.</p>
+  
+  <div class="note">
+    <strong>Note:</strong> This directory is not meant to be browsed directly. 
+    Components are loaded dynamically by projects using the <code>Supm3nComponents</code> loader.
+  </div>
+  
+  <h2>Available Resources</h2>
+  
+  <h3>Components</h3>
+  <ul>
+    <li><code>/shared/components/header.html</code> - Navigation header</li>
+    <li><code>/shared/components/footer.html</code> - Footer</li>
+    <li><code>/shared/components/breadcrumbs.html</code> - Breadcrumb navigation</li>
+  </ul>
+  
+  <h3>Styles</h3>
+  <ul>
+    <li><code>/shared/styles/variables.css</code> - CSS variables (colors, typography, spacing)</li>
+    <li><code>/shared/styles/components.css</code> - Component styles</li>
+  </ul>
+  
+  <h3>Scripts</h3>
+  <ul>
+    <li><code>/shared/scripts/components.js</code> - Component loader</li>
+    <li><code>/shared/scripts/theme.js</code> - Theme toggle functionality</li>
+    <li><code>/shared/scripts/breadcrumbs.js</code> - Breadcrumb generation</li>
+    <li><code>/shared/scripts/utils.js</code> - Utility functions</li>
+  </ul>
+  
+  <h2>Usage</h2>
+  
+  <p>Projects load these components using the component loader:</p>
+  
+  <pre><code>&lt;script src="https://supm3n.com/shared/scripts/components.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  document.addEventListener('DOMContentLoaded', async () => {
+    await Supm3nComponents.init({
+      header: true,
+      footer: true,
+      breadcrumbs: true,
+      styles: true,
+      utils: true
+    });
+  });
+&lt;/script&gt;</code></pre>
+  
+  <p><a href="https://supm3n.com/">← Back to Supm3n</a></p>
+</body>
+</html>
+

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Now — Supm3n</title>
+  <meta name="description" content="What I'm working on now.">
+  
+  <link rel="icon" href="/assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0B0C10">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+  
+  <!-- Theme system -->
+  <link rel="stylesheet" href="/shared/styles/variables.css?v=20251113d">
+  <link rel="stylesheet" href="/shared/styles/components.css?v=20251113d">
+  <script type="module" src="/shared/scripts/theme.js?v=20251113d"></script>
+  
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <!-- Placeholder for shared site header -->
+  <!-- Shared Header Component -->
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a class="brand" href="https://supm3n.com/" aria-label="Supm3n Home">
+      <img src="https://supm3n.com/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
+    </a>
+    <nav class="main-nav" role="navigation" aria-label="Main navigation">
+      <a class="nav-link" href="https://supm3n.com/">Home</a>
+      <a class="nav-link" href="https://supm3n.com/projects">Projects</a>
+      <a class="nav-link" href="https://supm3n.com/uses">Uses</a>
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+
+
+  <main id="main-content" role="main">
+    <section class="projects-section">
+      <div class="container">
+        <div class="content-page">
+          <div class="section-header">
+            <h2 class="section-title">Now</h2>
+          </div>
+
+          <div class="reveal">
+            <p class="content-intro">
+              This is what I'm focused on right now.
+            </p>
+
+            <div class="content-section">
+              <h3 style="margin-bottom: var(--space-md);">Current Focus</h3>
+              <ul class="content-list">
+                <li>✨ Building and improving my personal site</li>
+                <li>🚀 Exploring new web technologies and patterns</li>
+                <li>⚡ Optimizing for performance and accessibility</li>
+                <li>🎨 Refining my design and development workflow</li>
+              </ul>
+            </div>
+
+            <div class="content-section">
+              <h3 style="margin-bottom: var(--space-md);">Learning</h3>
+              <ul class="content-list">
+                <li>Deepening my understanding of modern CSS</li>
+                <li>Exploring edge computing and serverless patterns</li>
+                <li>Improving accessibility practices</li>
+              </ul>
+            </div>
+
+            <p class="content-meta" style="margin-top: var(--space-xl);">
+              Last updated: <time>${new Date().toLocaleDateString()}</time>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared Footer Component -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container footer-inner">
+    <div class="footer-links">
+      <a href="https://supm3n.com/uses">Uses</a>
+      <a href="https://supm3n.com/privacy">Privacy</a>
+    </div>
+    <div class="footer-social"></div>
+    <div style="font-size: var(--text-xs); color: var(--color-text-muted);">
+      <a href="https://supm3n.com/" style="color: inherit;">© Supm3n</a>
+    </div>
+  </div>
+</footer>
+
+
+
+  <div class="command-palette" id="command-palette" role="dialog" aria-label="Command palette" aria-modal="true">
+    <div class="command-palette-inner">
+      <input 
+        type="text" 
+        class="command-palette-input" 
+        id="command-input" 
+        placeholder="Search pages and projects..."
+        aria-label="Search"
+      />
+      <div class="command-palette-results" id="command-results" role="listbox"></div>
+    </div>
+  </div>
+
+  <script src="/assets/script.js"></script>
+  <script type="module">
+    import { toggleTheme } from '/shared/scripts/theme.js?v=20251113d';
+
+    window.Supm3nUtils?.initNavigation?.();
+
+    (document.getElementById('theme-toggle')
+      || document.getElementById('themeToggle')
+      || document.querySelector('[data-theme-toggle]'))
+      ?.addEventListener('click', toggleTheme);
+  </script>
+</body>
+</html>
+

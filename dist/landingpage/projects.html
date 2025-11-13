@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projects — Supm3n</title>
+  <meta name="description" content="Explore my projects: lean tools, fast visuals, and internet contraptions.">
+  
+  <link rel="icon" href="/assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0B0C10">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:;">
+  
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Projects — Supm3n">
+  <meta property="og:description" content="Explore my projects: lean tools, fast visuals, and internet contraptions.">
+  <meta property="og:image" content="/assets/icons/android-chrome-512x512.png">
+  <meta property="og:url" content="https://supm3n.com/projects">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://supm3n.com/projects">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+  
+  <!-- Theme system -->
+  <link rel="stylesheet" href="/shared/styles/variables.css?v=20251113d">
+  <link rel="stylesheet" href="/shared/styles/components.css?v=20251113d">
+  <script type="module" src="/shared/scripts/theme.js?v=20251113d"></script>
+  <script src="/shared/scripts/utils.js?v=20251113d"></script>
+  
+  <link rel="stylesheet" href="/assets/styles.css">
+  <style>
+    /* Ensure footer sticks to bottom */
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    main {
+      flex: 1;
+    }
+  </style>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Supm3n Projects",
+    "description": "Collection of projects and tools",
+    "url": "https://supm3n.com/projects"
+  }
+  </script>
+</head>
+<body>
+  <!-- Placeholder for shared site header -->
+  <!-- Shared Header Component -->
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a class="brand" href="https://supm3n.com/" aria-label="Supm3n Home">
+      <img src="https://supm3n.com/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
+    </a>
+    <nav class="main-nav" role="navigation" aria-label="Main navigation">
+      <a class="nav-link" href="https://supm3n.com/">Home</a>
+      <a class="nav-link" href="https://supm3n.com/projects">Projects</a>
+      <a class="nav-link" href="https://supm3n.com/uses">Uses</a>
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+
+
+  <main id="main-content" role="main">
+    <section class="projects-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">
+            Projects
+            <span class="health-indicator" id="health-indicator" aria-label="System status"></span>
+          </h2>
+        </div>
+
+        
+
+        <div id="projects-container" class="projects-grid" aria-live="polite">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared Footer Component -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container footer-inner">
+    <div class="footer-links">
+      <a href="https://supm3n.com/uses">Uses</a>
+      <a href="https://supm3n.com/privacy">Privacy</a>
+    </div>
+    <div class="footer-social"></div>
+    <div style="font-size: var(--text-xs); color: var(--color-text-muted);">
+      <a href="https://supm3n.com/" style="color: inherit;">© Supm3n</a>
+    </div>
+  </div>
+</footer>
+
+
+
+  <div class="command-palette" id="command-palette" role="dialog" aria-label="Command palette" aria-modal="true">
+    <div class="command-palette-inner">
+      <input 
+        type="text" 
+        class="command-palette-input" 
+        id="command-input" 
+        placeholder="Search pages and projects..."
+        aria-label="Search"
+      />
+      <div class="command-palette-results" id="command-results" role="listbox"></div>
+    </div>
+  </div>
+
+  <script src="/assets/script.js" defer></script>
+  <script src="/assets/projects.js" defer></script>
+  <script type="module">
+    import { toggleTheme } from '/shared/scripts/theme.js?v=20251113d';
+
+    window.Supm3nUtils?.initNavigation?.();
+
+    (document.getElementById('theme-toggle')
+      || document.getElementById('themeToggle')
+      || document.querySelector('[data-theme-toggle]'))
+      ?.addEventListener('click', toggleTheme);
+  </script>
+  <script>
+    // Update last updated date
+    document.addEventListener('DOMContentLoaded', () => {
+      const lastUpdatedEl = document.getElementById('last-updated');
+      if (lastUpdatedEl) {
+        lastUpdatedEl.textContent = new Date().toLocaleDateString();
+      }
+    });
+  </script>
+</body>
+</html>
+

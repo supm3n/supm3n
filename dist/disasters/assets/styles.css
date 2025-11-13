@@ -1,0 +1,31 @@
+:root{--surface:#0b0c10;--border:#222;--text:#eaeaea;}
+.page--disasters{padding:16px;max-width:1400px;margin:0 auto;}
+.hero{margin-bottom:8px;}
+.page-title{margin:0;}
+.page-subtitle{margin:4px 0 16px;opacity:.8;}
+.controls{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 0;}
+.controls__row{display:grid;grid-template-columns:1.6fr auto auto auto;gap:12px;align-items:center;}
+.search{display:flex;gap:8px;}
+.search input[type="search"]{width:100%;padding:8px 10px;}
+.chips{display:flex;gap:12px;align-items:center;}
+.sort select{padding:8px 10px;}
+.toggle label{display:inline-flex;gap:6px;align-items:center;}
+.status{margin-top:8px;font-size:.9rem;opacity:.85;display:flex;gap:12px;align-items:center;}
+.badge{padding:2px 6px;border-radius:6px;background:#444;color:#fff;font-size:.75rem;}
+.badge--hidden{display:none;}
+.content{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px;min-height:75vh;}
+#map{width:100%;height:calc(100vh - 210px);min-height:480px;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+#list{height:calc(100vh - 210px);min-height:480px;border:1px solid var(--border);border-radius:10px;overflow:auto;padding:8px;}
+.event-card{border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:8px;background:rgba(255,255,255,0.02);}
+.event-card h3{margin:0 0 6px;font-size:1rem;}
+.event-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:.85rem;opacity:.9;}
+.chip-badge{padding:2px 6px;border:1px solid var(--border);border-radius:999px;}
+.event-actions{margin-top:8px;display:flex;gap:8px;}
+.btn{padding:6px 10px;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--text);border-radius:8px;cursor:pointer;}
+.btn:hover{filter:brightness(1.1);}
+@media (max-width:900px){.controls__row{grid-template-columns:1fr;}.content{grid-template-columns:1fr;}#map,#list{height:55vh;}}
+@media (prefers-color-scheme: light){
+  :root{--surface:#ffffff;--border:#ddd;--text:#111;}
+  .event-card{background:#fff;}
+  .btn{background:#f7f7f7;}
+}

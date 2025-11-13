@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Stock Viewer",
+    "description": "Real-time stock price viewer and tracker",
+    "url": "https://stocks.supm3n.com/",
+    "tag": "tool",
+    "favicon": "https://stocks.supm3n.com/favicon.ico"
+  },
+  {
+    "name": "Settle Up",
+    "description": "Compute the fewest payments to settle shared expenses",
+    "url": "https://settleup.supm3n.com/",
+    "tag": "tool",
+    "favicon": "https://settleup.supm3n.com/favicon.ico"
+  },
+  {
+    "name": "Snake Game",
+    "description": "Classic Snake game - play with keyboard or mouse",
+    "url": "https://snake.supm3n.com/",
+    "tag": "game",
+    "favicon": "https://snake.supm3n.com/favicon.ico"
+  },
+  {
+    "name": "Disaster Explorer",
+    "description": "Recent earthquakes & wildfire hotspots",
+    "url": "https://disasters.supm3n.com/",
+    "tag": "tool",
+    "favicon": "https://disasters.supm3n.com/favicon.ico"
+  }
+]

@@ -1,0 +1,92 @@
+/* ============================================
+   Shared CSS Variables for All Projects
+   ============================================ */
+
+:root {
+  /* Colors - Dark First */
+  --color-base: #0B0C10;
+  --color-surface-1: #0F1115;
+  --color-surface-2: #151820;
+  --color-text-primary: #E6E9F0;
+  --color-text-muted: #A9B1C6;
+  --color-accent-start: #7C3AED;
+  --color-accent-end: #06B6D4;
+  --color-red-cape: #EF4444;
+  
+  /* Light mode overrides */
+  --color-base-light: #FAFAFA;
+  --color-surface-1-light: #FFFFFF;
+  --color-surface-2-light: #F5F5F5;
+  --color-text-primary-light: #0B0C10;
+  --color-text-muted-light: #4A5568;
+  
+  /* Typography - Fluid scales */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+  
+  --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  --text-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 1rem + 0.625vw, 1.5rem);
+  --text-xl: clamp(1.5rem, 1.3rem + 1vw, 2.25rem);
+  --text-2xl: clamp(1.875rem, 1.5rem + 1.875vw, 3rem);
+  --text-3xl: clamp(2.25rem, 1.8rem + 2.25vw, 4rem);
+  --text-4xl: clamp(3rem, 2.2rem + 4vw, 5.5rem);
+  
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+  
+  /* Layout */
+  --container-max: 1200px;
+  --header-height: 72px;
+  
+  /* Effects */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.4);
+  --glass-bg: rgba(15, 17, 20, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme="light"] {
+  --color-base: var(--color-base-light);
+  --color-surface-1: var(--color-surface-1-light);
+  --color-surface-2: var(--color-surface-2-light);
+  --color-text-primary: var(--color-text-primary-light);
+  --color-text-muted: var(--color-text-muted-light);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+  --shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.2);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --color-base: var(--color-base-light);
+    --color-surface-1: var(--color-surface-1-light);
+    --color-surface-2: var(--color-surface-2-light);
+    --color-text-primary: var(--color-text-primary-light);
+    --color-text-muted: var(--color-text-muted-light);
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* Note: Theme-specific variables (--bg, --fg, --surface, --muted, --link, --border) 
+   are defined in individual projects' theme files (e.g., theme-base.css) to ensure 
+   proper theme switching behavior with [data-theme] attribute */
+

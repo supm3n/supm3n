@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "deploy:landingpage": "wrangler pages deploy ./landingpage --project-name=landingpage",
+    "deploy:landingpage": "node build.js && wrangler pages deploy ./dist/landingpage --project-name=landingpage",
     "deploy:stock-viewer": "wrangler pages deploy ./stock-viewer --project-name=stock-viewer",
     "deploy:snake": "wrangler pages deploy ./snake --project-name=snake",
     "deploy:python": "wrangler pages deploy ./python-playground --project-name=python-playground",

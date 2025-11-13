@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>404 — Page Not Found</title>
+  <meta name="description" content="The page you're looking for doesn't exist.">
+  
+  <link rel="icon" href="/assets/icons/favicon.ico">
+  
+  <!-- Theme system -->
+  <link rel="stylesheet" href="/shared/styles/variables.css?v=20251113d">
+  <link rel="stylesheet" href="/shared/styles/components.css?v=20251113d">
+  <script type="module" src="/shared/scripts/theme.js?v=20251113d"></script>
+  
+  <link rel="stylesheet" href="/assets/styles.css">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+</head>
+<body>
+  <!-- Placeholder for shared site header -->
+  <!-- Shared Header Component -->
+<header class="site-header" role="banner">
+  <div class="container header-inner">
+    <a class="brand" href="https://supm3n.com/" aria-label="Supm3n Home">
+      <img src="https://supm3n.com/assets/logo.png" alt="Supm3n logo" class="brand-logo" />
+    </a>
+    <nav class="main-nav" role="navigation" aria-label="Main navigation">
+      <a class="nav-link" href="https://supm3n.com/">Home</a>
+      <a class="nav-link" href="https://supm3n.com/projects">Projects</a>
+      <a class="nav-link" href="https://supm3n.com/uses">Uses</a>
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+
+
+  <main id="main-content" role="main">
+    <section class="projects-section" style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+      <div class="container">
+        <div class="text-center">
+          <h1 style="font-size: var(--text-4xl); margin-bottom: var(--space-md);">404</h1>
+          <p style="font-size: var(--text-xl); color: var(--color-text-muted); margin-bottom: var(--space-xl);">
+            The page you're looking for doesn't exist.
+          </p>
+          <a href="/" class="btn btn-primary">Go Home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared Footer Component -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container footer-inner">
+    <div class="footer-links">
+      <a href="https://supm3n.com/uses">Uses</a>
+      <a href="https://supm3n.com/privacy">Privacy</a>
+    </div>
+    <div class="footer-social"></div>
+    <div style="font-size: var(--text-xs); color: var(--color-text-muted);">
+      <a href="https://supm3n.com/" style="color: inherit;">© Supm3n</a>
+    </div>
+  </div>
+</footer>
+
+
+
+  <script src="/assets/script.js"></script>
+  <script type="module">
+    import { toggleTheme } from '/shared/scripts/theme.js?v=20251113d';
+
+    window.Supm3nUtils?.initNavigation?.();
+
+    (document.getElementById('theme-toggle')
+      || document.getElementById('themeToggle')
+      || document.querySelector('[data-theme-toggle]'))
+      ?.addEventListener('click', toggleTheme);
+  </script>
+  <script>
+    // Update last updated date
+    document.addEventListener('DOMContentLoaded', () => {
+      const lastUpdatedEl = document.getElementById('last-updated');
+      if (lastUpdatedEl) {
+        lastUpdatedEl.textContent = new Date().toLocaleDateString();
+      }
+    });
+  </script>
+</body>
+</html>
+

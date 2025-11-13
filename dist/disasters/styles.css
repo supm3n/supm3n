@@ -117,7 +117,3 @@
     padding-top: calc(var(--header-height, 72px) + 8px);
   }
 }
-
-/* DELETE the @media (prefers-color-scheme: light) block.
-  The shared variables.css file already handles this!
-*/

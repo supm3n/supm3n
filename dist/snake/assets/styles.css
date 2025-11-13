@@ -1,0 +1,566 @@
+/* Snake Game Styles */
+
+/* Base styles - using shared CSS variables */
+* {
+  box-sizing: border-box;
+}
+
+/* Accessibility: Skip link */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  z-index: 1000;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-accent-start);
+  color: #fff;
+  border-radius: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(ellipse 100% 60% at 50% -10%, rgba(124, 58, 237, 0.2), transparent 70%),
+    radial-gradient(ellipse 80% 50% at 80% 100%, rgba(6, 182, 212, 0.15), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 20% 50%, rgba(239, 68, 68, 0.1), transparent 70%),
+    var(--color-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   Header & Navigation - Ensure proper display
+   ============================================ */
+
+/* Ensure header displays correctly with logo and menu */
+.site-header {
+  flex-shrink: 0 !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+}
+
+/* Ensure logo displays properly */
+.brand-logo {
+  display: block !important;
+  width: 36px !important;
+  height: 36px !important;
+  object-fit: contain !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure brand link displays correctly */
+.brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--space-sm) !important;
+}
+
+/* Ensure navigation menu displays correctly */
+.main-nav {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--space-xs) !important;
+}
+
+.nav-link {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+/* Ensure breadcrumbs are compact */
+.breadcrumbs {
+  flex-shrink: 0 !important;
+  margin: var(--space-xs) 0 !important; /* reduce vertical space */
+  padding: 0 var(--space-sm) !important; /* reduce horizontal padding */
+}
+
+/* ============================================
+   Footer Overrides for Snake Game
+   Snake game needs maximum screen space, so footer is minimized/hidden
+   Using maximum specificity to override shared component styles
+   ============================================ */
+
+/* Completely hide footer on mobile and short screens to maximize game space */
+@media (max-width: 768px), (max-height: 900px) {
+  body footer.site-footer,
+  html body footer.site-footer[role="contentinfo"] {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}
+
+/* Minimize footer on desktop - much smaller than default */
+/* Using maximum specificity: body + element + class + attribute */
+body footer.site-footer,
+html body footer.site-footer[role="contentinfo"] {
+  flex-shrink: 0 !important;
+  position: static !important;
+  z-index: auto !important;
+  margin-top: 0.25rem !important; /* 4px */
+  padding: 0.5rem 0 !important; /* 8px */
+  border-top: 1px solid var(--glass-border) !important;
+  font-size: var(--text-xs) !important;
+  min-height: auto !important;
+  max-height: 60px !important; /* Limit maximum height */
+  line-height: 1.1 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body footer.site-footer .container,
+html body footer.site-footer[role="contentinfo"] .container {
+  padding: 0 var(--space-md) !important;
+}
+
+body footer.site-footer .footer-inner,
+html body footer.site-footer[role="contentinfo"] .footer-inner {
+  padding: 0 !important;
+  gap: var(--space-xs) !important;
+  margin: 0 !important;
+}
+
+/* Reduce footer content spacing */
+body footer.site-footer .footer-links,
+html body footer.site-footer[role="contentinfo"] .footer-links {
+  gap: var(--space-sm) !important;
+}
+
+body footer.site-footer .footer-links a,
+html body footer.site-footer[role="contentinfo"] .footer-links a {
+  font-size: var(--text-xs) !important;
+  padding: 0.25rem 0 !important;
+}
+
+/* Minimal footer layout */
+.snake-footer-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  color: var(--color-text-muted);
+}
+
+.snake-footer-content a {
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+main.container {
+  flex: 1 1 auto; /* Grow and shrink to fill available space */
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-sm) var(--space-md);
+  width: 100%;
+  overflow-x: hidden;
+  min-height: 0; /* Allow flexbox to shrink below content size */
+  justify-content: center;
+  position: relative; /* For proper stacking context */
+}
+
+.game-header {
+  text-align: center;
+  margin: var(--space-xs) 0 var(--space-sm);
+  flex-shrink: 0;
+}
+
+.game-header h1 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  margin-bottom: 0.25rem;
+  background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.game-header p {
+  color: var(--color-text-muted);
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  margin: 0;
+}
+
+.game-container {
+  max-width: 520px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  justify-content: center;
+}
+
+.game-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: clamp(0.45rem, 1vw + 0.25rem, 0.75rem);
+  flex-wrap: wrap;
+  gap: clamp(0.35rem, 1vw + 0.2rem, 0.75rem);
+  flex-shrink: 0;
+  padding: clamp(0.4rem, 1vw + 0.25rem, 0.75rem);
+  background: var(--color-surface-2, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+.score-display {
+  display: flex;
+  gap: clamp(0.5rem, 1vw + 0.3rem, 1rem);
+}
+
+.score-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.score-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.score-value {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--color-accent-end);
+}
+
+.game-controls {
+  display: flex;
+  gap: clamp(0.35rem, 1vw + 0.15rem, 0.5rem);
+  flex-wrap: wrap;
+}
+
+/* Button base styles */
+.btn {
+  padding: clamp(0.4rem, 1vw + 0.2rem, 0.6rem) clamp(0.75rem, 2vw + 0.4rem, 1.1rem);
+  border: none;
+  border-radius: 8px;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: var(--font-sans);
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.game-wrapper {
+  position: relative;
+  background: var(--color-surface-2);
+  border: 2px solid var(--glass-border);
+  border-radius: 12px;
+  padding: clamp(0.35rem, 1vw + 0.2rem, 0.6rem);
+  margin-bottom: clamp(0.45rem, 1vw + 0.25rem, 0.7rem);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  flex-grow: 1;
+  max-width: 100%;
+  min-height: 0;
+}
+
+#game-canvas {
+  display: block;
+  border-radius: 8px;
+  background: var(--color-base);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  max-width: 100%;
+  height: auto;
+}
+
+.game-over,
+.game-start {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--color-surface-1);
+  border: 2px solid var(--glass-border);
+  border-radius: 12px;
+  padding: var(--space-xl);
+  text-align: center;
+  z-index: 10;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-lg);
+}
+
+.game-over.hidden,
+.game-start.hidden {
+  display: none;
+}
+
+.game-over h2,
+.game-start h2 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-md);
+  color: var(--color-text-primary);
+}
+
+.game-over .final-score {
+  font-size: var(--text-xl);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-lg);
+}
+
+.game-over .final-score span {
+  color: var(--color-accent-end);
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.game-start p {
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+}
+
+.controls-info {
+  display: none; /* Hide by default to save space */
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+  flex-shrink: 0;
+}
+
+/* Show controls on larger screens if there's room */
+@media (min-height: 900px) and (min-width: 768px) {
+  .controls-info {
+    display: grid;
+  }
+}
+
+.control-section {
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+}
+
+.control-section h3 {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  margin-bottom: var(--space-xs);
+  color: var(--color-text-primary);
+}
+
+.control-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.control-item {
+  display: flex;
+  align-items: center;
+  padding: 0.375rem;
+  gap: 0.5rem;
+  background: var(--color-surface-2);
+  border-radius: 8px;
+}
+
+.control-item kbd {
+  display: inline-block;
+  padding: 0.125rem 0.375rem;
+  background: var(--color-base);
+  border: 1px solid var(--glass-border);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: clamp(0.625rem, 1.5vw, 0.75rem);
+  color: var(--color-text-primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  min-width: 1.25rem;
+  text-align: center;
+}
+
+.control-item span {
+  color: var(--color-text-muted);
+  font-size: clamp(0.625rem, 1.5vw, 0.75rem);
+}
+
+.control-section p {
+  color: var(--color-text-muted);
+  font-size: clamp(0.625rem, 1.5vw, 0.75rem);
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+}
+
+.control-section .hint {
+  font-size: clamp(0.5rem, 1.2vw, 0.625rem);
+  color: var(--color-text-muted);
+  opacity: 0.7;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  main.container {
+    padding: 0.5rem var(--space-xs);
+    justify-content: center;
+  }
+  
+  .game-header {
+    margin: 0 0 0.375rem;
+    padding: 0;
+  }
+  
+  .game-header h1 {
+    font-size: clamp(1.25rem, 5vw, 1.5rem);
+    margin-bottom: 0.125rem;
+  }
+  
+  .game-header p {
+    display: none; /* Hide description on mobile to save space */
+  }
+  
+  .controls-info {
+    display: none; /* Always hide on mobile */
+  }
+  
+  .game-info {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.35rem;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    padding: 0.35rem 0.45rem;
+    border-radius: 10px;
+  }
+  
+  .score-display {
+    justify-content: flex-start;
+    gap: 0.4rem;
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .game-controls {
+    justify-content: flex-end;
+    gap: 0.25rem;
+    flex-shrink: 0;
+  }
+  
+  .game-wrapper {
+    padding: 0.3rem;
+    margin-bottom: 0.25rem;
+    flex-grow: 1;
+    min-height: 0;
+  }
+  
+  #game-canvas {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .btn {
+    padding: 0.375rem 0.625rem;
+    font-size: clamp(0.75rem, 2.5vw, 0.875rem);
+  }
+  
+  .score-value {
+    font-size: clamp(1.125rem, 4vw, 1.375rem);
+  }
+  
+  .score-label {
+    font-size: clamp(0.625rem, 1.75vw, 0.75rem);
+  }
+}
+
+@media (max-height: 800px) {
+  main.container {
+    padding: 0.4rem var(--space-xs);
+  }
+  
+  .game-header {
+    margin: 0 0 0.25rem;
+  }
+  
+  .game-header h1 {
+    font-size: clamp(1.125rem, 3vw, 1.5rem);
+    margin-bottom: 0;
+  }
+  
+  .game-header p {
+    display: none;
+  }
+  
+  .controls-info {
+    display: none;
+  }
+  
+  .game-info {
+    margin-bottom: 0.3rem;
+    padding: 0.3rem 0.45rem;
+    gap: 0.35rem;
+  }
+  
+  .game-wrapper {
+    margin-bottom: 0.2rem;
+    padding: 0.28rem;
+  }
+}
+
+/* Button styles - already defined above */
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+.btn-secondary {
+  background: var(--color-surface-2);
+  color: var(--color-text-primary);
+  border: 1px solid var(--glass-border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--color-surface-1);
+  border-color: var(--color-accent-start);
+}
+
