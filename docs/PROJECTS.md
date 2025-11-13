@@ -1,26 +1,15 @@
-# Projects & Deploy Settings
+# Projects & Build Settings
 
-Each directory maps to a Cloudflare Pages project (Git-integrated). Pushing to the default branch triggers build & deploy.
+All projects are built from the monorepo root (`/`). Pushing to the default branch triggers all projects to rebuild.
 
-## landingpage/  → supm3n.com
-- **Root directory:** `landingpage/`
-- **Build:** none (static) unless you add one later
-- **Publish includes:** `_headers`, `shared/*`, index and static files
-- **Serves shared assets:** `https://supm3n.com/shared/*` (consumed by other sites)
+### Cloudflare Build Configuration
 
-## projects/disasters/  → disasters.supm3n.com
-- **Root directory:** `projects/disasters/`
-- **Build:** depends on app; for Pages Functions, ensure `/functions` is present
-- **Notes:** If function responses need custom headers, set them in code (static `_headers` only applies to static assets)
+| Project | Cloudflare "Root Directory" | Cloudflare "Build Output Directory" | Domain |
+| :--- | :--- | :--- | :--- |
+| `landingpage` | `/` | `dist/landingpage` | `supm3n.com` |
+| `disasters` | `/` | `dist/disasters` | `disasters.supm3n.com` |
+| `stock-viewer` | `/` | `dist/stock-viewer` | `stocks.supm3n.com` |
+| `snake` | `/` | `dist/snake` | `snake.supm3n.com` |
+| `settleup` | `/` | `dist/settleup` | `settleup.supm3n.com` |
 
-## projects/stock-viewer/  → stocks.supm3n.com
-- **Root directory:** `projects/stock-viewer/`
-- **Build:** none or project-specific
-
-## projects/snake/  → snake.supm3n.com
-- **Root directory:** `projects/snake/`
-- **Build:** none or project-specific
-
-## projects/settleup/  → settleup.supm3n.com
-- **Root directory:** `projects/settleup/`
-- **Build:** none or project-specific
+See `docs/DEPLOYMENT.md` for more details on the build system.

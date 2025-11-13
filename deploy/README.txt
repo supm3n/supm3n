@@ -1,3 +1,14 @@
+###############################################################
+# DEPRECATED - DO NOT USE
+###############################################################
+
+These scripts are legacy helpers for the old "Direct Upload" system.
+
+This repository now uses a unified Git-integrated build system.
+All deployments are handled automatically by Cloudflare Pages when you push to the `main` branch.
+
+Please see the root `README.md` or `docs/DEPLOYMENT.md` for the correct build and deployment configuration.
+
 # Deploy scripts (Windows .cmd)
 
 These helpers assume the scripts live in `Supm3n/deploy/` and that your repo root

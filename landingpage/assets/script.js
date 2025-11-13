@@ -2,7 +2,7 @@
 // Theme Icon Updater (listens to shared theme module)
 // ============================================
 
-(function initThemeIcon() {
+/*(function initThemeIcon() {
   function updateThemeIcon(theme) {
     const themeToggle = document.getElementById('theme-toggle') || document.getElementById('themeToggle');
     if (!themeToggle) return;
@@ -22,7 +22,7 @@
   document.addEventListener('themechange', (e) => {
     updateThemeIcon(e.detail.theme);
   });
-})();
+})();*/
 
 // ============================================
 // Sticky Header (Hide on scroll down, show on scroll up)

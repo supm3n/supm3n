@@ -1,30 +1,21 @@
 // /assets/projects.js
-// Populates the Projects page with items from /api/projects (Pages Function) and
-// falls back to /projects.json if the API is not available.
+// Populates the Projects page from /projects.json (no API, no hardcoding).
 // Safe for static hosting; no secrets used on client.
 (function () {
   async function fetchProjects() {
-    // Try API first
+    // Read the static file, bypassing any edge/browser cache
     try {
-      const res = await fetch('/api/projects', { cache: 'no-store', headers: { 'accept': 'application/json' } });
+      const res = await fetch(`/projects.json?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: { 'accept': 'application/json' }
+      });
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data)) return data;
         if (data && Array.isArray(data.projects)) return data.projects;
       }
     } catch (e) {
-      console.warn('API failed, using fallback /projects.json', e);
-    }
-    // Fallback
-    try {
-      const res = await fetch('/projects.json', { cache: 'no-store', headers: { 'accept': 'application/json' } });
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data)) return data;
-        if (data && Array.isArray(data.projects)) return data.projects;
-      }
-    } catch (e) {
-      console.error('Fallback /projects.json failed', e);
+      console.error('Failed to load /projects.json', e);
     }
     return [];
   }
@@ -139,8 +130,7 @@
       </div>
     `).join('');
 
-    let items = await fetchProjects();
-    items = normalize(items);
+    let items = normalize(await fetchProjects());
 
     // small delay for skeleton
     await new Promise(r => setTimeout(r, 200));

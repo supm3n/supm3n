@@ -31,14 +31,8 @@ Classic Snake game playable in your browser with keyboard and mouse/touch contro
 
 ## Deployment
 
-Deploy to Cloudflare Pages:
-
-```bash
-cd snake
-wrangler pages deploy . --project-name snake
-```
-
-Or use the deployment script from the root directory.
+This project is deployed automatically from the monorepo root.
+See the main `README.md` or `docs/DEPLOYMENT.md` in the repository root for configuration details.
 
 ## Technology
 

@@ -109,291 +109,232 @@
       || document.querySelector('[data-theme-toggle]'))
       ?.addEventListener('click', toggleTheme);
   </script>
-  
-  <script>
-    // Load featured projects
-    (async function() {
-      const container = document.getElementById('featured-projects');
-      if (!container) return;
-      
-      // Show skeletons while loading
-      container.innerHTML = Array(3).fill(0).map(() => `
-        <div class="skeleton-project-card">
-          <div class="skeleton-project-card-header">
-            <div class="skeleton skeleton-project-icon"></div>
-            <div class="skeleton-project-info">
-              <div class="skeleton skeleton-project-title"></div>
-              <div class="skeleton skeleton-project-description"></div>
-              <div class="skeleton skeleton-project-description short"></div>
-            </div>
-          </div>
-          <div class="skeleton-project-meta">
-            <div class="skeleton skeleton-project-tag"></div>
-            <div class="skeleton skeleton-project-link"></div>
+
+<script>
+  // Load featured projects from /projects.json (no API).
+  (async function() {
+    const container = document.getElementById('featured-projects');
+    if (!container) return;
+    
+    // Show skeletons while loading
+    container.innerHTML = Array(3).fill(0).map(() => `
+      <div class="skeleton-project-card">
+        <div class="skeleton-project-card-header">
+          <div class="skeleton skeleton-project-icon"></div>
+          <div class="skeleton-project-info">
+            <div class="skeleton skeleton-project-title"></div>
+            <div class="skeleton skeleton-project-description"></div>
+            <div class="skeleton skeleton-project-description short"></div>
           </div>
         </div>
-      `).join('');
-      
-      let projects = [];
-      
-      try {
-        // Try API first
-        const response = await fetch('/api/projects', { cache: 'no-store' });
-        if (response.ok) {
-          const data = await response.json();
-          // Handle both array format and object with projects property
-          if (Array.isArray(data)) {
-            projects = data;
-          } else if (data && typeof data === 'object' && Array.isArray(data.projects)) {
-            projects = data.projects;
-          }
-        }
-      } catch (error) {
-        console.warn('API failed, trying projects.json fallback:', error);
-      }
-      
-      // Fallback to projects.json if API failed or returned no projects
-      if (!Array.isArray(projects) || projects.length === 0) {
-        try {
-          const response = await fetch('/projects.json', { cache: 'no-store' });
-          if (response.ok) {
-            const data = await response.json();
-            // Handle both array format and object with projects property
-            if (Array.isArray(data)) {
-              projects = data;
-            } else if (data && typeof data === 'object' && Array.isArray(data.projects)) {
-              projects = data.projects;
-            }
-          }
-        } catch (error) {
-          console.error('Failed to load projects from both API and JSON:', error);
-        }
-      }
-      
-      // Ensure projects is an array
-      if (!Array.isArray(projects)) {
-        projects = [];
-      }
-      
-      // Process projects - add defaults
-      projects = projects.map(project => {
-        // Ensure URL has trailing slash for consistency
-        const url = project.url && !project.url.endsWith('/') ? `${project.url}/` : project.url;
-        return {
-          ...project,
-          url: url,
-          tag: project.tag || 'project',
-          favicon: project.favicon || `${url}favicon.ico`
-        };
+        <div class="skeleton-project-meta">
+          <div class="skeleton skeleton-project-tag"></div>
+          <div class="skeleton skeleton-project-link"></div>
+        </div>
+      </div>
+    `).join('');
+    
+    let projects = [];
+
+    // Fetch ONLY the static JSON (bypass caches)
+    try {
+      const response = await fetch(`/projects.json?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: { 'accept': 'application/json' }
       });
-      
-      // Show first 6 projects
-      const FEATURED_COUNT = 6;
-      const featured = projects.slice(0, FEATURED_COUNT);
-
-      const viewAll = document.querySelector('[data-view-all]');
-      if (viewAll && projects.length <= FEATURED_COUNT) {
-        viewAll.hidden = true;
+      if (response.ok) {
+        const data = await response.json();
+        // Support both array or { projects: [...] }
+        projects = Array.isArray(data) ? data
+                 : (data && Array.isArray(data.projects) ? data.projects : []);
       }
+    } catch (error) {
+      console.error('Failed to load projects.json', error);
+    }
+    
+    // Ensure projects is an array
+    if (!Array.isArray(projects)) {
+      projects = [];
+    }
+    
+    // Process projects - add defaults
+    projects = projects.map(project => {
+      // Ensure URL has trailing slash for consistency
+      const url = project.url && !project.url.endsWith('/') ? `${project.url}/` : project.url;
+      return {
+        ...project,
+        url: url,
+        tag: project.tag || 'project',
+        favicon: project.favicon || `${url}favicon.ico`
+      };
+    });
+    
+    // Show first 6 projects
+    const FEATURED_COUNT = 6;
+    const featured = projects.slice(0, FEATURED_COUNT);
 
-      
-      // Small delay to show skeleton, then load actual content
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      if (featured.length === 0) {
-        container.innerHTML = '<p style="color: var(--color-text-muted);">No projects available yet.</p>';
-        return;
-      }
-      
-      container.innerHTML = featured.map(project => {
-        const safeName = escapeHtml(project.name);
-        const safeDescription = escapeHtml(project.description || '');
-        const safeTag = escapeHtml(project.tag || 'project');
-        const openLabel = escapeHtml(`Open ${project.name} in a new tab`);
-        return `
-          <article class="project-card reveal">
-            <a href="${project.url}" class="project-card-link" aria-label="Open ${safeName}">
-              <div class="project-card-header">
-                <img 
-                  class="project-icon" 
-                  src="${project.favicon}" 
-                  alt="${safeName} icon"
-                  loading="lazy"
-                  onerror="this.src='/assets/icons/android-chrome-192x192.png'"
-                />
-                <div class="project-info">
-                  <h3 class="project-title">${safeName}</h3>
-                  <p class="project-description">${safeDescription}</p>
-                </div>
+    const viewAll = document.querySelector('[data-view-all]');
+    if (viewAll && projects.length <= FEATURED_COUNT) {
+      viewAll.hidden = true;
+    }
+
+    // Small delay to show skeleton, then load actual content
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    if (featured.length === 0) {
+      container.innerHTML = '<p style="color: var(--color-text-muted);">No projects available yet.</p>';
+      return;
+    }
+    
+    container.innerHTML = featured.map(project => {
+      const safeName = escapeHtml(project.name);
+      const safeDescription = escapeHtml(project.description || '');
+      const safeTag = escapeHtml(project.tag || 'project');
+      const openLabel = escapeHtml(`Open ${project.name} in a new tab`);
+      return `
+        <article class="project-card reveal">
+          <a href="${project.url}" class="project-card-link" aria-label="Open ${safeName}">
+            <div class="project-card-header">
+              <img 
+                class="project-icon" 
+                src="${project.favicon}" 
+                alt="${safeName} icon"
+                loading="lazy"
+                onerror="this.src='/assets/icons/android-chrome-192x192.png'"
+              />
+              <div class="project-info">
+                <h3 class="project-title">${safeName}</h3>
+                <p class="project-description">${safeDescription}</p>
               </div>
-              <div class="project-meta">
-                <span class="project-tag">${safeTag}</span>
-                <span 
-                  class="project-link" 
-                  data-project-link 
-                  tabindex="0" 
-                  role="link" 
-                  aria-label="${openLabel}"
-                  title="Open in new tab"
-                >
-                  Open
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                  </svg>
-                </span>
-              </div>
-            </a>
-          </article>
-        `;
-      }).join('');
-      bindProjectLinkOpeners(container);
+            </div>
+            <div class="project-meta">
+              <span class="project-tag">${safeTag}</span>
+              <span 
+                class="project-link" 
+                data-project-link 
+                tabindex="0" 
+                role="link" 
+                aria-label="${openLabel}"
+                title="Open in new tab"
+              >
+                Open
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+              </span>
+            </div>
+          </a>
+        </article>
+      `;
+    }).join('');
+    bindProjectLinkOpeners(container);
+    
+    // Initialize magnetic effect for featured project cards
+    (function initMagneticCards() {
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) return;
       
-      // Initialize magnetic effect for featured project cards
-      (function initMagneticCards() {
-        // Check for reduced motion preference
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (prefersReducedMotion) return;
+      // Disable on touch devices
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      if (isTouchDevice) return;
+      
+      const cards = container.querySelectorAll('.project-card');
+      if (cards.length === 0) return;
+      
+      // Simplified magnetic effect parameters
+      const MAGNETIC_RADIUS = 200;
+      const MAX_MOVEMENT = 15;
+      const RETURN_SPEED = 0.2;
+      
+      cards.forEach(card => {
+        card.setAttribute('data-magnetic-active', 'true');
+        let currentX = 0;
+        let currentY = 0;
+        let targetX = 0;
+        let targetY = 0;
+        let animationId = null;
         
-        // Disable on touch devices
-        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-        if (isTouchDevice) return;
-        
-        const cards = container.querySelectorAll('.project-card');
-        if (cards.length === 0) return;
-        
-        // Simplified magnetic effect parameters
-        const MAGNETIC_RADIUS = 200;
-        const MAX_MOVEMENT = 15;
-        const RETURN_SPEED = 0.2;
-        
-        cards.forEach(card => {
-          card.setAttribute('data-magnetic-active', 'true');
-          let currentX = 0;
-          let currentY = 0;
-          let targetX = 0;
-          let targetY = 0;
-          let animationId = null;
+        function animate() {
+          // Smooth interpolation
+          currentX += (targetX - currentX) * RETURN_SPEED;
+          currentY += (targetY - currentY) * RETURN_SPEED;
           
-          function animate() {
-            // Smooth interpolation
-            currentX += (targetX - currentX) * RETURN_SPEED;
-            currentY += (targetY - currentY) * RETURN_SPEED;
-            
-            // Apply transform
-            if (Math.abs(currentX) > 0.1 || Math.abs(currentY) > 0.1) {
-              card.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-              animationId = requestAnimationFrame(animate);
-            } else {
-              // Stop animation when close enough to target
-              card.style.transform = '';
-              animationId = null;
-            }
+          // Apply transform
+          if (Math.abs(currentX) > 0.1 || Math.abs(currentY) > 0.1) {
+            card.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+            animationId = requestAnimationFrame(animate);
+          } else {
+            // Stop animation when close enough to target
+            card.style.transform = '';
+            animationId = null;
           }
+        }
+        
+        function onMouseMove(e) {
+          const rect = card.getBoundingClientRect();
+          const cardCenterX = rect.left + rect.width / 2;
+          const cardCenterY = rect.top + rect.height / 2;
           
-          function onMouseMove(e) {
-            const rect = card.getBoundingClientRect();
-            const cardCenterX = rect.left + rect.width / 2;
-            const cardCenterY = rect.top + rect.height / 2;
-            
-            const deltaX = e.clientX - cardCenterX;
-            const deltaY = e.clientY - cardCenterY;
-            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            
-            if (distance < MAGNETIC_RADIUS && distance > 0.1) {
-              // Calculate magnetic pull
-              const strength = 1 - (distance / MAGNETIC_RADIUS);
-              targetX = (deltaX / distance) * strength * MAX_MOVEMENT;
-              targetY = (deltaY / distance) * strength * MAX_MOVEMENT;
-            } else {
-              // Return to center
-              targetX = 0;
-              targetY = 0;
-            }
-            
-            // Start animation if not running
-            if (!animationId) {
-              animationId = requestAnimationFrame(animate);
-            }
-          }
+          const deltaX = e.clientX - cardCenterX;
+          const deltaY = e.clientY - cardCenterY;
+          const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
           
-          function onMouseLeave() {
+          if (distance < MAGNETIC_RADIUS && distance > 0.1) {
+            // Calculate magnetic pull
+            const strength = 1 - (distance / MAGNETIC_RADIUS);
+            targetX = (deltaX / distance) * strength * MAX_MOVEMENT;
+            targetY = (deltaY / distance) * strength * MAX_MOVEMENT;
+          } else {
+            // Return to center
             targetX = 0;
             targetY = 0;
-            if (!animationId) {
-              animationId = requestAnimationFrame(animate);
-            }
           }
           
-          // Attach listeners
-          card.addEventListener('mousemove', onMouseMove, { passive: true });
-          card.addEventListener('mouseleave', onMouseLeave, { passive: true });
-          
-          // Cleanup on page unload
-          window.addEventListener('beforeunload', () => {
-            if (animationId) {
-              cancelAnimationFrame(animationId);
-            }
-            card.removeEventListener('mousemove', onMouseMove);
-            card.removeEventListener('mouseleave', onMouseLeave);
-          });
-        });
-      })();
-      
-      // Trigger scroll reveal
-      setTimeout(() => {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-            }
-          });
-        }, { threshold: 0.1 });
+          // Start animation if not running
+          if (!animationId) {
+            animationId = requestAnimationFrame(animate);
+          }
+        }
         
-        container.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-      }, 100);
+        function onMouseLeave() {
+          targetX = 0;
+          targetY = 0;
+          if (!animationId) {
+            animationId = requestAnimationFrame(animate);
+          }
+        }
+        
+        // Attach listeners
+        card.addEventListener('mousemove', onMouseMove, { passive: true });
+        card.addEventListener('mouseleave', onMouseLeave, { passive: true });
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+          if (animationId) {
+            cancelAnimationFrame(animationId);
+          }
+          card.removeEventListener('mousemove', onMouseMove);
+          card.removeEventListener('mouseleave', onMouseLeave);
+        });
+      });
     })();
     
-    function bindProjectLinkOpeners(root) {
-      if (!root) return;
-
-      root.querySelectorAll('.project-link[data-project-link]').forEach(link => {
-        if (link.dataset.linkBound === 'true') return;
-
-        const parentAnchor = link.closest('a.project-card-link');
-        if (!parentAnchor || !parentAnchor.href) return;
-
-        const openInNewTab = (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          event.stopImmediatePropagation?.();
-          window.open(parentAnchor.href, '_blank', 'noopener');
-        };
-
-        link.addEventListener('click', openInNewTab);
-        link.addEventListener('keydown', (event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            openInNewTab(event);
+    // Trigger scroll reveal
+    setTimeout(() => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
           }
         });
+      }, { threshold: 0.1 });
+      
+      container.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    }, 100);
+  })();
+</script>
 
-        link.dataset.linkBound = 'true';
-      });
-    }
-    
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-    
-    // Update last updated date
-    document.addEventListener('DOMContentLoaded', () => {
-      const lastUpdatedEl = document.getElementById('last-updated');
-      if (lastUpdatedEl) {
-        lastUpdatedEl.textContent = new Date().toLocaleDateString();
-      }
-    });
-  </script>
+  
 </body>
 </html>
