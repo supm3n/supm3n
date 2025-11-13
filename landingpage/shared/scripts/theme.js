@@ -53,10 +53,21 @@ export function toggleTheme() {
         : '<path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>';
   }
 
-  // Render icon on load
-  const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-  updateThemeToggleIcon(currentTheme);
+  // --- START OF FIX ---
+  // Function to run on load
+  function drawIcon() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    updateThemeToggleIcon(currentTheme);
+  }
 
+  // Wait for the DOM to be ready before drawing the icon
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', drawIcon);
+  } else {
+    drawIcon(); // DOM is already ready
+  }
+  // --- END OF FIX ---
+  
   // Listen for theme changes
   document.addEventListener('themechange', (event) => {
     updateThemeToggleIcon(event?.detail?.theme || document.documentElement.getAttribute('data-theme'));
