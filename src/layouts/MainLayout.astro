@@ -8,7 +8,7 @@ import '../styles/global.css';
 // 2. IMPORT THEME VARIABLES (Required for SettleUp)
 import '../styles/theme.css'; 
 
-const { title } = Astro.props;
+const { title, description = "Supm3n - Build lean tools, fast visuals, and little internet contraptions." } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -16,6 +16,7 @@ const { title } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} /> <title>{title} | Supm3n</title>
     <title>{title} | Supm3n</title>
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

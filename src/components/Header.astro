@@ -3,16 +3,14 @@ const pathname = new URL(Astro.request.url).pathname;
 ---
 
 <header class="site-header">
-  <div class="container">
+  <div class="header-fluid">
     <div class="header-inner">
       
-      <!-- Brand -->
       <a href="/" class="brand" aria-label="Supm3n Home">
-        <img src="/logo.png" alt="" class="brand-logo" width="36" height="36" />
+        <img src="/logo.png" alt="Supm3n Logo" class="brand-logo" width="36" height="36" />
         <span class="brand-name">Supm3n</span>
       </a>
 
-      <!-- Navigation -->
       <nav class="main-nav">
         <a href="/" class={`nav-link ${pathname === '/' ? 'active' : ''}`}>
           Home
@@ -25,7 +23,6 @@ const pathname = new URL(Astro.request.url).pathname;
         </a>
       </nav>
 
-      <!-- Theme Toggle -->
       <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
         <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
           <circle cx="12" cy="12" r="5"></circle>
@@ -48,8 +45,6 @@ const pathname = new URL(Astro.request.url).pathname;
 </header>
 
 <style>
-  /* Header Styles (Copied exactly from your components.css) */
-  
   .site-header {
     position: sticky;
     top: 0;
@@ -62,12 +57,21 @@ const pathname = new URL(Astro.request.url).pathname;
     transition: transform var(--transition-base);
   }
   
+  /* Fluid container overrides the global max-width */
+  .header-fluid {
+    width: 100%;
+    padding: 0 var(--space-md);
+    margin: 0 auto;
+  }
+  
   .header-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: var(--header-height);
     gap: var(--space-md);
+    max-width: 1200px; /* Optional: Keep inner content constrained if desired, or remove for full fluid */
+    margin: 0 auto;
   }
   
   .brand {
@@ -184,6 +188,6 @@ const pathname = new URL(Astro.request.url).pathname;
   @media (max-width: 768px) {
     .main-nav { gap: var(--space-xs); }
     .nav-link { padding: var(--space-xs) var(--space-sm); font-size: var(--text-xs); }
-    .brand-name { display: none; } /* Hide text to fit on small screens if needed */
+    .brand-name { display: none; } 
   }
 </style>

@@ -1,10 +1,9 @@
 ---
-// src/components/Footer.astro
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
-  <div class="container">
+  <div class="footer-fluid">
     <div class="footer-inner">
       
       <div class="footer-left">
@@ -28,14 +27,15 @@ const year = new Date().getFullYear();
     padding: 2rem 0;
     width: 100%;
     border-top: 1px solid var(--glass-border);
-    background: var(--glass-bg); /* Uses the glass variable */
+    background: var(--glass-bg);
     backdrop-filter: blur(12px);
   }
 
-  .container {
-    max-width: 1200px;
+  /* Fluid container */
+  .footer-fluid {
+    width: 100%;
+    padding: 0 var(--space-md);
     margin: 0 auto;
-    padding: 0 1.5rem;
   }
 
   .footer-inner {
@@ -44,6 +44,8 @@ const year = new Date().getFullYear();
     align-items: center;
     flex-wrap: wrap;
     gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
   .footer-left {
