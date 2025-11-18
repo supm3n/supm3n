@@ -7,15 +7,82 @@ const year = new Date().getFullYear();
   <div class="container">
     <div class="footer-inner">
       
-      <div class="footer-copyright">
-        <p>&copy; {year} Supm3n. All rights reserved.</p>
+      <div class="footer-left">
+        <a href="/" class="footer-brand">Supm3n</a>
+        <span class="copyright">&copy; {year}</span>
       </div>
 
       <div class="footer-links">
-        <a href="https://github.com/supm3n/supm3n" target="_blank">GitHub</a>
-        <a href="/">Home</a>
+        <a href="/uses">Uses</a>
+        <a href="/privacy">Privacy</a>
+        <a href="mailto:contact@supm3n.com">Contact</a>
       </div>
 
     </div>
   </div>
 </footer>
+
+<style>
+  .site-footer {
+    margin-top: 4rem;
+    padding: 2rem 0;
+    width: 100%;
+    border-top: 1px solid var(--glass-border);
+    background: var(--glass-bg); /* Uses the glass variable */
+    backdrop-filter: blur(12px);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .footer-brand {
+    font-weight: 700;
+    color: var(--color-text-primary);
+    text-decoration: none;
+  }
+
+  .copyright {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .footer-links a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+    font-size: 0.95rem;
+  }
+
+  .footer-links a:hover {
+    color: var(--color-text-primary);
+  }
+
+  @media (max-width: 600px) {
+    .footer-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>

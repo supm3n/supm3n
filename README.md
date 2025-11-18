@@ -1,43 +1,39 @@
-# Astro Starter Kit: Minimal
+# Supm3n Portfolio & Monorepo
 
-```sh
-npm create astro@latest -- --template minimal
-```
+This repository hosts the personal portfolio and hobby projects for **Supm3n**. It serves as a monorepo for various web tools and games, migrated from a Vanilla JS setup to **Astro** for better performance and maintainability.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+![Astro](https://img.shields.io/badge/astro-%232C2052.svg?style=for-the-badge&logo=astro&logoColor=white)
+![Cloudflare Pages](https://img.shields.io/badge/Cloudflare%20Pages-F38020?style=for-the-badge&logo=Cloudflare%20Pages&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 
-## 🚀 Project Structure
+## 🏗 Architecture
 
-Inside of your Astro project, you'll see the following folders and files:
+The site acts as a shell for multiple independent mini-projects. It uses **Astro** for the static site generation (SSG) and **Cloudflare Pages Functions** for server-side logic (API proxying).
+
+-   **Framework:** [Astro](https://astro.build) (Static Build)
+-   **Styling:** Global CSS variables (Theme) + Scoped Component Styles.
+-   **Deployment:** Cloudflare Pages (Git Integration).
+-   **Backend:** Cloudflare Functions (`/functions` directory) running on the Edge.
+
+## 📂 Directory Structure
+
+For AI Context: Projects are located in `src/pages/[project-name]`. Shared logic is in `src/layouts`.
 
 ```text
 /
-├── public/
+├── functions/              # Cloudflare Edge Functions (Backend API)
+│   └── api/
+│       └── price/          # Stock Viewer API Proxy & Caching
+├── public/                 # Static assets (icons, logos, manifest)
 ├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+│   ├── components/         # Shared UI (Header, Footer)
+│   ├── layouts/            # MainLayout (Handles <head>, Theme, Navigation)
+│   ├── scripts/            # Client-side logic (Theme toggling)
+│   ├── styles/             # Global CSS and Variables
+│   └── pages/              # Routes
+│       ├── index.astro     # Landing Page
+│       ├── projects.astro  # Project directory list
+│       ├── settleup/       # Project: SettleUp (Expense Splitter)
+│       ├── snake/          # Project: Snake Game
+│       └── stock-viewer/   # Project: Stock Chart Viewer
+└── astro.config.mjs        # Astro configuration

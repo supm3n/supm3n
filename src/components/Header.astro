@@ -1,63 +1,189 @@
 ---
-// src/components/Header.astro
 const pathname = new URL(Astro.request.url).pathname;
-const currentPath = pathname.slice(1); // remove the first "/"
 ---
 
 <header class="site-header">
   <div class="container">
     <div class="header-inner">
       
-      <!-- 1. Logo / Brand (Links to Home) -->
+      <!-- Brand -->
       <a href="/" class="brand" aria-label="Supm3n Home">
-        <!-- Assuming you have a logo.png in /public, otherwise remove the img tag -->
         <img src="/logo.png" alt="" class="brand-logo" width="36" height="36" />
         <span class="brand-name">Supm3n</span>
       </a>
 
-      <!-- 2. Main Navigation -->
+      <!-- Navigation -->
       <nav class="main-nav">
-        <a 
-          href="/" 
-          class={`nav-link ${pathname === '/' ? 'active' : ''}`}
-        >
+        <a href="/" class={`nav-link ${pathname === '/' ? 'active' : ''}`}>
           Home
         </a>
-
-        <a 
-          href="/projects" 
-          class={`nav-link ${pathname.startsWith('/projects') || pathname.startsWith('/settleup') || pathname.startsWith('/snake') || pathname.startsWith('/stock-viewer') ? 'active' : ''}`}
-        >
+        <a href="/projects" class={`nav-link ${pathname.startsWith('/projects') || pathname.startsWith('/settleup') || pathname.startsWith('/stock-viewer') ? 'active' : ''}`}>
           Projects
         </a>
-
-        <a 
-          href="/uses" 
-          class={`nav-link ${pathname.startsWith('/uses') ? 'active' : ''}`}
-        >
+        <a href="/uses" class={`nav-link ${pathname.startsWith('/uses') ? 'active' : ''}`}>
           Uses
         </a>
-
-        <!-- 3. Theme Toggle Button -->
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-          <!-- Sun Icon (shown in light mode) -->
-          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-          <!-- Moon Icon (shown in dark mode) -->
-          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        </button>
       </nav>
+
+      <!-- Theme Toggle -->
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+
     </div>
   </div>
 </header>
+
+<style>
+  /* Header Styles (Copied exactly from your components.css) */
+  
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border-bottom: 1px solid var(--glass-border);
+    transition: transform var(--transition-base);
+  }
+  
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-height);
+    gap: var(--space-md);
+  }
+  
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-weight: 700;
+    font-size: var(--text-lg);
+    letter-spacing: -0.02em;
+    transition: transform var(--transition-fast);
+    line-height: 1;
+    text-decoration: none;
+    color: var(--color-text-primary);
+  }
+  
+  .brand:hover {
+    transform: translateX(2px);
+  }
+  
+  .brand-logo {
+    width: 36px;
+    height: 36px;
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.4));
+    transition: filter var(--transition-base);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    padding: 4px;
+  }
+  
+  [data-theme="light"] .brand-logo {
+    background: rgba(0, 0, 0, 0.03);
+  }
+  
+  .brand:hover .brand-logo {
+    filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.6));
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  [data-theme="light"] .brand:hover .brand-logo {
+    background: rgba(0, 0, 0, 0.05);
+  }
+  
+  .main-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+  
+  .nav-link {
+    position: relative;
+    padding: var(--space-xs) var(--space-md);
+    border-radius: 8px;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--transition-fast), background var(--transition-fast);
+  }
+  
+  .nav-link:hover,
+  .nav-link:focus-visible {
+    color: var(--color-text-primary);
+    background: var(--color-surface-1);
+    outline: none;
+  }
+  
+  .nav-link.active {
+    color: var(--color-text-primary);
+  }
+  
+  .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: var(--space-md);
+    right: var(--space-md);
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-accent-start), var(--color-accent-end));
+    border-radius: 2px 2px 0 0;
+    animation: slideIn var(--transition-base);
+  }
+  
+  @keyframes slideIn {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  
+  .theme-toggle {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: var(--color-surface-1);
+    border: 1px solid var(--glass-border);
+    color: var(--color-text-muted);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+  }
+  
+  .theme-toggle:hover,
+  .theme-toggle:focus-visible {
+    color: var(--color-text-primary);
+    background: var(--color-surface-2);
+    border-color: var(--glass-border);
+    outline: none;
+    transform: scale(1.05);
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .main-nav { gap: var(--space-xs); }
+    .nav-link { padding: var(--space-xs) var(--space-sm); font-size: var(--text-xs); }
+    .brand-name { display: none; } /* Hide text to fit on small screens if needed */
+  }
+</style>
