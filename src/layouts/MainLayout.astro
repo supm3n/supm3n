@@ -1,0 +1,51 @@
+---
+// src/layouts/MainLayout.astro
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+// 1. IMPORT GLOBAL STYLES
+import '../styles/global.css'; 
+// 2. IMPORT THEME VARIABLES (Required for SettleUp)
+import '../styles/theme.css'; 
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} | Supm3n</title>
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    
+    <!-- Initialize Theme Logic immediately to prevent flash -->
+    <script>
+       import { initThemeIcon } from '../scripts/theme.js';
+       // Run immediately
+       initThemeIcon();
+    </script>
+  </head>
+  <body>
+    <Header /> 
+    
+    <slot /> 
+
+    <Footer />
+    
+    <!-- Logic for the Theme Button Click -->
+    <script>
+        import { toggleTheme, initThemeIcon } from '../scripts/theme.js';
+        
+        // Run icon logic again just in case DOM wasn't ready
+        initThemeIcon();
+
+        const themeBtn = document.getElementById('theme-toggle') 
+                         || document.getElementById('themeToggle') 
+                         || document.querySelector('[data-theme-toggle]');
+                         
+        if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
+    </script>
+  </body>
+</html>

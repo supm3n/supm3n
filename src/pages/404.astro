@@ -1,0 +1,19 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout title="404 — Page Not Found">
+  <main id="main-content" role="main">
+    <section class="projects-section" style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+      <div class="container">
+        <div class="text-center">
+          <h1 style="font-size: 3rem; margin-bottom: 1.5rem;">404</h1>
+          <p style="font-size: 1.25rem; color: var(--color-text-muted); margin-bottom: 2rem;">
+            The page you're looking for doesn't exist.
+          </p>
+          <a href="/" class="btn-primary" style="padding: 10px 20px; text-decoration: none; border-radius: 8px;">Go Home</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</MainLayout>

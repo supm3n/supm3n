@@ -1,0 +1,71 @@
+/* src/styles/theme.css */
+:root {
+  /* Dark theme (default) */
+  --bg: var(--color-base, #0B0C10);
+  --fg: var(--color-text-primary, #E6E9F0);
+  --surface: var(--color-surface-1, #151820);
+  --surface-2: var(--color-surface-2, #1A1F2C);
+  --surface-3: var(--color-surface-3, #1F2430);
+  --muted: var(--color-text-muted, #A9B1C6);
+  --link: var(--color-accent-end, #06B6D4);
+  --border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(21, 24, 32, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] {
+  --bg: var(--color-base, #0B0C10);
+  --fg: var(--color-text-primary, #E6E9F0);
+  --surface: var(--color-surface-1, #151820);
+  --surface-2: var(--color-surface-2, #1A1F2C);
+  --surface-3: var(--color-surface-3, #1F2430);
+  --muted: var(--color-text-muted, #A9B1C6);
+  --link: var(--color-accent-end, #06B6D4);
+  --border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(21, 24, 32, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] {
+  --bg: var(--color-base-light, #F5F5F5);
+  --fg: var(--color-text-primary-light, #0B0C10);
+  --surface: var(--color-surface-1-light, #FFFFFF);
+  --surface-2: var(--color-surface-2-light, #F9FAFB);
+  --surface-3: var(--color-surface-3-light, #F3F4F6);
+  --muted: var(--color-text-muted-light, #6B7280);
+  --link: var(--color-accent-start, #2563EB);
+  --border: rgba(0, 0, 0, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --bg: var(--color-base-light, #F5F5F5);
+    --fg: var(--color-text-primary-light, #0B0C10);
+    --surface: var(--color-surface-1-light, #FFFFFF);
+    --surface-2: var(--color-surface-2-light, #F9FAFB);
+    --surface-3: var(--color-surface-3-light, #F3F4F6);
+    --muted: var(--color-text-muted-light, #6B7280);
+    --link: var(--color-accent-start, #2563EB);
+    --border: rgba(0, 0, 0, 0.12);
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Apply theme to root elements */
+html, body { 
+  background: var(--bg); 
+  color: var(--fg); 
+}
+
+a { 
+  color: var(--link); 
+}
+
+.card, .section, .panel, .content, .wrapper, .container {
+  background: var(--surface);
+  color: var(--fg);
+  border-color: var(--border);
+}

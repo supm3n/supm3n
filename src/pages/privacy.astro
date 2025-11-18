@@ -1,0 +1,63 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+const lastUpdated = new Date().toLocaleDateString();
+---
+
+<MainLayout title="Privacy Policy">
+  <main id="main-content" role="main">
+    <section class="projects-section">
+      <div class="container">
+        <div class="content-page">
+          <div class="section-header">
+            <h2 class="section-title">Privacy Policy</h2>
+          </div>
+
+          <div class="reveal" style="line-height: 1.8;">
+            <p class="content-meta">
+              Last updated: <time>{lastUpdated}</time>
+            </p>
+
+            <div class="content-section">
+              <h3>Overview</h3>
+              <p>This website respects your privacy. This policy explains what data is collected and how it's used.</p>
+            </div>
+
+            <div class="content-section">
+              <h3>Data Collection</h3>
+              <p>This site collects minimal data:</p>
+              <ul class="content-list-bulleted">
+                <li>Basic analytics (if enabled) - page views, referrers, general location</li>
+                <li>Form submissions - if you contact me, I'll receive your message</li>
+                <li>Local storage - theme preferences are stored in your browser</li>
+              </ul>
+            </div>
+
+            <div class="content-section">
+              <h3>Third-Party Services</h3>
+              <p>This site may use:</p>
+              <ul class="content-list-bulleted">
+                <li>Cloudflare - for hosting and CDN services</li>
+                <li>Google Fonts - for web fonts (may collect IP addresses)</li>
+              </ul>
+            </div>
+
+            <div class="content-section">
+              <h3>Your Rights</h3>
+              <p>You have the right to:</p>
+              <ul class="content-list-bulleted">
+                <li>Request access to your data</li>
+                <li>Request deletion of your data</li>
+                <li>Opt out of data collection where possible</li>
+              </ul>
+            </div>
+
+            <div class="content-section">
+              <h3>Contact</h3>
+              <p>If you have questions about this privacy policy, please reach out through other channels.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</MainLayout>

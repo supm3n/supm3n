@@ -1,0 +1,107 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+
+// Define your projects here
+const projects = [
+  {
+    name: "Stocks Viewer",
+    description: "Real-time stock charts using Alpha Vantage data.",
+    url: "/stock-viewer",
+    tag: "Finance",
+    icon: "📈"
+  },
+  {
+    name: "Settle Up",
+    description: "A tool to split expenses (Ephemeral). No data is saved.",
+    url: "/settleup",
+    tag: "Tool",
+    icon: "💰"
+  },
+  {
+    name: "Snake",
+    description: "Classic snake game built with Vanilla JS.",
+    url: "/snake",
+    tag: "Game",
+    icon: "🐍"
+  }
+];
+---
+
+<MainLayout title="Projects — Supm3n">
+  <main id="main-content" role="main">
+    <section class="projects-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">
+            All Projects
+            <!-- Simple CSS-only health indicator -->
+            <span class="health-indicator" aria-label="System status"></span>
+          </h2>
+        </div>
+
+        <div class="projects-grid">
+          {projects.map((project) => (
+            <article class="project-card reveal">
+              <a href={project.url} class="project-card-link" aria-label={`Open ${project.name}`}>
+                <div class="project-card-header">
+                  <!-- Render Icon -->
+                   <div class="project-icon-wrapper">
+                     {project.icon.includes('.') ? (
+                        <img class="project-icon" src={project.icon} alt={project.name} />
+                     ) : (
+                        <div class="project-icon-emoji">{project.icon}</div>
+                     )}
+                   </div>
+                  
+                  <div class="project-info">
+                    <h3 class="project-title">{project.name}</h3>
+                    <p class="project-description">{project.description}</p>
+                  </div>
+                </div>
+                <div class="project-meta">
+                  <span class="project-tag">{project.tag}</span>
+                  <span class="project-link">
+                    Open
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                    </svg>
+                  </span>
+                </div>
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+</MainLayout>
+
+<style>
+  /* Add the health indicator style locally */
+  .health-indicator {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; background: #10B981;
+    box-shadow: 0 0 8px #10B981; margin-left: 10px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.5; }
+  }
+
+  .project-icon-emoji {
+    font-size: 2rem;
+    background: rgba(255,255,255,0.08);
+    border-radius: 14px;
+    width: 56px; height: 56px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  
+  /* Ensure grid looks good */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+</style>

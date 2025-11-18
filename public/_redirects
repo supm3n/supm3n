@@ -1,0 +1,10 @@
+# Cloudflare Pages redirects
+# These rules serve the .html file for a "friendly" URL
+
+/projects /projects.html 200
+/uses /uses.html 200
+/now /now.html 200
+/contact /contact.html 200
+/privacy /privacy.html 200
+
+# API routes are handled by functions/

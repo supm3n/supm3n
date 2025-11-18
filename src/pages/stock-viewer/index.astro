@@ -1,0 +1,331 @@
+---
+// src/pages/stock-viewer/index.astro
+import MainLayout from '../../layouts/MainLayout.astro';
+---
+
+<MainLayout title="Stock Chart">
+  <!-- Chart.js CDN -->
+  <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <div class="container stocks-page-container">
+    <section class="hero">
+      <h1 class="hero-title">Stock Viewer</h1>
+    </section>
+
+    <section class="toolbar">
+      <label class="sr-only" for="symbol-select">Select Stock</label>
+      <select id="symbol-select" class="search-input" style="min-width: 200px; cursor: pointer;">
+        <option value="">Select a stock...</option>
+        <option value="AAPL">Apple (AAPL)</option>
+        <option value="MSFT">Microsoft (MSFT)</option>
+        <option value="GOOGL">Alphabet (GOOGL)</option>
+        <option value="AMZN">Amazon (AMZN)</option>
+        <option value="TSLA">Tesla (TSLA)</option>
+        <option value="META">Meta (META)</option>
+        <option value="NVDA">NVIDIA (NVDA)</option>
+        <option value="JPM">JPMorgan (JPM)</option>
+        <option value="V">Visa (V)</option>
+        <option value="JNJ">Johnson & Johnson (JNJ)</option>
+        <option value="WMT">Walmart (WMT)</option>
+        <option value="PG">Procter & Gamble (PG)</option>
+        <option value="MA">Mastercard (MA)</option>
+        <option value="DIS">Disney (DIS)</option>
+        <option value="NFLX">Netflix (NFLX)</option>
+      </select>
+      
+      <label class="sr-only" for="symbol">Or enter custom symbol</label>
+      <input 
+        id="symbol" 
+        class="search-input" 
+        placeholder="Or enter symbol (e.g. TSLA)" 
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button id="load" class="btn">Load Chart</button>
+    </section>
+
+    <div id="error-banner" style="display: none;"></div>
+
+    <div id="chart-wrap">
+      <canvas id="chart"></canvas>
+    </div>
+  </div>
+</MainLayout>
+
+<style is:global>
+  /* Stock Viewer CSS */
+  
+  /* Reuse global variables from theme.css where possible */
+  :root {
+    --stocks-accent: var(--color-accent-start);
+    --stocks-accent-end: var(--color-accent-end);
+    --stocks-card-bg: var(--color-surface-1);
+  }
+
+  .stocks-page-container {
+    padding-top: 2rem; 
+    padding-bottom: 3rem;
+  }
+
+  .hero-title {
+    margin: 0 0 1.5rem 0;
+    font-size: clamp(28px, 5vw, 40px);
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--stocks-accent) 50%, var(--stocks-accent-end) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Chart Wrapper */
+  #chart-wrap {
+    height: min(86vh, 920px);
+    width: 100%;
+    margin: 1.5rem auto;
+    padding: 1.5rem;
+    background: var(--stocks-card-bg);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  #chart-wrap:hover {
+    box-shadow: 0 12px 40px rgba(124, 58, 237, 0.2), 0 4px 16px rgba(0, 0, 0, 0.3);
+    border-color: var(--stocks-accent);
+  }
+
+  #chart { width: 100%; height: 100%; }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  /* Inputs */
+  .search-input {
+    min-width: 280px;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: var(--color-surface-2);
+    color: var(--color-text-primary);
+    outline: none;
+    font-size: 0.9375rem;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  select.search-input {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a9b1c6' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+  }
+
+  .search-input:focus-visible,
+  select.search-input:focus-visible {
+    border-color: var(--stocks-accent);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+    background: var(--stocks-card-bg);
+  }
+
+  /* Button */
+  .btn {
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: linear-gradient(135deg, var(--stocks-accent), var(--stocks-accent-end));
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+  }
+
+  .btn:hover, .btn:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4);
+    outline: none;
+  }
+  
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  /* Error Banner */
+  #error-banner {
+    max-width: 1100px;
+    margin: 10px auto;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-red-cape);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.2);
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    #chart-wrap { padding: 1rem; margin: 1rem auto; }
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .search-input { width: 100%; min-width: auto; }
+    .btn { width: 100%; }
+  }
+</style>
+
+<script>
+  // Stock Viewer Logic
+  document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('symbol');
+    const selectEl = document.getElementById('symbol-select');
+    const loadBtn = document.getElementById('load');
+    const chartCanvas = document.getElementById('chart');
+    
+    if (!chartCanvas) return; // Safety check
+
+    const ctx = chartCanvas.getContext('2d');
+    let chart;
+
+    function normalizeSymbol(raw){
+      let s = String(raw || '').trim().toUpperCase();
+      if (s === 'APPL') s = 'AAPL';
+      return s;
+    }
+
+    function getSymbol(){
+      const fromInput = input && input.value ? input.value.trim() : '';
+      const fromSelect = selectEl && selectEl.value ? selectEl.value : '';
+      return normalizeSymbol(fromInput || fromSelect || '');
+    }
+
+    function pickSeries(json){
+      return json['Time Series (Daily)']
+          || json['Time Series (Digital Currency Daily)']
+          || json['Time Series (5min)']
+          || json['Time Series (60min)']
+          || null;
+    }
+
+    function toRows(series){
+      const rows = Object.entries(series).map(([date, o]) => ({
+        date,
+        close: Number(o['4. close'] || o['4a. close (USD)'] || o['5. adjusted close'] || 0)
+      }));
+      rows.sort((a,b)=> new Date(a.date) - new Date(b.date));
+      return rows;
+    }
+
+    function showError(msg){
+      const el = document.getElementById('error-banner');
+      if(el){
+        el.textContent = msg;
+        el.style.display = 'block';
+      }
+    }
+
+    function clearError(){
+      const el = document.getElementById('error-banner');
+      if (el) {
+        el.textContent = '';
+        el.style.display = 'none';
+      }
+    }
+
+    async function fetchSymbol(symbol){
+      // Call the Cloudflare Function we created in Step 1
+      const r = await fetch(`/api/price/${encodeURIComponent(symbol)}`);
+      
+      if (!r.ok) {
+        const text = await r.text();
+        let json;
+        try { json = JSON.parse(text); } catch(e) { /* ignore */ }
+        const msg = json?.message || json?.error || `HTTP Error ${r.status}`;
+        throw new Error(msg);
+      }
+
+      const json = await r.json();
+      
+      if (json.Note) throw new Error(json.Note);
+      if (json['Error Message']) throw new Error(json['Error Message']);
+      
+      const series = pickSeries(json);
+      if(!series || !Object.keys(series).length) {
+        throw new Error('No data available for this symbol.');
+      }
+      
+      return toRows(series);
+    }
+
+    function render(rows, symbol){
+      if(!ctx) return;
+      const labels = rows.map(r=>r.date);
+      const data = rows.map(r=>r.close);
+      
+      // @ts-ignore - Chart is loaded via CDN in the HTML head
+      if(chart){ chart.destroy(); }
+      
+      // @ts-ignore
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: { labels, datasets: [{ label: symbol.toUpperCase(), data, fill:false, tension:0.2, borderColor: '#7c3aed', pointBackgroundColor: '#06b6d4' }] },
+        options: {
+          maintainAspectRatio: false,
+          responsive: true,
+          interaction: { mode:'index', intersect:false },
+          plugins: { 
+            legend: { display: true, labels: { color: '#a9b1c6' } }, 
+            title: { display: false } 
+          },
+          scales: { 
+            x: { ticks: { maxTicksLimit: 12, color: '#a9b1c6' }, grid: { color: 'rgba(255,255,255,0.05)' } }, 
+            y: { beginAtZero: false, ticks: { color: '#a9b1c6' }, grid: { color: 'rgba(255,255,255,0.05)' } } 
+          }
+        }
+      });
+    }
+
+    async function load(){
+      clearError();
+      const symbol = getSymbol();
+      if(!symbol){ 
+        showError('Please select a stock or enter a symbol.'); 
+        return; 
+      }
+      try{
+        if (loadBtn) { loadBtn.disabled = true; loadBtn.textContent = 'Loading…'; }
+        const rows = await fetchSymbol(symbol);
+        render(rows, symbol);
+      }catch(err){
+        showError(`Error: ${err.message}`);
+      }finally{
+        if (loadBtn) { loadBtn.disabled = false; loadBtn.textContent = 'Load Chart'; }
+      }
+    }
+
+    if (loadBtn) loadBtn.addEventListener('click', load);
+    if (input) input.addEventListener('keydown', (e)=>{ 
+      if(e.key==='Enter') {
+        e.preventDefault();
+        load(); 
+      }
+    });
+  });
+</script>
