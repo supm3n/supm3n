@@ -37,3 +37,39 @@ For AI Context: Projects are located in `src/pages/[project-name]`. Shared logic
 │       ├── snake/          # Project: Snake Game
 │       └── stock-viewer/   # Project: Stock Chart Viewer
 └── astro.config.mjs        # Astro configuration
+
+## 🚀 Getting Started
+
+To run this portfolio locally, you need Node.js installed.
+
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/supm3n/supm3n.git](https://github.com/supm3n/supm3n.git)
+    cd supm3n
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
+    The site will be available at `http://localhost:4321`.
+
+4.  **Environment Variables:**
+    Create a `.env` file in the root for API keys (e.g., for the Stock Viewer):
+    ```env
+    ALPHA_KEY=your_alpha_vantage_key
+    ```
+
+## 🛠 How to Add a New Tool
+
+This is a monorepo structure. To add a new mini-project:
+
+1.  Create a new directory in `src/pages/my-new-tool`.
+2.  Create an `index.astro` file inside that folder.
+3.  Import the `MainLayout` to keep styling consistent.
+4.  Add the project metadata to `src/pages/projects.astro` so it appears in the grid.

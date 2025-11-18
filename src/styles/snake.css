@@ -1,213 +1,268 @@
-
-  /* ---------------------------------------------------------
-     1. HEADER & FOOTER OVERRIDES (From your old index.html)
+/* ---------------------------------------------------------
+     1. HEADER & FOOTER OVERRIDES
      --------------------------------------------------------- */
-  :root {
-    --snake-header-height: 72px;
-  }
+:root {
+  --snake-header-height: 72px;
+}
 
-  /* Force header to be sticky and solid for the game */
-  body .site-header {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 100 !important;
-    background: var(--glass-bg, rgba(15, 17, 20, 0.8)) !important;
-    backdrop-filter: blur(12px) saturate(180%) !important;
-    border-bottom: 1px solid var(--glass-border) !important;
-  }
+/* Force header to be sticky and solid for the game */
+body .site-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  background: var(--glass-bg, rgba(15, 17, 20, 0.8)) !important;
+  backdrop-filter: blur(12px) saturate(180%) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+}
 
-  /* Hide Footer on mobile to maximize game space */
-  @media (max-width: 768px), (max-height: 900px) {
-    body footer.site-footer {
-      display: none !important;
-    }
-  }
+/* Hide Footer completely to maximize game space */
+body footer.site-footer {
+  display: none !important;
+}
 
-  /* Compact footer on desktop */
-  body footer.site-footer {
-    margin-top: 0.25rem !important;
-    padding: 0.5rem 0 !important;
-    min-height: auto !important;
-    background: transparent !important;
-    border-top: 1px solid var(--glass-border) !important;
-  }
-
-  /* ---------------------------------------------------------
-     2. GAME SPECIFIC STYLES (From your old styles.css)
+/* ---------------------------------------------------------
+     2. GAME SPECIFIC STYLES
      --------------------------------------------------------- */
-  
-  /* Layout Fixes */
-  .snake-page {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    justify-content: center;
-    min-height: 0;
-  }
 
+/* Layout Fixes - 100% Viewport Height */
+.snake-page {
+  height: calc(100vh - var(--snake-header-height));
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  /* Prevent scrolling */
+  padding: 1rem;
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 1rem;
+  flex-shrink: 0;
+}
+
+.game-header h1 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  margin-bottom: 0.25rem;
+  background: linear-gradient(135deg, #10B981, #06B6D4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.game-header p {
+  color: var(--color-text-muted);
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  margin: 0;
+  opacity: 0.8;
+}
+
+.game-container {
+  max-width: 600px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  max-height: 800px;
+}
+
+/* Score Board */
+.game-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.score-display {
+  display: flex;
+  gap: 2rem;
+}
+
+.score-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.score-label {
+  font-size: 0.7rem;
+  color: #10B981;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.score-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: #fff;
+  line-height: 1;
+}
+
+.game-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.btn-primary {
+  background: #10B981;
+  color: #000;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+/* Canvas Wrapper */
+.game-wrapper {
+  position: relative;
+  background: #000;
+  border: 2px solid #10B981;
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.15);
+  flex: 1;
+  /* Take remaining space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+#game-canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Overlays (Game Over / Start) */
+.game-over,
+.game-start {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid #10B981;
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  width: 80%;
+  max-width: 300px;
+}
+
+.hidden {
+  display: none;
+}
+
+.game-over h2,
+.game-start h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #10B981;
+  text-transform: uppercase;
+}
+
+.final-score {
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.final-score span {
+  color: #10B981;
+  font-weight: 700;
+}
+
+/* Controls Info (Desktop Only) */
+.controls-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: auto;
+  /* Push to bottom if space allows */
+}
+
+.control-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+kbd {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: monospace;
+  color: #fff;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
   .game-header {
-    text-align: center;
-    margin: 1rem 0;
-    flex-shrink: 0;
-  }
-
-  .game-header h1 {
-    font-size: clamp(1.5rem, 4vw, 2rem);
-    margin-bottom: 0.25rem;
-    background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    margin-bottom: 0.5rem;
   }
 
   .game-header p {
-    color: var(--color-text-muted);
-    font-size: clamp(0.875rem, 2vw, 1rem);
-    margin: 0;
+    display: none;
   }
 
-  .game-container {
-    max-width: 520px;
-    margin: 0 auto;
-    width: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    justify-content: center;
-  }
-
-  /* Score Board */
   .game-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    background: var(--color-surface-2);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-  }
-
-  .score-display {
-    display: flex;
-    gap: 1rem;
-  }
-
-  .score-item {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .score-label {
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
+    padding: 0.5rem;
   }
 
   .score-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    font-family: var(--font-mono);
-    color: var(--color-accent-end);
+    font-size: 1.2rem;
   }
 
-  .game-controls {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  /* Buttons */
-  .btn {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn-primary {
-    background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
-    color: white;
-  }
-  .btn-secondary {
-    background: var(--color-surface-1);
-    color: var(--color-text-primary);
-    border: 1px solid var(--glass-border);
-  }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn:hover:not(:disabled) { transform: translateY(-2px); }
-
-  /* Canvas Wrapper */
-  .game-wrapper {
-    position: relative;
-    background: var(--color-surface-2);
-    border: 2px solid var(--glass-border);
-    border-radius: 12px;
-    padding: 0.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-
-  #game-canvas {
-    display: block;
-    border-radius: 8px;
-    background: var(--color-base);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-    max-width: 100%;
-    height: auto;
-  }
-
-  /* Overlays (Game Over / Start) */
-  .game-over, .game-start {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--color-surface-1);
-    border: 2px solid var(--glass-border);
-    border-radius: 12px;
-    padding: 2rem;
-    text-align: center;
-    z-index: 10;
-    backdrop-filter: blur(12px);
-  }
-  .hidden { display: none; }
-  
-  .game-over h2, .game-start h2 { font-size: 1.5rem; margin-bottom: 1rem; }
-  .final-score { font-size: 1.2rem; color: var(--color-text-muted); margin-bottom: 1.5rem; }
-  .final-score span { color: var(--color-accent-end); font-weight: 700; }
-
-  /* Controls Info (Desktop Only) */
   .controls-info {
     display: none;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
   }
 
-  @media (min-height: 900px) and (min-width: 768px) {
-    .controls-info { display: grid; }
+  /* Ensure canvas takes max space on mobile */
+  .game-wrapper {
+    border-width: 1px;
   }
-
-  .control-item {
-    display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem;
-    background: var(--color-surface-2); border-radius: 8px; margin-bottom: 0.5rem;
-  }
-  
-  kbd {
-    background: var(--color-base); border: 1px solid var(--glass-border);
-    border-radius: 4px; padding: 2px 6px; font-family: monospace;
-  }
-
-  /* Mobile Adjustments */
-  @media (max-width: 768px) {
-    .game-header p { display: none; }
-    .game-info { flex-direction: row; flex-wrap: wrap; }
-    .controls-info { display: none; }
-  }
+}

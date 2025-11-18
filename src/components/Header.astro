@@ -5,26 +5,51 @@ const pathname = new URL(Astro.request.url).pathname;
 <header class="site-header">
   <div class="header-fluid">
     <div class="header-inner">
-      
       <a href="/" class="brand" aria-label="Supm3n Home">
-        <img src="/logo.png" alt="Supm3n Logo" class="brand-logo" width="36" height="36" />
+        <div class="brand-logo-wrapper">
+          <img
+            src="/logo.png"
+            alt="Supm3n Logo"
+            class="brand-logo"
+            width="36"
+            height="36"
+          />
+        </div>
         <span class="brand-name">Supm3n</span>
       </a>
 
       <nav class="main-nav">
-        <a href="/" class={`nav-link ${pathname === '/' ? 'active' : ''}`}>
+        <a href="/" class={`nav-link ${pathname === "/" ? "active" : ""}`}>
           Home
         </a>
-        <a href="/projects" class={`nav-link ${pathname.startsWith('/projects') || pathname.startsWith('/settleup') || pathname.startsWith('/stock-viewer') ? 'active' : ''}`}>
+        <a
+          href="/projects"
+          class={`nav-link ${pathname.startsWith("/projects") || pathname.startsWith("/settleup") || pathname.startsWith("/stock-viewer") ? "active" : ""}`}
+        >
           Projects
         </a>
-        <a href="/uses" class={`nav-link ${pathname.startsWith('/uses') ? 'active' : ''}`}>
+        <a
+          href="/uses"
+          class={`nav-link ${pathname.startsWith("/uses") ? "active" : ""}`}
+        >
           Uses
         </a>
       </nav>
 
       <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+        <svg
+          class="sun-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="display: none;"
+        >
           <circle cx="12" cy="12" r="5"></circle>
           <line x1="12" y1="1" x2="12" y2="3"></line>
           <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -35,11 +60,22 @@ const pathname = new URL(Astro.request.url).pathname;
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
           <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
         </svg>
-        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+        <svg
+          class="moon-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="display: none;"
+        >
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
       </button>
-
     </div>
   </div>
 </header>
@@ -50,30 +86,34 @@ const pathname = new URL(Astro.request.url).pathname;
     top: 0;
     z-index: 100;
     width: 100%;
+    background: rgba(11, 12, 16, 0.7); /* Fallback */
     background: var(--glass-bg);
-    backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
     border-bottom: 1px solid var(--glass-border);
-    transition: transform var(--transition-base);
+    transition:
+      transform var(--transition-base),
+      background var(--transition-base),
+      border-color var(--transition-base);
   }
-  
+
   /* Fluid container overrides the global max-width */
   .header-fluid {
     width: 100%;
     padding: 0 var(--space-md);
     margin: 0 auto;
+    max-width: var(--container-max);
   }
-  
+
   .header-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: var(--header-height);
     gap: var(--space-md);
-    max-width: 1200px; /* Optional: Keep inner content constrained if desired, or remove for full fluid */
-    margin: 0 auto;
+    width: 100%;
   }
-  
+
   .brand {
     display: flex;
     align-items: center;
@@ -81,113 +121,104 @@ const pathname = new URL(Astro.request.url).pathname;
     font-weight: 700;
     font-size: var(--text-lg);
     letter-spacing: -0.02em;
-    transition: transform var(--transition-fast);
+    transition: opacity var(--transition-fast);
     line-height: 1;
     text-decoration: none;
     color: var(--color-text-primary);
   }
-  
+
   .brand:hover {
-    transform: translateX(2px);
+    opacity: 0.8;
   }
-  
+
+  .brand-logo-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .brand-logo {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     display: block;
     object-fit: contain;
-    filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.4));
+    filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.4));
     transition: filter var(--transition-base);
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-    padding: 4px;
   }
-  
-  [data-theme="light"] .brand-logo {
-    background: rgba(0, 0, 0, 0.03);
-  }
-  
+
   .brand:hover .brand-logo {
-    filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.6));
-    background: rgba(255, 255, 255, 0.1);
+    filter: drop-shadow(0 0 12px rgba(124, 58, 237, 0.6));
   }
-  
-  [data-theme="light"] .brand:hover .brand-logo {
-    background: rgba(0, 0, 0, 0.05);
-  }
-  
+
   .main-nav {
     display: flex;
     align-items: center;
-    gap: var(--space-xs);
+    gap: 4px;
+    background: var(--color-surface-2);
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
   }
-  
+
   .nav-link {
     position: relative;
-    padding: var(--space-xs) var(--space-md);
+    padding: 6px 16px;
     border-radius: 8px;
     font-size: var(--text-sm);
     font-weight: 500;
     color: var(--color-text-muted);
     text-decoration: none;
-    transition: color var(--transition-fast), background var(--transition-fast);
+    transition:
+      color var(--transition-fast),
+      background var(--transition-fast);
   }
-  
-  .nav-link:hover,
-  .nav-link:focus-visible {
+
+  .nav-link:hover {
     color: var(--color-text-primary);
-    background: var(--color-surface-1);
-    outline: none;
+    background: rgba(255, 255, 255, 0.05);
   }
-  
+
+  [data-theme="light"] .nav-link:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
   .nav-link.active {
     color: var(--color-text-primary);
+    background: var(--color-surface-1);
+    box-shadow: var(--shadow-sm);
   }
-  
-  .nav-link.active::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: var(--space-md);
-    right: var(--space-md);
-    height: 2px;
-    background: linear-gradient(90deg, var(--color-accent-start), var(--color-accent-end));
-    border-radius: 2px 2px 0 0;
-    animation: slideIn var(--transition-base);
-  }
-  
-  @keyframes slideIn {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
-  }
-  
+
   .theme-toggle {
     width: 40px;
     height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-    background: var(--color-surface-1);
-    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    background: transparent;
+    border: 1px solid transparent;
     color: var(--color-text-muted);
     transition: all var(--transition-fast);
     cursor: pointer;
   }
-  
+
   .theme-toggle:hover,
   .theme-toggle:focus-visible {
     color: var(--color-text-primary);
     background: var(--color-surface-2);
     border-color: var(--glass-border);
     outline: none;
-    transform: scale(1.05);
   }
 
   /* Mobile Responsive */
   @media (max-width: 768px) {
-    .main-nav { gap: var(--space-xs); }
-    .nav-link { padding: var(--space-xs) var(--space-sm); font-size: var(--text-xs); }
-    .brand-name { display: none; } 
+    .brand-name {
+      display: none;
+    }
+    .nav-link {
+      padding: 6px 12px;
+      font-size: var(--text-xs);
+    }
   }
 </style>

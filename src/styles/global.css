@@ -1,142 +1,295 @@
 /* ============================================
    1. RESET (CRITICAL: Fixes "Floating" Header)
    ============================================ */
-   *,
-   *::before,
-   *::after {
-	 box-sizing: border-box;
-	 margin: 0;
-	 padding: 0;
-   }
-   
-   html {
-	 scroll-behavior: smooth;
-	 -webkit-font-smoothing: antialiased;
-	 -moz-osx-font-smoothing: grayscale;
-   }
-   
-   body {
-	 font-family: var(--font-sans);
-	 font-size: var(--text-base);
-	 line-height: 1.6;
-	 color: var(--color-text-primary);
-	 background: var(--color-base);
-	 min-height: 100vh;
-	 overflow-x: hidden;
-	 display: flex;
-	 flex-direction: column;
-   }
-   
-   /* ============================================
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	scroll-behavior: smooth;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	font-family: var(--font-sans);
+	font-size: var(--text-base);
+	line-height: 1.6;
+	color: var(--color-text-primary);
+	background: var(--color-base);
+	min-height: 100vh;
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+	width: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--color-base);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--color-surface-2);
+	border-radius: 5px;
+	border: 2px solid var(--color-base);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--color-text-muted);
+}
+
+/* ============================================
 	  2. YOUR ORIGINAL VARIABLES (from variables.css)
 	  ============================================ */
-   :root {
-	 /* Colors - Dark First */
-	 --color-base: #0B0C10;
-	 --color-surface-1: #0F1115;
-	 --color-surface-2: #151820;
-	 --color-text-primary: #E6E9F0;
-	 --color-text-muted: #A9B1C6;
-	 --color-accent-start: #7C3AED;
-	 --color-accent-end: #06B6D4;
-	 --color-red-cape: #EF4444;
-	 
-	 /* Light mode overrides */
-	 --color-base-light: #FAFAFA;
-	 --color-surface-1-light: #FFFFFF;
-	 --color-surface-2-light: #F5F5F5;
-	 --color-text-primary-light: #0B0C10;
-	 --color-text-muted-light: #4A5568;
-	 
-	 /* Typography - Fluid scales */
-	 --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-	 --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
-	 
-	 --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
-	 --text-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
-	 --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
-	 --text-lg: clamp(1.125rem, 1rem + 0.625vw, 1.5rem);
-	 --text-xl: clamp(1.5rem, 1.3rem + 1vw, 2.25rem);
-	 --text-2xl: clamp(1.875rem, 1.5rem + 1.875vw, 3rem);
-	 --text-3xl: clamp(2.25rem, 1.8rem + 2.25vw, 4rem);
-	 --text-4xl: clamp(3rem, 2.2rem + 4vw, 5.5rem);
-	 
-	 /* Spacing */
-	 --space-xs: 0.5rem;
-	 --space-sm: 1rem;
-	 --space-md: 1.5rem;
-	 --space-lg: 2rem;
-	 --space-xl: 3rem;
-	 --space-2xl: 4rem;
-	 
-	 /* Layout */
-	 --container-max: 1200px;
-	 --header-height: 72px;
-	 
-	 /* Effects */
-	 --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
-	 --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
-	 --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
-	 --shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.4);
-	 --glass-bg: rgba(15, 17, 20, 0.7);
-	 --glass-border: rgba(255, 255, 255, 0.08);
-	 
-	 /* Transitions */
-	 --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-	 --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-	 --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
-	 --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-   }
-   
-   [data-theme="light"] {
-	 --color-base: var(--color-base-light);
-	 --color-surface-1: var(--color-surface-1-light);
-	 --color-surface-2: var(--color-surface-2-light);
-	 --color-text-primary: var(--color-text-primary-light);
-	 --color-text-muted: var(--color-text-muted-light);
-	 --glass-bg: rgba(255, 255, 255, 0.8);
-	 --glass-border: rgba(0, 0, 0, 0.08);
-	 --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-	 --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
-	 --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
-	 --shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.2);
-   }
-   
-   /* ============================================
+:root {
+	/* Colors - Dark First */
+	--color-base: #0B0C10;
+	--color-surface-1: #12141A;
+	--color-surface-2: #1A1D26;
+	--color-text-primary: #E6E9F0;
+	--color-text-muted: #A9B1C6;
+	--color-accent-start: #7C3AED;
+	--color-accent-end: #06B6D4;
+	--color-red-cape: #EF4444;
+
+	/* Light mode overrides */
+	--color-base-light: #FAFAFA;
+	--color-surface-1-light: #FFFFFF;
+	--color-surface-2-light: #F5F5F5;
+	--color-text-primary-light: #0B0C10;
+	--color-text-muted-light: #4A5568;
+
+	/* Typography - Fluid scales */
+	--font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	--font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+
+	--text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+	--text-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+	--text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+	--text-lg: clamp(1.125rem, 1rem + 0.625vw, 1.5rem);
+	--text-xl: clamp(1.5rem, 1.3rem + 1vw, 2.25rem);
+	--text-2xl: clamp(1.875rem, 1.5rem + 1.875vw, 3rem);
+	--text-3xl: clamp(2.25rem, 1.8rem + 2.25vw, 4rem);
+	--text-4xl: clamp(3rem, 2.2rem + 4vw, 5.5rem);
+
+	/* Spacing */
+	--space-xs: 0.5rem;
+	--space-sm: 1rem;
+	--space-md: 1.5rem;
+	--space-lg: 2rem;
+	--space-xl: 3rem;
+	--space-2xl: 4rem;
+
+	/* Layout */
+	--container-max: 1200px;
+	--header-height: 72px;
+
+	/* Effects */
+	--shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+	--shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+	--shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+	--shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.4);
+	--glass-bg: rgba(11, 12, 16, 0.7);
+	--glass-border: rgba(255, 255, 255, 0.08);
+
+	/* Transitions */
+	--transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+	--transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+	--transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+	--spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme="light"] {
+	--color-base: var(--color-base-light);
+	--color-surface-1: var(--color-surface-1-light);
+	--color-surface-2: var(--color-surface-2-light);
+	--color-text-primary: var(--color-text-primary-light);
+	--color-text-muted: var(--color-text-muted-light);
+	--glass-bg: rgba(255, 255, 255, 0.8);
+	--glass-border: rgba(0, 0, 0, 0.08);
+	--shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+	--shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+	--shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+	--shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
 	  3. SHARED UTILITIES
 	  ============================================ */
-   .container {
-	 max-width: var(--container-max);
-	 margin: 0 auto;
-	 padding: 0 var(--space-md);
-   }
-   
-   /* Background Gradient */
-   body::before {
-	 content: '';
-	 position: fixed;
-	 top: 0;
-	 left: 0;
-	 right: 0;
-	 bottom: 0;
-	 background: 
-	   radial-gradient(ellipse 100% 60% at 50% -10%, rgba(124, 58, 237, 0.2), transparent 70%),
-	   radial-gradient(ellipse 80% 50% at 80% 100%, rgba(6, 182, 212, 0.15), transparent 70%),
-	   radial-gradient(ellipse 60% 40% at 20% 50%, rgba(239, 68, 68, 0.1), transparent 70%);
-	 pointer-events: none;
-	 z-index: -1;
-	 will-change: transform;
-	 animation: gradientShift 20s ease-in-out infinite;
-   }
-   
-   [data-theme="light"] body::before {
-	 background: 
-	   radial-gradient(ellipse 100% 60% at 50% -10%, rgba(124, 58, 237, 0.08), transparent 70%),
-	   radial-gradient(ellipse 80% 50% at 80% 100%, rgba(6, 182, 212, 0.06), transparent 70%),
-	   radial-gradient(ellipse 60% 40% at 20% 50%, rgba(239, 68, 68, 0.04), transparent 70%);
-   }
-   
-   @keyframes gradientShift {
-	 0%, 100% { opacity: 1; transform: scale(1); }
-	 50% { opacity: 0.8; transform: scale(1.05); }
-   }
+.container {
+	max-width: var(--container-max);
+	margin: 0 auto;
+	padding: 0 var(--space-md);
+	width: 100%;
+	/* Removed any potential borders here */
+}
+
+/* Premium Utilities */
+.glass-panel {
+	background: var(--glass-bg);
+	backdrop-filter: blur(12px);
+	border: 1px solid var(--glass-border);
+	border-radius: 16px;
+	box-shadow: var(--shadow-lg);
+}
+
+.text-gradient {
+	background: linear-gradient(135deg, var(--color-text-primary), var(--color-text-muted));
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+
+/* Background Gradient */
+body::before {
+	content: '';
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background:
+		radial-gradient(ellipse 100% 60% at 50% -10%, rgba(124, 58, 237, 0.15), transparent 70%),
+		radial-gradient(ellipse 80% 50% at 80% 100%, rgba(6, 182, 212, 0.12), transparent 70%),
+		radial-gradient(ellipse 60% 40% at 20% 50%, rgba(239, 68, 68, 0.08), transparent 70%);
+	pointer-events: none;
+	z-index: -1;
+	will-change: transform;
+	animation: gradientShift 20s ease-in-out infinite;
+}
+
+[data-theme="light"] body::before {
+	background:
+		radial-gradient(ellipse 100% 60% at 50% -10%, rgba(124, 58, 237, 0.08), transparent 70%),
+		radial-gradient(ellipse 80% 50% at 80% 100%, rgba(6, 182, 212, 0.06), transparent 70%),
+		radial-gradient(ellipse 60% 40% at 20% 50%, rgba(239, 68, 68, 0.04), transparent 70%);
+}
+
+@keyframes gradientShift {
+
+	0%,
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+
+	50% {
+		opacity: 0.8;
+		transform: scale(1.05);
+	}
+}
+
+/* ============================================
+   4. PAGE CONTENT STYLES (Uses, Projects, etc.)
+   ============================================ */
+
+/* Fix content hiding behind sticky header */
+#main-content {
+	flex: 1;
+	padding-top: 2rem;
+	padding-bottom: 4rem;
+	width: 100%;
+}
+
+/* Section Headers */
+.section-header {
+	margin-bottom: 2.5rem;
+	border-bottom: 1px solid var(--glass-border);
+	padding-bottom: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.section-title {
+	font-size: var(--text-3xl);
+	font-weight: 800;
+	margin: 0;
+	background: linear-gradient(135deg, var(--color-text-primary), var(--color-text-muted));
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	/* Standard property for compatibility */
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+/* Content Page Layout (For Uses page) */
+.content-page {
+	max-width: 800px;
+	/* Increased width for better readability */
+	margin: 0 auto;
+}
+
+.content-section {
+	margin-bottom: 3rem;
+}
+
+.content-section h3 {
+	font-size: var(--text-xl);
+	color: var(--color-accent-end);
+	margin-bottom: 1.5rem;
+	font-weight: 600;
+}
+
+/* Lists with Icons (Uses Page) */
+.content-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	/* Grid layout */
+}
+
+.content-list li {
+	background: var(--color-surface-2);
+	padding: 1rem;
+	border-radius: 12px;
+	border: 1px solid var(--glass-border);
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	transition: transform 0.2s, border-color 0.2s;
+}
+
+.content-list li:hover {
+	transform: translateY(-2px);
+	border-color: var(--color-accent-start);
+}
+
+.content-list strong {
+	color: var(--color-text-primary);
+	min-width: 80px;
+}
+
+/* Bulleted lists (Privacy Policy) */
+.content-list-bulleted {
+	padding-left: 1.5rem;
+	color: var(--color-text-muted);
+}
+
+.content-list-bulleted li {
+	margin-bottom: 0.5rem;
+}
+
+/* Metadata */
+.content-meta {
+	color: var(--color-text-muted);
+	font-size: var(--text-sm);
+	font-style: italic;
+	border-left: 3px solid var(--color-accent-start);
+	padding-left: 1rem;
+	margin-bottom: 2rem;
+}

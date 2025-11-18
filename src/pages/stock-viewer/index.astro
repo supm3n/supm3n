@@ -1,3 +1,4 @@
+```
 ---
 // src/pages/stock-viewer/index.astro
 import MainLayout from '../../layouts/MainLayout.astro';
@@ -10,90 +11,99 @@ import MainLayout from '../../layouts/MainLayout.astro';
   <div class="container stocks-page-container">
     <section class="hero">
       <h1 class="hero-title">Stock Viewer</h1>
+      <p class="hero-subtitle">Real-time market data visualization</p>
     </section>
 
-    <section class="toolbar">
-      <label class="sr-only" for="symbol-select">Select Stock</label>
-      <select id="symbol-select" class="search-input" style="min-width: 200px; cursor: pointer;">
-        <option value="">Select a stock...</option>
-        <option value="AAPL">Apple (AAPL)</option>
-        <option value="MSFT">Microsoft (MSFT)</option>
-        <option value="GOOGL">Alphabet (GOOGL)</option>
-        <option value="AMZN">Amazon (AMZN)</option>
-        <option value="TSLA">Tesla (TSLA)</option>
-        <option value="META">Meta (META)</option>
-        <option value="NVDA">NVIDIA (NVDA)</option>
-        <option value="JPM">JPMorgan (JPM)</option>
-        <option value="V">Visa (V)</option>
-        <option value="JNJ">Johnson & Johnson (JNJ)</option>
-        <option value="WMT">Walmart (WMT)</option>
-        <option value="PG">Procter & Gamble (PG)</option>
-        <option value="MA">Mastercard (MA)</option>
-        <option value="DIS">Disney (DIS)</option>
-        <option value="NFLX">Netflix (NFLX)</option>
-      </select>
+    <section class="toolbar glass-panel">
+      <div class="input-group">
+        <label class="sr-only" for="symbol-select">Select Stock</label>
+        <select id="symbol-select" class="search-input">
+          <option value="">Select a stock...</option>
+          <option value="AAPL">Apple (AAPL)</option>
+          <option value="MSFT">Microsoft (MSFT)</option>
+          <option value="GOOGL">Alphabet (GOOGL)</option>
+          <option value="AMZN">Amazon (AMZN)</option>
+          <option value="TSLA">Tesla (TSLA)</option>
+          <option value="META">Meta (META)</option>
+          <option value="NVDA">NVIDIA (NVDA)</option>
+          <option value="JPM">JPMorgan (JPM)</option>
+          <option value="V">Visa (V)</option>
+          <option value="JNJ">Johnson & Johnson (JNJ)</option>
+          <option value="WMT">Walmart (WMT)</option>
+          <option value="PG">Procter & Gamble (PG)</option>
+          <option value="MA">Mastercard (MA)</option>
+          <option value="DIS">Disney (DIS)</option>
+          <option value="NFLX">Netflix (NFLX)</option>
+        </select>
+      </div>
       
-      <label class="sr-only" for="symbol">Or enter custom symbol</label>
-      <input 
-        id="symbol" 
-        class="search-input" 
-        placeholder="Or enter symbol (e.g. TSLA)" 
-        autocomplete="off"
-        spellcheck="false"
-      />
-      <button id="load" class="btn">Load Chart</button>
+      <div class="input-group">
+        <label class="sr-only" for="symbol">Or enter custom symbol</label>
+        <input 
+          id="symbol" 
+          class="search-input" 
+          placeholder="Enter symbol (e.g. BTC)" 
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </div>
+
+      <button id="load" class="btn-primary">Load Chart</button>
     </section>
 
     <div id="error-banner" style="display: none;"></div>
 
-    <div id="chart-wrap">
+    <div id="chart-wrap" class="glass-panel">
       <canvas id="chart"></canvas>
+      <div id="loading-overlay" class="hidden">
+        <div class="spinner"></div>
+      </div>
     </div>
   </div>
 </MainLayout>
 
 <style is:global>
   /* Stock Viewer CSS */
-  
-  /* Reuse global variables from theme.css where possible */
   :root {
     --stocks-accent: var(--color-accent-start);
     --stocks-accent-end: var(--color-accent-end);
-    --stocks-card-bg: var(--color-surface-1);
   }
 
   .stocks-page-container {
     padding-top: 2rem; 
-    padding-bottom: 3rem;
+    padding-bottom: 4rem;
+    max-width: 1400px; /* Wider container for chart */
+  }
+
+  .hero {
+    text-align: center;
+    margin-bottom: 2rem;
   }
 
   .hero-title {
-    margin: 0 0 1.5rem 0;
-    font-size: clamp(28px, 5vw, 40px);
+    margin: 0 0 0.5rem 0;
+    font-size: clamp(2rem, 5vw, 3.5rem);
     line-height: 1.1;
     background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--stocks-accent) 50%, var(--stocks-accent-end) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    font-weight: 800;
+  }
+
+  .hero-subtitle {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
   }
 
   /* Chart Wrapper */
   #chart-wrap {
-    height: min(86vh, 920px);
+    position: relative;
+    height: min(70vh, 700px);
     width: 100%;
     margin: 1.5rem auto;
     padding: 1.5rem;
-    background: var(--stocks-card-bg);
-    border-radius: 20px;
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
     transition: all 0.3s ease;
-  }
-
-  #chart-wrap:hover {
-    box-shadow: 0 12px 40px rgba(124, 58, 237, 0.2), 0 4px 16px rgba(0, 0, 0, 0.3);
-    border-color: var(--stocks-accent);
   }
 
   #chart { width: 100%; height: 100%; }
@@ -101,19 +111,28 @@ import MainLayout from '../../layouts/MainLayout.astro';
   /* Toolbar */
   .toolbar {
     display: flex;
-    gap: 0.75rem;
+    gap: 1rem;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
     flex-wrap: wrap;
+    padding: 1.5rem;
+    justify-content: center;
+  }
+
+  .input-group {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
   }
 
   /* Inputs */
   .search-input {
-    min-width: 280px;
+    width: 100%;
     padding: 0.75rem 1rem;
     border-radius: 12px;
     border: 1px solid var(--glass-border);
-    background: var(--color-surface-2);
+    background: var(--color-surface-1);
     color: var(--color-text-primary);
     outline: none;
     font-size: 0.9375rem;
@@ -130,18 +149,17 @@ import MainLayout from '../../layouts/MainLayout.astro';
     padding-right: 2.5rem;
   }
 
-  .search-input:focus-visible,
-  select.search-input:focus-visible {
+  .search-input:focus-visible {
     border-color: var(--stocks-accent);
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
-    background: var(--stocks-card-bg);
+    background: var(--color-surface-2);
   }
 
   /* Button */
-  .btn {
-    padding: 0.75rem 1.25rem;
+  .btn-primary {
+    padding: 0.75rem 2rem;
     border-radius: 12px;
-    border: 1px solid var(--glass-border);
+    border: none;
     background: linear-gradient(135deg, var(--stocks-accent), var(--stocks-accent-end));
     color: white;
     cursor: pointer;
@@ -149,32 +167,55 @@ import MainLayout from '../../layouts/MainLayout.astro';
     font-size: 0.9375rem;
     transition: all 0.2s ease;
     box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+    white-space: nowrap;
   }
 
-  .btn:hover, .btn:focus-visible {
+  .btn-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4);
-    outline: none;
   }
   
-  .btn:disabled {
-    opacity: 0.6;
+  .btn-primary:disabled {
+    opacity: 0.7;
     cursor: not-allowed;
-    transform: none !important;
+    transform: none;
   }
+
+  /* Loading Spinner */
+  #loading-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    z-index: 10;
+  }
+  
+  .spinner {
+    width: 40px; height: 40px;
+    border: 4px solid rgba(255,255,255,0.1);
+    border-left-color: var(--stocks-accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .hidden { display: none !important; }
 
   /* Error Banner */
   #error-banner {
-    max-width: 1100px;
-    margin: 10px auto;
-    padding: 12px 16px;
+    max-width: 800px;
+    margin: 0 auto 1.5rem;
+    padding: 1rem;
     border-radius: 12px;
     border: 1px solid rgba(239, 68, 68, 0.3);
     background: rgba(239, 68, 68, 0.1);
     color: var(--color-red-cape);
-    font-size: 0.9375rem;
-    line-height: 1.5;
-    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.2);
+    font-size: 0.9rem;
+    text-align: center;
     animation: slideDown 0.3s ease-out;
   }
 
@@ -184,10 +225,10 @@ import MainLayout from '../../layouts/MainLayout.astro';
   }
 
   @media (max-width: 768px) {
-    #chart-wrap { padding: 1rem; margin: 1rem auto; }
     .toolbar { flex-direction: column; align-items: stretch; }
-    .search-input { width: 100%; min-width: auto; }
-    .btn { width: 100%; }
+    .input-group { max-width: none; }
+    .btn-primary { width: 100%; }
+    #chart-wrap { height: 50vh; padding: 0.5rem; }
   }
 </style>
 
@@ -198,11 +239,13 @@ import MainLayout from '../../layouts/MainLayout.astro';
     const selectEl = document.getElementById('symbol-select');
     const loadBtn = document.getElementById('load');
     const chartCanvas = document.getElementById('chart');
+    const loadingOverlay = document.getElementById('loading-overlay');
     
-    if (!chartCanvas) return; // Safety check
+    if (!chartCanvas) return;
 
     const ctx = chartCanvas.getContext('2d');
     let chart;
+    let isLoading = false;
 
     function normalizeSymbol(raw){
       let s = String(raw || '').trim().toUpperCase();
@@ -213,6 +256,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
     function getSymbol(){
       const fromInput = input && input.value ? input.value.trim() : '';
       const fromSelect = selectEl && selectEl.value ? selectEl.value : '';
+      // Input takes precedence if typed
       return normalizeSymbol(fromInput || fromSelect || '');
     }
 
@@ -250,7 +294,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
     }
 
     async function fetchSymbol(symbol){
-      // Call the Cloudflare Function we created in Step 1
+      // Call the Cloudflare Function
       const r = await fetch(`/api/price/${encodeURIComponent(symbol)}`);
       
       if (!r.ok) {
@@ -279,44 +323,97 @@ import MainLayout from '../../layouts/MainLayout.astro';
       const labels = rows.map(r=>r.date);
       const data = rows.map(r=>r.close);
       
-      // @ts-ignore - Chart is loaded via CDN in the HTML head
+      // @ts-ignore
       if(chart){ chart.destroy(); }
       
+      // Create gradient
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      gradient.addColorStop(0, 'rgba(124, 58, 237, 0.5)');
+      gradient.addColorStop(1, 'rgba(124, 58, 237, 0)');
+
       // @ts-ignore
       chart = new Chart(ctx, {
         type: 'line',
-        data: { labels, datasets: [{ label: symbol.toUpperCase(), data, fill:false, tension:0.2, borderColor: '#7c3aed', pointBackgroundColor: '#06b6d4' }] },
+        data: { 
+          labels, 
+          datasets: [{ 
+            label: symbol.toUpperCase(), 
+            data, 
+            fill: true, 
+            backgroundColor: gradient,
+            borderColor: '#7c3aed', 
+            pointBackgroundColor: '#06b6d4',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#06b6d4',
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 0,
+            pointHoverRadius: 6
+          }] 
+        },
         options: {
           maintainAspectRatio: false,
           responsive: true,
           interaction: { mode:'index', intersect:false },
           plugins: { 
-            legend: { display: true, labels: { color: '#a9b1c6' } }, 
-            title: { display: false } 
+            legend: { display: false }, 
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.9)',
+              titleColor: '#e2e8f0',
+              bodyColor: '#e2e8f0',
+              borderColor: 'rgba(255,255,255,0.1)',
+              borderWidth: 1,
+              padding: 10,
+              displayColors: false,
+              callbacks: {
+                label: function(context) {
+                  return '$' + context.parsed.y.toFixed(2);
+                }
+              }
+            }
           },
           scales: { 
-            x: { ticks: { maxTicksLimit: 12, color: '#a9b1c6' }, grid: { color: 'rgba(255,255,255,0.05)' } }, 
-            y: { beginAtZero: false, ticks: { color: '#a9b1c6' }, grid: { color: 'rgba(255,255,255,0.05)' } } 
+            x: { 
+              ticks: { maxTicksLimit: 8, color: '#64748b' }, 
+              grid: { display: false } 
+            }, 
+            y: { 
+              beginAtZero: false, 
+              ticks: { 
+                color: '#64748b',
+                callback: function(value) { return '$' + value; }
+              }, 
+              grid: { color: 'rgba(255,255,255,0.03)' } 
+            } 
           }
         }
       });
     }
 
     async function load(){
+      if (isLoading) return; // Prevent multiple clicks
+      
       clearError();
       const symbol = getSymbol();
       if(!symbol){ 
         showError('Please select a stock or enter a symbol.'); 
         return; 
       }
+
       try{
+        isLoading = true;
         if (loadBtn) { loadBtn.disabled = true; loadBtn.textContent = 'Loading…'; }
+        if (loadingOverlay) loadingOverlay.classList.remove('hidden');
+        
         const rows = await fetchSymbol(symbol);
         render(rows, symbol);
       }catch(err){
         showError(`Error: ${err.message}`);
       }finally{
+        isLoading = false;
         if (loadBtn) { loadBtn.disabled = false; loadBtn.textContent = 'Load Chart'; }
+        if (loadingOverlay) loadingOverlay.classList.add('hidden');
       }
     }
 
@@ -327,5 +424,14 @@ import MainLayout from '../../layouts/MainLayout.astro';
         load(); 
       }
     });
+    
+    // Auto-load if symbol is selected from dropdown
+    if (selectEl) selectEl.addEventListener('change', () => {
+       if(selectEl.value) {
+         input.value = ''; // Clear manual input
+         load();
+       }
+    });
   });
 </script>
+```

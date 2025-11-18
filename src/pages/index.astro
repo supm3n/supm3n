@@ -1,329 +1,251 @@
 ---
 // src/pages/index.astro
-import MainLayout from '../layouts/MainLayout.astro';
+import MainLayout from "../layouts/MainLayout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { projects } from "../data/projects.js";
 
-// 1. DEFINE YOUR PROJECTS HERE
-// This replaces projects.json. It is much easier to edit!
-const projects = [
-  {
-    name: "Settle Up",
-    description: "A tool to split expenses (Ephemeral). No data saved.",
-    url: "/settleup",
-    tag: "Tool",
-    icon: "💰" // You can use an Emoji or a path to an image like '/logo.png'
-  },
-  {
-    name: "Snake",
-    description: "Classic snake game built with Vanilla JS.",
-    url: "/snake",
-    tag: "Game",
-    icon: "🐍"
-  },
-  {
-    name: "Stocks Viewer",
-    description: "Real-time stock charts using Alpha Vantage data.",
-    url: "/stock-viewer",
-    tag: "Finance",
-    icon: "📈"
-  }
-
-];
+// Filter only featured projects if you have many, for now we show all or top 3
+const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
 ---
 
 <MainLayout title="Supm3n — Build lean tools">
-  
-  <main id="main-content" role="main">
-    
-    <!-- HERO SECTION -->
-    <section class="hero">
-      <div class="container">
-        <div class="matrix-container">
-          <h1 class="hero-title matrix-text" data-text="Supm3n">Supm3n</h1>
-          <p class="hero-tagline matrix-text" data-text="Half-finished ideas and too much CSS.">
-            Half-finished ideas and too much CSS.
-          </p>
-        </div>
-        <div class="hero-cta">
-          <a href="#featured-projects" class="btn btn-primary magnetic">View Projects</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROJECTS SECTION -->
-    <section class="projects-section" id="featured-projects">
-      <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">Featured Projects</h2>
-        </div>
-        
-        <!-- This grid is generated automatically from the list at the top -->
-        <div class="projects-grid">
-          {projects.map((project) => (
-            <article class="project-card reveal">
-              <a href={project.url} class="project-card-link" aria-label={`Open ${project.name}`}>
-                <div class="project-card-header">
-                  <!-- Check if icon is emoji or image -->
-                  {project.icon.length < 5 ? (
-                     <div class="project-icon-emoji">{project.icon}</div>
-                  ) : (
-                     <img class="project-icon" src={project.icon} alt={project.name} />
-                  )}
-                  
-                  <div class="project-info">
-                    <h3 class="project-title">{project.name}</h3>
-                    <p class="project-description">{project.description}</p>
-                  </div>
+    <main id="main-content" role="main">
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <div class="container">
+                <div class="matrix-container">
+                    <h1 class="hero-title matrix-text" data-text="Supm3n">
+                        Supm3n
+                    </h1>
+                    <p
+                        class="hero-tagline matrix-text"
+                        data-text="Half-finished ideas and too much CSS."
+                    >
+                        Half-finished ideas and too much CSS.
+                    </p>
                 </div>
-                <div class="project-meta">
-                  <span class="project-tag">{project.tag}</span>
-                  <span class="project-link">
-                    Open
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                    </svg>
-                  </span>
+                <div class="hero-cta">
+                    <a
+                        href="#featured-projects"
+                        class="btn btn-primary magnetic-btn">View Projects</a
+                    >
                 </div>
-              </a>
-            </article>
-          ))}
-        </div>
+            </div>
+        </section>
 
-      </div>
-    </section>
-  </main>
+        <!-- PROJECTS SECTION -->
+        <section class="projects-section" id="featured-projects">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Featured Projects</h2>
+                </div>
 
+                <div class="projects-grid">
+                    {
+                        featuredProjects.map((project) => (
+                            <ProjectCard project={project} />
+                        ))
+                    }
+                </div>
+            </div>
+        </section>
+    </main>
 </MainLayout>
 
 <!-- STYLE SECTION -->
 <style>
-  /* HERO MATRIX VARIABLES */
-  :root {
-    --matrix-primary: var(--color-accent-start); 
-    --matrix-secondary: var(--color-accent-end); 
-  }
+    /* HERO MATRIX VARIABLES */
+    :root {
+        --matrix-primary: var(--color-accent-start);
+        --matrix-secondary: var(--color-accent-end);
+    }
 
-  /* HERO STYLES */
-  .hero {
-    padding: calc(var(--space-2xl) * 1.5) 0 var(--space-2xl);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
-  }
+    /* HERO STYLES */
+    .hero {
+        padding: calc(var(--space-2xl) * 1.5) 0 var(--space-2xl);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        mask-image: linear-gradient(
+            to bottom,
+            transparent 0%,
+            black 10%,
+            black 90%,
+            transparent 100%
+        );
+        -webkit-mask-image: linear-gradient(
+            to bottom,
+            transparent 0%,
+            black 10%,
+            black 90%,
+            transparent 100%
+        );
+    }
 
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -100%;
-    left: 0;
-    width: 100%;
-    height: 200%;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      rgba(124, 58, 237, 0.15) 1px,
-      rgba(6, 182, 212, 0.2) 2px,
-      rgba(6, 182, 212, 0.3) 3px,
-      transparent 4px,
-      transparent 8px
-    );
-    animation: rain 8s linear infinite;
-    z-index: 1;
-    pointer-events: none;
-    opacity: 0.8;
-  }
+    .hero::before {
+        content: "";
+        position: absolute;
+        top: -100%;
+        left: 0;
+        width: 100%;
+        height: 200%;
+        background: repeating-linear-gradient(
+            0deg,
+            transparent 0px,
+            rgba(124, 58, 237, 0.15) 1px,
+            rgba(6, 182, 212, 0.2) 2px,
+            rgba(6, 182, 212, 0.3) 3px,
+            transparent 4px,
+            transparent 8px
+        );
+        animation: rain 8s linear infinite;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0.8;
+    }
 
-  .matrix-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 2;
-    position: relative;
-  }
+    .matrix-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 2;
+        position: relative;
+    }
 
-  .hero-title.matrix-text,
-  .hero-tagline.matrix-text {
-    color: var(--matrix-primary);
-    font-family: monospace;
-    position: relative;
-    text-shadow: 0 0 10px rgba(124, 58, 237, 0.9), 0 0 20px rgba(124, 58, 237, 0.7);
-    z-index: 2;
-    margin-bottom: var(--space-lg);
-    animation: fadeUp 0.6s var(--transition-base);
-  }
+    .hero-title.matrix-text,
+    .hero-tagline.matrix-text {
+        color: var(--matrix-primary);
+        font-family: monospace;
+        position: relative;
+        text-shadow:
+            0 0 10px rgba(124, 58, 237, 0.9),
+            0 0 20px rgba(124, 58, 237, 0.7);
+        z-index: 2;
+        margin-bottom: var(--space-lg);
+        animation: fadeUp 0.6s var(--transition-base);
+    }
 
-  .hero-title.matrix-text { font-size: var(--text-4xl); font-weight: 800; letter-spacing: -0.03em; }
-  .hero-tagline.matrix-text { font-size: var(--text-2xl); font-weight: 500; max-width: 650px; line-height: 1.5; }
+    .hero-title.matrix-text {
+        font-size: var(--text-4xl);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+    }
+    .hero-tagline.matrix-text {
+        font-size: var(--text-2xl);
+        font-weight: 500;
+        max-width: 650px;
+        line-height: 1.5;
+    }
 
-  .hero-title.matrix-text::before,
-  .hero-tagline.matrix-text::before {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    animation: glitch 2s infinite;
-    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
-    transform: translate(-2px, -2px);
-    color: var(--matrix-secondary);
-    text-shadow: 0 0 5px rgba(6, 182, 212, 0.9);
-  }
+    .hero-title.matrix-text::before,
+    .hero-tagline.matrix-text::before {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        animation: glitch 2s infinite;
+        clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+        transform: translate(-2px, -2px);
+        color: var(--matrix-secondary);
+        text-shadow: 0 0 5px rgba(6, 182, 212, 0.9);
+    }
 
-  @keyframes rain { 0% { transform: translateY(0); } 100% { transform: translateY(50%); } }
-  @keyframes glitch {
-    0%, 100% { clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); transform: translate(0); }
-    33% { clip-path: polygon(0 0, 100% 0, 100% 15%, 0 15%); transform: translate(-5px, -5px); }
-    66% { clip-path: polygon(0 85%, 100% 85%, 100% 100%, 0 100%); transform: translate(5px, 5px); }
-  }
+    @keyframes rain {
+        0% {
+            transform: translateY(0);
+        }
+        100% {
+            transform: translateY(50%);
+        }
+    }
+    @keyframes glitch {
+        0%,
+        100% {
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+            transform: translate(0);
+        }
+        33% {
+            clip-path: polygon(0 0, 100% 0, 100% 15%, 0 15%);
+            transform: translate(-5px, -5px);
+        }
+        66% {
+            clip-path: polygon(0 85%, 100% 85%, 100% 100%, 0 100%);
+            transform: translate(5px, 5px);
+        }
+    }
 
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-  /* CTA BUTTONS */
-  .hero-cta {
-    display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap; margin-top: var(--space-lg);
-  }
-  
-  .btn {
-    display: inline-flex; align-items: center; gap: var(--space-xs); padding: var(--space-sm) var(--space-lg);
-    border-radius: 12px; font-size: var(--text-base); font-weight: 600; transition: all var(--transition-base);
-    cursor: pointer; border: 1px solid transparent; text-decoration: none;
-  }
+    /* CTA BUTTONS */
+    .hero-cta {
+        display: flex;
+        gap: var(--space-md);
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: var(--space-lg);
+        position: relative;
+        z-index: 5;
+    }
 
-  .btn-primary {
-    background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
-    color: #fff;
-    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
-  }
-  .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 32px rgba(124, 58, 237, 0.5); }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-xs);
+        padding: var(--space-sm) var(--space-lg);
+        border-radius: 12px;
+        font-size: var(--text-base);
+        font-weight: 600;
+        transition: all var(--transition-base);
+        cursor: pointer;
+        border: 1px solid transparent;
+        text-decoration: none;
+    }
 
-  /* PROJECTS GRID */
-  .projects-section { padding: calc(var(--space-2xl) * 0.75) 0; position: relative; }
-  .section-header { display: flex; justify-content: space-between; margin-bottom: var(--space-xl); }
-  .section-title { font-size: var(--text-3xl); margin: 0; position: relative; padding-bottom: var(--space-sm); }
-  .section-title::after {
-    content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 3px;
-    background: linear-gradient(90deg, var(--color-accent-start), var(--color-accent-end)); border-radius: 2px;
-  }
+    .btn-primary {
+        background: linear-gradient(
+            135deg,
+            var(--color-accent-start),
+            var(--color-accent-end)
+        );
+        color: #fff;
+        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+    }
+    .btn-primary:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 8px 32px rgba(124, 58, 237, 0.5);
+    }
 
-  .projects-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: clamp(1.5rem, 3vw, 2rem); margin-top: var(--space-xl);
-  }
+    /* PROJECTS GRID */
+    .projects-section {
+        padding: calc(var(--space-2xl) * 0.75) 0;
+        position: relative;
+    }
 
-  /* PROJECT CARD */
-  .project-card {
-    position: relative; border-radius: 20px; background: var(--color-surface-1);
-    border: 1px solid rgba(255, 255, 255, 0.12); overflow: hidden;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
-  }
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: clamp(1.5rem, 3vw, 2rem);
+        margin-top: var(--space-xl);
+    }
 
-  /* Define this for the JS magnetic effect */
-  .project-card[data-magnetic-active] { will-change: transform; transition: box-shadow 0.3s, border-color 0.3s; }
-  .project-card:not([data-magnetic-active]):hover { transform: translateY(-8px); }
-
-  .project-card:hover {
-    box-shadow: 0 16px 48px rgba(124, 58, 237, 0.3); border-color: var(--color-accent-start); background: var(--color-surface-2);
-  }
-
-  .project-card-link { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg); text-decoration: none; color: inherit; height: 100%; }
-  
-  .project-card-header { display: flex; align-items: flex-start; gap: var(--space-md); }
-  
-  .project-icon { width: 56px; height: 56px; border-radius: 14px; object-fit: contain; background: rgba(255,255,255,0.08); padding: 10px; }
-  .project-icon-emoji { width: 56px; height: 56px; border-radius: 14px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
-  
-  .project-title { font-size: var(--text-lg); font-weight: 600; margin-bottom: var(--space-xs); color: var(--color-text-primary); margin-top: 0; }
-  .project-description { font-size: var(--text-sm); color: var(--color-text-muted); line-height: 1.6; margin: 0; }
-  
-  .project-meta { display: flex; align-items: center; gap: var(--space-sm); margin-top: auto; padding-top: var(--space-md); border-top: 1px solid var(--glass-border); }
-  
-  .project-tag { 
-    padding: 6px var(--space-sm); border-radius: 8px; font-size: var(--text-xs); font-weight: 600;
-    background: linear-gradient(135deg, var(--color-surface-2), var(--color-surface-1)); color: var(--color-text-muted); border: 1px solid var(--glass-border);
-  }
-  
-  .project-link {
-    margin-left: auto; display: inline-flex; align-items: center; gap: var(--space-xs); font-size: var(--text-sm); font-weight: 600;
-    color: var(--color-accent-start); padding: 6px 12px; border-radius: 8px; background: rgba(124, 58, 237, 0.1);
-  }
-
-  /* SCROLL REVEAL CLASS */
-  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  @media (max-width: 768px) {
-    .hero-title.matrix-text { font-size: var(--text-3xl); }
-    .projects-grid { grid-template-columns: 1fr; }
-  }
+    @media (max-width: 768px) {
+        .hero-title.matrix-text {
+            font-size: var(--text-3xl);
+        }
+        .projects-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
-
-<!-- JAVASCRIPT LOGIC -->
-<script>
-  // 1. SCROLL REVEAL LOGIC
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
-  
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  // 2. MAGNETIC CARD EFFECT (Extracted from your old script)
-  (function initMagneticCards() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
-
-    const cards = document.querySelectorAll('.project-card');
-    const MAGNETIC_RADIUS = 200;
-    const MAX_MOVEMENT = 15;
-    const RETURN_SPEED = 0.2;
-
-    cards.forEach(card => {
-      card.setAttribute('data-magnetic-active', 'true');
-      let currentX = 0, currentY = 0, targetX = 0, targetY = 0, animationId = null;
-
-      function animate() {
-        currentX += (targetX - currentX) * RETURN_SPEED;
-        currentY += (targetY - currentY) * RETURN_SPEED;
-        
-        if (Math.abs(currentX) > 0.1 || Math.abs(currentY) > 0.1) {
-          card.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-          animationId = requestAnimationFrame(animate);
-        } else {
-          card.style.transform = '';
-          animationId = null;
-        }
-      }
-
-      function onMouseMove(e) {
-        const rect = card.getBoundingClientRect();
-        const deltaX = e.clientX - (rect.left + rect.width / 2);
-        const deltaY = e.clientY - (rect.top + rect.height / 2);
-        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-
-        if (distance < MAGNETIC_RADIUS) {
-          const strength = 1 - (distance / MAGNETIC_RADIUS);
-          targetX = (deltaX / distance) * strength * MAX_MOVEMENT;
-          targetY = (deltaY / distance) * strength * MAX_MOVEMENT;
-        } else {
-          targetX = 0; targetY = 0;
-        }
-        if (!animationId) animationId = requestAnimationFrame(animate);
-      }
-
-      function onMouseLeave() {
-        targetX = 0; targetY = 0;
-        if (!animationId) animationId = requestAnimationFrame(animate);
-      }
-
-      card.addEventListener('mousemove', onMouseMove);
-      card.addEventListener('mouseleave', onMouseLeave);
-    });
-  })();
-</script>

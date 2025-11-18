@@ -1,49 +1,250 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro';
+import MainLayout from "../layouts/MainLayout.astro";
 ---
 
 <MainLayout title="Uses — Gear & Software">
   <main id="main-content" role="main">
-    <section class="projects-section">
+    <section class="uses-section">
       <div class="container">
-        <div class="content-page">
-          <div class="section-header">
-            <h2 class="section-title">Uses</h2>
+        <div class="section-header">
+          <h2 class="section-title">Uses</h2>
+          <p class="section-subtitle">My digital and physical workspace.</p>
+        </div>
+
+        <div class="uses-grid reveal">
+          <!-- Hardware Card -->
+          <div class="uses-card">
+            <div class="card-header">
+              <span class="card-icon">🖥️</span>
+              <h3>Hardware</h3>
+            </div>
+            <ul class="uses-list">
+              <li>
+                <span class="label">CPU</span>
+                <span class="value">AMD Ryzen 9 9950X3D</span>
+              </li>
+              <li>
+                <span class="label">GPU</span>
+                <span class="value">NVIDIA RTX 5090 (32GB)</span>
+              </li>
+              <li>
+                <span class="label">RAM</span>
+                <span class="value">64GB DDR5</span>
+              </li>
+              <li>
+                <span class="label">Storage</span>
+                <span class="value">4.5TB NVMe SSD</span>
+              </li>
+              <li>
+                <span class="label">OS</span>
+                <span class="value">Windows 11 Pro</span>
+              </li>
+            </ul>
           </div>
 
-          <div class="reveal">
-            <h3 class="content-section">Hardware</h3>
-            <ul class="content-list">
-              <li>🖥️ <strong>CPU:</strong> AMD Ryzen 9 9950X3D 16-Core Processor</li>
-              <li>💾 <strong>RAM:</strong> 64.0 GB</li>
-              <li>🎮 <strong>GPU:</strong> NVIDIA GeForce RTX 5090 (21,760 CUDA cores, 32 GB GDDR7, 1.79 TB/s bandwidth)</li>
-              <li>💿 <strong>Storage:</strong> 931.5 GB SSD + 3.6 TB SSD</li>
-              <li>⚡ <strong>OS:</strong> Windows 11 Pro</li>
+          <!-- Software Card -->
+          <div class="uses-card">
+            <div class="card-header">
+              <span class="card-icon">💾</span>
+              <h3>Software</h3>
+            </div>
+            <ul class="uses-list">
+              <li>
+                <span class="label">Editor</span>
+                <span class="value">VS Code / Cursor</span>
+              </li>
+              <li>
+                <span class="label">Terminal</span>
+                <span class="value">Windows Terminal / PowerShell</span>
+              </li>
+              <li>
+                <span class="label">Browser</span>
+                <span class="value">Chrome / Firefox</span>
+              </li>
+              <li>
+                <span class="label">Version Control</span>
+                <span class="value">Git / GitHub</span>
+              </li>
             </ul>
+          </div>
 
-            <h3 class="content-section">Software</h3>
-            <ul class="content-list">
-              <li>📝 <strong>Editor:</strong> VS Code / Cursor</li>
-              <li>🌐 <strong>Browser:</strong> Chrome / Firefox</li>
-              <li>💬 <strong>Terminal:</strong> iTerm2 / Terminal.app</li>
-              <li>🔧 <strong>Version Control:</strong> Git</li>
-              <li>☁️ <strong>Hosting:</strong> Cloudflare Pages</li>
-            </ul>
-
-            <h3 class="content-section">Languages & Tools</h3>
-            <ul class="content-list">
-              <li>⚡ <strong>Frontend:</strong> HTML, CSS, JavaScript, TypeScript</li>
-              <li>🔨 <strong>Frameworks:</strong> Vanilla JS, React (when needed)</li>
-              <li>🎨 <strong>Design:</strong> Figma, CSS</li>
-              <li>🚀 <strong>Deployment:</strong> Cloudflare Workers, Pages</li>
-            </ul>
-
-            <p class="content-meta" style="margin-top: 3rem;">
-              This page is a work in progress. I'll update it as my setup evolves.
-            </p>
+          <!-- Stack Card -->
+          <div class="uses-card">
+            <div class="card-header">
+              <span class="card-icon">⚡</span>
+              <h3>Tech Stack</h3>
+            </div>
+            <div class="tags-container">
+              <span class="tag">Astro</span>
+              <span class="tag">React</span>
+              <span class="tag">TypeScript</span>
+              <span class="tag">Tailwind</span>
+              <span class="tag">Node.js</span>
+              <span class="tag">Cloudflare</span>
+              <span class="tag">Figma</span>
+            </div>
           </div>
         </div>
+
+        <p class="content-meta">Last updated: November 2025</p>
       </div>
     </section>
   </main>
 </MainLayout>
+
+<style>
+  .uses-section {
+    padding-bottom: 4rem;
+  }
+
+  .section-subtitle {
+    color: var(--color-text-muted);
+    font-size: var(--text-lg);
+    margin-top: 0.5rem;
+  }
+
+  .uses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .uses-card {
+    background: var(--color-surface-2);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .uses-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+      circle at top right,
+      rgba(124, 58, 237, 0.1),
+      transparent 40%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .uses-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-accent-start);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  .uses-card:hover::before {
+    opacity: 1;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .card-icon {
+    font-size: 2rem;
+    background: var(--color-surface-1);
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+  }
+
+  .card-header h3 {
+    margin: 0;
+    font-size: var(--text-xl);
+    font-weight: 700;
+  }
+
+  .uses-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .uses-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .uses-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .label {
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .value {
+    color: var(--color-text-primary);
+    font-weight: 600;
+    text-align: right;
+  }
+
+  /* Tags */
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .tag {
+    background: var(--color-surface-1);
+    padding: 0.5rem 1rem;
+    border-radius: 100px;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    border: 1px solid var(--glass-border);
+    color: var(--color-text-muted);
+    transition: all 0.2s;
+  }
+
+  .tag:hover {
+    color: var(--color-accent-start);
+    border-color: var(--color-accent-start);
+    transform: scale(1.05);
+  }
+
+  .content-meta {
+    text-align: center;
+    margin-top: 4rem;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    opacity: 0.6;
+  }
+
+  @media (max-width: 768px) {
+    .uses-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
