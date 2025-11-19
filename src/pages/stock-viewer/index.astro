@@ -482,22 +482,26 @@ import MainLayout from "../../layouts/MainLayout.astro";
     if (!chartCanvas) return;
 
     const ctx = chartCanvas.getContext("2d");
-    let chart;
-    let isLoading = false;
     let currentData = []; // Store full dataset
     let currentSymbol = "";
 
-    // --- 1. CHART PLUGIN: CROSSHAIR ---
+    // --- 1. CHART PLUGIN: CROSSHAIR (Safe for v4) ---
     const crosshairPlugin = {
       id: "crosshair",
-      afterDatasetsDraw(chart, args, plugins) {
-        const {
-          ctx,
-          tooltip,
-          chartArea: { top, bottom },
-        } = chart;
-        if (tooltip._active && tooltip._active.length) {
-          const x = tooltip._active[0].element.x;
+      afterDatasetsDraw(chart) {
+        // Check if tooltip exists and has active elements to avoid crash
+        if (
+          chart.tooltip &&
+          chart.tooltip.getActiveElements &&
+          chart.tooltip.getActiveElements().length > 0
+        ) {
+          const activePoint = chart.tooltip.getActiveElements()[0];
+          const {
+            ctx,
+            chartArea: { top, bottom },
+          } = chart;
+          const x = activePoint.element.x;
+
           ctx.save();
           ctx.beginPath();
           ctx.moveTo(x, top);
@@ -581,7 +585,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
 
     // --- 4. MAIN FETCH ---
     async function fetchSymbol(symbol) {
-      // Note: Using ALPHA_KEY environment variable name as per user request
+      // Fetch data from backend
       let r = await fetch(`/api/price/${encodeURIComponent(symbol)}`);
       if (!r.ok) {
         let msg = `HTTP Error ${r.status}`;
@@ -605,15 +609,20 @@ import MainLayout from "../../layouts/MainLayout.astro";
       const data = rows.map((r) => r.close);
 
       if (emptyState) emptyState.style.display = "none";
+
+      // FIX: Destroy existing chart cleanly using Chart.getChart (safe for reuse)
       // @ts-ignore
-      if (chart) chart.destroy();
+      const existingChart = Chart.getChart(chartCanvas);
+      if (existingChart) {
+        existingChart.destroy();
+      }
 
       const gradient = ctx.createLinearGradient(0, 0, 0, 400);
       gradient.addColorStop(0, "rgba(124, 58, 237, 0.5)");
       gradient.addColorStop(1, "rgba(124, 58, 237, 0)");
 
       // @ts-ignore
-      chart = new Chart(ctx, {
+      new Chart(ctx, {
         type: "line",
         data: {
           labels,
@@ -628,14 +637,14 @@ import MainLayout from "../../layouts/MainLayout.astro";
               pointBorderColor: "#fff",
               pointHoverBackgroundColor: "#fff",
               pointHoverBorderColor: "#06b6d4",
-              tension: 0.3,
+              tension: 0.2, // Slightly tighter curves
               borderWidth: 2,
               pointRadius: 0,
               pointHoverRadius: 6,
             },
           ],
         },
-        plugins: [crosshairPlugin], // Add custom crosshair
+        plugins: [crosshairPlugin],
         options: {
           maintainAspectRatio: false,
           responsive: true,
@@ -655,9 +664,9 @@ import MainLayout from "../../layouts/MainLayout.astro";
               boxPadding: 6,
               callbacks: {
                 title: function (context) {
-                  // Format Date: "Nov 14, 2025"
                   const dateStr = context[0].label;
-                  return new Date(dateStr).toLocaleDateString("en-US", {
+                  // Safer date parsing for tooltip title
+                  return new Date(dateStr).toLocaleDateString(undefined, {
                     year: "numeric",
                     month: "short",
                     day: "numeric",
@@ -672,18 +681,17 @@ import MainLayout from "../../layouts/MainLayout.astro";
           scales: {
             x: {
               ticks: {
-                maxTicksLimit: 8,
+                maxTicksLimit: 6, // Fewer ticks to avoid clutter
                 color: "#64748b",
-                font: { family: "JetBrains Mono", size: 12 }, // Increased size
+                font: { family: "JetBrains Mono", size: 11 },
               },
               grid: { display: false },
             },
             y: {
-              beginAtZero: false,
-              position: "right", // Move price to right side (standard for trading)
+              position: "right", // Price on right
               ticks: {
                 color: "#64748b",
-                font: { family: "JetBrains Mono", size: 12 }, // Increased size
+                font: { family: "JetBrains Mono", size: 11 },
                 callback: function (value) {
                   return "$" + value;
                 },
