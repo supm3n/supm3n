@@ -14,6 +14,22 @@ const {
 <!doctype html>
 <html lang="en">
   <head>
+    <style is:inline>
+      /*reset the body margins immediately, before it even attempts to load external files*/
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden; /* Prevents width jump from scrollbar appearing late */
+        background-color: #0b0c10; /* Match your theme bg to prevent white flash */
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+    </style>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />

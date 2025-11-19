@@ -1,4 +1,8 @@
 ---
+import { Image } from "astro:assets";
+// Import the image from the new location
+import logoImg from "../assets/logo.png";
+
 const pathname = new URL(Astro.request.url).pathname;
 ---
 
@@ -7,12 +11,11 @@ const pathname = new URL(Astro.request.url).pathname;
     <div class="header-inner">
       <a href="/" class="brand" aria-label="Supm3n Home">
         <div class="brand-logo-wrapper">
-          <img
-            src="/logo.png"
+          <Image
+            src={logoImg}
             alt="Supm3n Logo"
             class="brand-logo"
-            width="40"
-            height="40"
+            loading="eager"
           />
         </div>
         <span class="brand-name">Supm3n</span>
