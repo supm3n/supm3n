@@ -155,7 +155,8 @@ body footer.site-footer {
   border-radius: 16px;
   box-shadow: 0 0 30px rgba(16, 185, 129, 0.15);
   flex: 1;
-  /* Take remaining space */
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
   align-items: center;

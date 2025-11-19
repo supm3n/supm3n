@@ -4,40 +4,44 @@ import MainLayout from "../layouts/MainLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import { projects } from "../data/projects.js";
 
-// Filter only featured projects if you have many, for now we show all or top 3
+// Filter only featured projects
 const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
 ---
 
 <MainLayout title="Supm3n — Build lean tools">
     <main id="main-content" role="main">
-        <!-- HERO SECTION -->
-        <section class="hero">
-            <div class="container">
-                <div class="matrix-container">
-                    <h1 class="hero-title matrix-text" data-text="Supm3n">
-                        Supm3n
-                    </h1>
-                    <p
-                        class="hero-tagline matrix-text"
-                        data-text="Half-finished ideas and too much CSS."
-                    >
-                        Half-finished ideas and too much CSS.
-                    </p>
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="glitch-wrapper">
+                    <h1 class="hero-title" data-text="Supm3n">Supm3n</h1>
                 </div>
-                <div class="hero-cta">
-                    <a
-                        href="#featured-projects"
-                        class="btn btn-primary magnetic-btn">View Projects</a
-                    >
+
+                <div class="hero-subtitle">
+                    Half-finished ideas and too much CSS.
+                </div>
+
+                <div class="hero-actions">
+                    <a href="#featured-projects" class="cta-button primary-cta">
+                        View Projects
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path d="M7 17L17 7M17 7H7M17 7V17"></path>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </section>
 
-        <!-- PROJECTS SECTION -->
         <section class="projects-section" id="featured-projects">
             <div class="container">
                 <div class="section-header">
-                    <h2 class="section-title">Featured Projects</h2>
+                    <h2 class="section-label">Selected Works</h2>
                 </div>
 
                 <div class="projects-grid">
@@ -52,200 +56,180 @@ const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
     </main>
 </MainLayout>
 
-<!-- STYLE SECTION -->
 <style>
-    /* HERO MATRIX VARIABLES */
-    :root {
-        --matrix-primary: var(--color-accent-start);
-        --matrix-secondary: var(--color-accent-end);
-    }
-
-    /* HERO STYLES */
-    .hero {
-        padding: calc(var(--space-2xl) * 1.5) 0 var(--space-2xl);
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-        mask-image: linear-gradient(
-            to bottom,
-            transparent 0%,
-            black 10%,
-            black 90%,
-            transparent 100%
-        );
-        -webkit-mask-image: linear-gradient(
-            to bottom,
-            transparent 0%,
-            black 10%,
-            black 90%,
-            transparent 100%
-        );
-    }
-
-    .hero::before {
-        content: "";
-        position: absolute;
-        top: -100%;
-        left: 0;
-        width: 100%;
-        height: 200%;
-        background: repeating-linear-gradient(
-            0deg,
-            transparent 0px,
-            rgba(124, 58, 237, 0.15) 1px,
-            rgba(6, 182, 212, 0.2) 2px,
-            rgba(6, 182, 212, 0.3) 3px,
-            transparent 4px,
-            transparent 8px
-        );
-        animation: rain 8s linear infinite;
-        z-index: 1;
-        pointer-events: none;
-        opacity: 0.8;
-    }
-
-    .matrix-container {
+    /* HERO LAYOUT - Centers content */
+    .hero-section {
+        min-height: 85vh;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        z-index: 2;
+        text-align: center;
+        padding: 0 1.5rem;
         position: relative;
+        margin-bottom: 4rem;
     }
 
-    .hero-title.matrix-text,
-    .hero-tagline.matrix-text {
-        color: var(--matrix-primary);
-        font-family: monospace;
+    /* UPDATE: Added pointer-events: none 
+       This allows the mouse to "fall through" the text to the canvas below
+    */
+    .hero-title {
+        font-size: clamp(4rem, 12vw, 9rem);
+        font-weight: 900;
+        line-height: 0.9;
+        letter-spacing: -0.04em;
+        color: var(--color-heading);
+        margin: 0;
+        text-transform: uppercase;
+        background: linear-gradient(to bottom right, #fff 30%, #94a3b8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         position: relative;
-        text-shadow:
-            0 0 10px rgba(124, 58, 237, 0.9),
-            0 0 20px rgba(124, 58, 237, 0.7);
-        z-index: 2;
-        margin-bottom: var(--space-lg);
-        animation: fadeUp 0.6s var(--transition-base);
+
+        pointer-events: none; /* <--- ADDED THIS */
+        user-select: none; /* <--- Optional: Prevents highlighting */
     }
 
-    .hero-title.matrix-text {
-        font-size: var(--text-4xl);
-        font-weight: 800;
-        letter-spacing: -0.03em;
-    }
-    .hero-tagline.matrix-text {
-        font-size: var(--text-2xl);
-        font-weight: 500;
-        max-width: 650px;
-        line-height: 1.5;
+    /* GLITCH EFFECT */
+    .glitch-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+        pointer-events: none; /* <--- ADDED THIS */
     }
 
-    .hero-title.matrix-text::before,
-    .hero-tagline.matrix-text::before {
+    .hero-title::before,
+    .hero-title::after {
         content: attr(data-text);
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        animation: glitch 2s infinite;
-        clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
-        transform: translate(-2px, -2px);
-        color: var(--matrix-secondary);
-        text-shadow: 0 0 5px rgba(6, 182, 212, 0.9);
+        background: var(--color-base);
+        opacity: 0.8;
     }
 
-    @keyframes rain {
+    .hero-title::before {
+        left: 2px;
+        text-shadow: -2px 0 var(--glitch-1);
+        -webkit-text-fill-color: var(--color-heading);
+        animation: glitch-anim-1 3s infinite linear alternate-reverse;
+        clip-path: inset(20% 0 80% 0);
+    }
+
+    .hero-title::after {
+        left: -2px;
+        text-shadow: -2px 0 var(--glitch-2);
+        -webkit-text-fill-color: var(--color-heading);
+        animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
+        clip-path: inset(10% 0 60% 0);
+    }
+
+    @keyframes glitch-anim-1 {
         0% {
-            transform: translateY(0);
+            clip-path: inset(20% 0 80% 0);
+        }
+        20% {
+            clip-path: inset(60% 0 10% 0);
         }
         100% {
-            transform: translateY(50%);
+            clip-path: inset(30% 0 20% 0);
         }
     }
-    @keyframes glitch {
+    @keyframes glitch-anim-2 {
+        0% {
+            clip-path: inset(10% 0 60% 0);
+        }
+        20% {
+            clip-path: inset(30% 0 10% 0);
+        }
+        100% {
+            clip-path: inset(40% 0 30% 0);
+        }
+    }
+
+    /* TERMINAL SUBTITLE */
+    .hero-subtitle {
+        font-family: var(--font-mono);
+        font-size: clamp(1rem, 2.5vw, 1.25rem);
+        color: var(--color-text-muted);
+        margin: 1.5rem auto 3rem;
+        font-weight: 400;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+
+        pointer-events: none; /* <--- ADDED THIS */
+        user-select: none; /* <--- Optional */
+    }
+
+    .hero-subtitle::after {
+        content: "_";
+        color: var(--color-accent-start);
+        animation: blink 1s step-end infinite;
+        font-weight: 700;
+    }
+
+    @keyframes blink {
         0%,
         100% {
-            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
-            transform: translate(0);
-        }
-        33% {
-            clip-path: polygon(0 0, 100% 0, 100% 15%, 0 15%);
-            transform: translate(-5px, -5px);
-        }
-        66% {
-            clip-path: polygon(0 85%, 100% 85%, 100% 100%, 0 100%);
-            transform: translate(5px, 5px);
-        }
-    }
-
-    @keyframes fadeUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
             opacity: 1;
-            transform: translateY(0);
+        }
+        50% {
+            opacity: 0;
         }
     }
 
     /* CTA BUTTONS */
-    .hero-cta {
-        display: flex;
-        gap: var(--space-md);
-        justify-content: center;
-        flex-wrap: wrap;
-        margin-top: var(--space-lg);
-        position: relative;
-        z-index: 5;
+    .hero-actions {
+        pointer-events: auto; /* <--- Ensures buttons remain clickable */
     }
 
-    .btn {
+    .cta-button {
         display: inline-flex;
         align-items: center;
-        gap: var(--space-xs);
-        padding: var(--space-sm) var(--space-lg);
+        gap: 0.75rem;
+        padding: 1rem 2.5rem;
         border-radius: 12px;
-        font-size: var(--text-base);
         font-weight: 600;
-        transition: all var(--transition-base);
-        cursor: pointer;
-        border: 1px solid transparent;
         text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+
+        pointer-events: auto; /* <--- Extra safety */
     }
 
-    .btn-primary {
-        background: linear-gradient(
-            135deg,
-            var(--color-accent-start),
-            var(--color-accent-end)
-        );
-        color: #fff;
-        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+    .primary-cta {
+        background: var(--color-text-primary);
+        color: var(--color-base);
+        box-shadow: 0 0 20px var(--shadow-sm);
     }
-    .btn-primary:hover {
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 8px 32px rgba(124, 58, 237, 0.5);
+    .primary-cta:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 30px var(--shadow-lg);
     }
 
-    /* PROJECTS GRID */
+    /* PROJECTS SECTION */
     .projects-section {
-        padding: calc(var(--space-2xl) * 0.75) 0;
-        position: relative;
+        padding-bottom: 8rem;
+    }
+
+    .section-label {
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--color-text-muted);
+        margin-bottom: 2rem;
+        padding-left: 1rem;
+        border-left: 3px solid var(--color-accent-start);
     }
 
     .projects-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: clamp(1.5rem, 3vw, 2rem);
-        margin-top: var(--space-xl);
-    }
-
-    @media (max-width: 768px) {
-        .hero-title.matrix-text {
-            font-size: var(--text-3xl);
-        }
-        .projects-grid {
-            grid-template-columns: 1fr;
-        }
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
     }
 </style>

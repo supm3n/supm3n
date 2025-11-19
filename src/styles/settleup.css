@@ -75,6 +75,8 @@
   gap: 1rem;
   box-shadow: var(--shadow-panel);
   transition: transform 0.2s, border-color 0.2s;
+  background: var(--color-surface-1) !important;
+  backdrop-filter: blur(12px);
 }
 
 .panel:hover {
@@ -220,4 +222,21 @@ button.secondary:hover {
 .transfer-amount {
   font-weight: bold;
   color: var(--positive);
+}
+
+.game-wrapper {
+  /* ... existing styles ... */
+
+  /* ADD THESE LINES: */
+  background: rgba(0, 0, 0, 0.85);
+  /* Dark background for contrast */
+  backdrop-filter: blur(10px);
+  z-index: 10;
+  /* Ensure it sits above particles */
+}
+
+.game-info {
+  /* Make the score board readable */
+  background: var(--color-surface-2);
+  backdrop-filter: blur(10px);
 }

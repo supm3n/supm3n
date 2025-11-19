@@ -1,6 +1,7 @@
 /* ============================================
    1. RESET (CRITICAL: Fixes "Floating" Header)
    ============================================ */
+
 *,
 *::before,
 *::after {
@@ -15,19 +16,23 @@ html {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+/* 2. CORE BODY STYLE */
 body {
 	font-family: var(--font-sans);
 	font-size: var(--text-base);
 	line-height: 1.6;
 	color: var(--color-text-primary);
-	background: var(--color-base);
+
+	/* IMPORTANT: Transparent so the canvas animation shows through */
+	background-color: transparent;
+
 	min-height: 100vh;
 	overflow-x: hidden;
 	display: flex;
 	flex-direction: column;
 }
 
-/* Custom Scrollbar */
+/* 3. CUSTOM SCROLLBAR */
 ::-webkit-scrollbar {
 	width: 10px;
 }
@@ -150,7 +155,7 @@ body {
 
 
 /* Background Gradient */
-body::before {
+/*body::before {
 	content: '';
 	position: fixed;
 	top: 0;
@@ -165,7 +170,7 @@ body::before {
 	z-index: -1;
 	will-change: transform;
 	animation: gradientShift 20s ease-in-out infinite;
-}
+}*/
 
 [data-theme="light"] body::before {
 	background:

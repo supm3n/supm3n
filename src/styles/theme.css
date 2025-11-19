@@ -1,71 +1,46 @@
 /* src/styles/theme.css */
 :root {
-  /* Dark theme (default) */
-  --bg: var(--color-base, #0B0C10);
-  --fg: var(--color-text-primary, #E6E9F0);
-  --surface: var(--color-surface-1, #151820);
-  --surface-2: var(--color-surface-2, #1A1F2C);
-  --surface-3: var(--color-surface-3, #1F2430);
-  --muted: var(--color-text-muted, #A9B1C6);
-  --link: var(--color-accent-end, #06B6D4);
-  --border: rgba(255, 255, 255, 0.1);
-  --glass-bg: rgba(21, 24, 32, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.1);
-}
+  --color-base: #030304;
+  --color-text-primary: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --color-heading: #ffffff;
+  --color-accent-start: #8b5cf6;
+  --color-accent-end: #6366f1;
+  --color-red-cape: #EF4444;
+  --glitch-1: #ff00c1;
+  --glitch-2: #00fff9;
+  --glass-bg: rgba(3, 3, 4, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --bg-gradient: radial-gradient(circle at center, #0f0f11 0%, #000000 100%);
+  --particle-color: rgba(255, 255, 255, 0.5);
+  --line-color: rgba(139, 92, 246, 0.2);
 
-[data-theme="dark"] {
-  --bg: var(--color-base, #0B0C10);
-  --fg: var(--color-text-primary, #E6E9F0);
-  --surface: var(--color-surface-1, #151820);
-  --surface-2: var(--color-surface-2, #1A1F2C);
-  --surface-3: var(--color-surface-3, #1F2430);
-  --muted: var(--color-text-muted, #A9B1C6);
-  --link: var(--color-accent-end, #06B6D4);
-  --border: rgba(255, 255, 255, 0.1);
-  --glass-bg: rgba(21, 24, 32, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  /* Add missing surface vars if needed by other pages */
+  --color-surface-1: rgba(255, 255, 255, 0.03);
+  --color-surface-2: rgba(255, 255, 255, 0.05);
+  --color-surface-3: #1F2430;
 }
 
 [data-theme="light"] {
-  --bg: var(--color-base-light, #F5F5F5);
-  --fg: var(--color-text-primary-light, #0B0C10);
-  --surface: var(--color-surface-1-light, #FFFFFF);
-  --surface-2: var(--color-surface-2-light, #F9FAFB);
-  --surface-3: var(--color-surface-3-light, #F3F4F6);
-  --muted: var(--color-text-muted-light, #6B7280);
-  --link: var(--color-accent-start, #2563EB);
-  --border: rgba(0, 0, 0, 0.12);
-  --glass-bg: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(0, 0, 0, 0.1);
-}
+  --color-base: #f8fafc;
+  --color-text-primary: #0f172a;
+  --color-text-muted: #64748b;
+  --color-heading: #0f172a;
+  --color-accent-start: #6366f1;
+  --color-accent-end: #8b5cf6;
+  --glitch-1: #c026d3;
+  --glitch-2: #0891b2;
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 2px 8px rgba(148, 163, 184, 0.2);
+  --shadow-lg: 0 8px 32px rgba(148, 163, 184, 0.2);
+  --bg-gradient: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%);
+  --particle-color: rgba(99, 102, 241, 0.5);
+  --line-color: rgba(99, 102, 241, 0.2);
 
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) {
-    --bg: var(--color-base-light, #F5F5F5);
-    --fg: var(--color-text-primary-light, #0B0C10);
-    --surface: var(--color-surface-1-light, #FFFFFF);
-    --surface-2: var(--color-surface-2-light, #F9FAFB);
-    --surface-3: var(--color-surface-3-light, #F3F4F6);
-    --muted: var(--color-text-muted-light, #6B7280);
-    --link: var(--color-accent-start, #2563EB);
-    --border: rgba(0, 0, 0, 0.12);
-    --glass-bg: rgba(255, 255, 255, 0.85);
-    --glass-border: rgba(0, 0, 0, 0.1);
-  }
-}
-
-/* Apply theme to root elements */
-html, body { 
-  background: var(--bg); 
-  color: var(--fg); 
-}
-
-a { 
-  color: var(--link); 
-}
-
-.card, .section, .panel, .content, .wrapper, .container {
-  background: var(--surface);
-  color: var(--fg);
-  border-color: var(--border);
+  --color-surface-1: rgba(255, 255, 255, 0.6);
+  --color-surface-2: rgba(255, 255, 255, 0.8);
+  --color-surface-3: #F3F4F6;
 }
