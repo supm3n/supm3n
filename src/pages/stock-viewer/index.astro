@@ -149,11 +149,14 @@ import MainLayout from "../../layouts/MainLayout.astro";
   .hero {
     text-align: center;
     margin-bottom: var(--space-xl);
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
   }
 
   .hero-title {
     margin: 0 0 0.5rem 0;
-    font-size: var(--text-4xl);
+    /* Updated to match Settle Up size */
+    font-size: clamp(2rem, 4vw, 3rem);
     line-height: 1.1;
     background: linear-gradient(
       135deg,
@@ -166,12 +169,15 @@ import MainLayout from "../../layouts/MainLayout.astro";
     background-clip: text;
     font-weight: 800;
     letter-spacing: -0.02em;
+    text-transform: uppercase; /* Added to match Settle Up style */
   }
 
   .hero-subtitle {
     color: var(--color-text-muted);
-    font-size: var(--text-lg);
+    /* Updated to match Settle Up size */
+    font-size: 0.9rem;
     font-family: var(--font-mono); /* Tech vibe */
+    opacity: 0.9;
   }
 
   /* TOOLBAR GRID

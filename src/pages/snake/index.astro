@@ -1,72 +1,76 @@
 ---
 // src/pages/snake/index.astro
-import MainLayout from '../../layouts/MainLayout.astro';
-import '../../styles/snake.css';
+import MainLayout from "../../layouts/MainLayout.astro";
+import "../../styles/snake.css";
 ---
 
 <MainLayout title="Snake Game — Supm3n">
-  <main id="main-content" class="container snake-page">
-    <section class="game-header">
-      <h1>Snake Game</h1>
-      <p>Use arrow keys, WASD, or click/tap to change direction</p>
-    </section>
-
+  <main id="main-content" class="snake-page">
     <div class="game-container">
-      <div class="game-info">
-        <div class="score-display">
+      <!-- 1. Top Bar: Branding & Score -->
+      <header class="game-top-bar">
+        <div class="game-branding">
+          <h1>Snake_OS</h1>
+        </div>
+
+        <div class="score-board">
           <div class="score-item">
             <span class="score-label">Score</span>
             <span class="score-value" id="score">0</span>
           </div>
           <div class="score-item">
-            <span class="score-label">High Score</span>
+            <span class="score-label" id="high-score-label">Global Best</span>
             <span class="score-value" id="high-score">0</span>
           </div>
         </div>
-        <div class="game-controls">
-          <button id="start-btn" class="btn btn-primary">Start</button>
-          <button id="pause-btn" class="btn btn-secondary" disabled>Pause</button>
-          <button id="reset-btn" class="btn btn-secondary">Reset</button>
-        </div>
-      </div>
+      </header>
 
+      <!-- 2. Canvas Wrapper (Flex Grow) -->
       <div class="game-wrapper">
         <canvas id="game-canvas"></canvas>
-        
-        <div id="game-over" class="game-over hidden">
-          <h2>Game Over!</h2>
-          <p class="final-score">Final Score: <span id="final-score">0</span></p>
-          <button id="play-again-btn" class="btn btn-primary">Play Again</button>
+
+        <!-- Overlays -->
+        <div id="game-over" class="game-overlay hidden">
+          <h2>Terminated</h2>
+          <p>Final Protocol: <span id="final-score">0</span></p>
+          <button id="play-again-btn" class="btn btn-primary"
+            >Reboot System</button
+          >
         </div>
-        
-        <div id="game-start" class="game-start">
-          <h2>Snake Game</h2>
-          <p>Click Start to begin</p>
+
+        <div id="game-start" class="game-overlay">
+          <h2>Ready</h2>
+          <p>Initialize Sequence</p>
         </div>
       </div>
 
-      <div class="controls-info">
-        <div class="control-section">
-          <h3>Keyboard Controls</h3>
-          <div class="control-grid">
-            <div class="control-item">
-              <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd>
-              <span>Arrow Keys</span>
-            </div>
-            <div class="control-item">
-              <kbd>W</kbd> <kbd>S</kbd> <kbd>A</kbd> <kbd>D</kbd>
-              <span>WASD</span>
-            </div>
-            <div class="control-item">
-              <kbd>Space</kbd>
-              <span>Pause/Resume</span>
-            </div>
+      <!-- 3. Bottom Controls Bar -->
+      <div class="controls-bar">
+        <div class="action-buttons">
+          <button id="start-btn" class="btn btn-primary">Run</button>
+          <button id="pause-btn" class="btn btn-secondary" disabled
+            >Pause</button
+          >
+          <button id="reset-btn" class="btn btn-secondary">Reset</button>
+        </div>
+
+        <div class="instructions">
+          <div class="key-group">
+            <kbd>WASD</kbd>
+            <span>/</span>
+            <kbd>Arrows</kbd> to Move
+          </div>
+          <div class="key-group">
+            <kbd>Space</kbd> to Pause
           </div>
         </div>
-        <div class="control-section">
-          <h3>Mouse/Touch Controls</h3>
-          <p>Click or tap on the game area to change direction</p>
-          <p class="hint">Click above snake = Up, below = Down, left = Left, right = Right</p>
+
+        <!-- Decoration / Status -->
+        <div style="display: flex; gap: 6px; opacity: 0.5;">
+          <div
+            style="width: 8px; height: 8px; background: #10B981; border-radius: 50%; box-shadow: 0 0 5px #10B981;"
+          >
+          </div>
         </div>
       </div>
     </div>
@@ -74,9 +78,8 @@ import '../../styles/snake.css';
 </MainLayout>
 
 <script>
-  import { SnakeGame } from '../../scripts/snakeGame.js';
-  // Start game when component loads
-  document.addEventListener('DOMContentLoaded', () => {
-      new SnakeGame();
+  import { SnakeGame } from "../../scripts/snakeGame.js";
+  document.addEventListener("DOMContentLoaded", () => {
+    new SnakeGame();
   });
 </script>

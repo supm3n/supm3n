@@ -1,169 +1,389 @@
 :root {
-  /* Map Settle Up to your Global Theme variables from theme.css */
+  /* --- DARK MODE DEFAULTS --- */
   --panel-bg: var(--color-surface-2);
-  --panel-border: var(--glass-border);
-  --field-bg: var(--color-surface-1);
-  --field-bg-active: var(--color-base);
+  --panel-border: rgba(255, 255, 255, 0.15);
+
+  /* Fields (Inputs) - slightly lighter than bg for visibility */
+  --field-bg: rgba(255, 255, 255, 0.07);
+  --field-bg-active: rgba(255, 255, 255, 0.12);
 
   --text: var(--color-text-primary);
+  --text-muted-local: var(--color-text-muted);
 
-  /* Accent Colors */
   --accent: var(--color-accent-start);
-  --accent-gradient: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
-  --accent-text: #FFFFFF;
-
-  /* Status Colors */
   --positive: #10B981;
   --negative: #EF4444;
+  --font-numbers: var(--font-mono);
 
-  /* UI Helper Variables */
-  --focus-ring: rgba(124, 58, 237, 0.3);
-  --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.1);
-  --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.15);
+  /* Placeholder text color */
+  --placeholder-color: rgba(255, 255, 255, 0.3);
 
-  font-family: var(--font-sans);
+  /* SVG Arrow for Select (White Stroke) */
+  --select-arrow: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
 }
 
-/* Component Styles */
+/* --- LIGHT MODE OVERRIDES --- */
+[data-theme="light"] {
+  --panel-border: rgba(0, 0, 0, 0.1);
+
+  /* Darken fields slightly on white bg */
+  --field-bg: rgba(0, 0, 0, 0.04);
+  --field-bg-active: rgba(0, 0, 0, 0.08);
+
+  --placeholder-color: rgba(0, 0, 0, 0.4);
+
+  /* SVG Arrow for Select (Dark Stroke) */
+  --select-arrow: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%230f172a%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
+}
+
+/* ---------------------------------------------------------
+   LAYOUT & GRID
+   --------------------------------------------------------- */
 .app-main {
-  flex: 1;
   display: grid;
-  max-width: 1100px;
-  margin-inline: auto;
   gap: 1.5rem;
   padding: 2rem 1rem 4rem;
-}
-
-@media (min-width: 960px) {
-  .app-main {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
-  }
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .app-header {
-  grid-column: 1 / -1;
   text-align: center;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid var(--glass-border);
   margin-bottom: 1rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--panel-border);
 }
 
 .app-title {
-  font-size: var(--text-3xl);
+  font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
   margin: 0;
-  background: var(--accent-gradient);
+  background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-end));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
 }
 
 .header-note {
-  color: var(--color-text-muted);
+  color: var(--text-muted-local);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
   margin-top: 0.5rem;
+  opacity: 0.9;
 }
 
-/* Panels */
+/* Desktop: 2 columns */
+@media (min-width: 960px) {
+  .app-main {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .app-header {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------------------------------------------------------
+   PANELS
+   --------------------------------------------------------- */
 .panel {
-  background: var(--panel-bg);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--panel-border);
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  box-shadow: var(--shadow-panel);
-  transition: transform 0.2s, border-color 0.2s;
-  background: var(--color-surface-1) !important;
-  backdrop-filter: blur(12px);
+  gap: 1.25rem;
+  box-shadow: var(--shadow-lg);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .panel:hover {
-  transform: translateY(-2px);
   border-color: var(--accent);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.2);
 }
 
 .panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 0.5rem;
 }
 
 .panel h2 {
   margin: 0;
-  font-size: var(--text-xl);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-/* Forms & Inputs */
-input,
-select {
+/* ---------------------------------------------------------
+   FORMS & INPUTS (Scoped to .app-main)
+   --------------------------------------------------------- */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.app-main label {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted-local);
+  font-weight: 700;
+}
+
+.app-main input,
+.app-main select {
   width: 100%;
-  border-radius: 12px;
-  border: 1px solid var(--panel-border);
   background: var(--field-bg);
-  padding: 0.75rem 1rem;
+  border: 1px solid var(--panel-border);
   color: var(--text);
-  font-size: 1rem;
+  /* Adaptive text color */
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
   transition: all 0.2s;
 }
 
-input:focus,
-select:focus {
+/* Custom Select Styling */
+.app-main select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: var(--select-arrow);
+  /* Adaptive arrow */
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+/* Fix for Dropdown Options Visibility */
+.app-main select option {
+  background-color: var(--color-base);
+  /* Matches theme background */
+  color: var(--text);
+}
+
+/* Mono font for numbers inputs */
+.app-main input[inputmode="decimal"] {
+  font-family: var(--font-numbers);
+}
+
+.app-main input:focus,
+.app-main select:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--focus-ring);
+  background: var(--field-bg-active);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3);
+}
+
+.app-main input::placeholder {
+  color: var(--placeholder-color);
+}
+
+/* ---------------------------------------------------------
+   BUTTONS (Scoped to .app-main to fix Header conflict)
+   --------------------------------------------------------- */
+.app-main button {
+  cursor: pointer;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.app-main button.primary {
+  background: var(--text);
+  color: var(--color-base);
+  border: 1px solid transparent;
+}
+
+.app-main button.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  filter: brightness(1.1);
+}
+
+.app-main button.primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.app-main button.secondary {
+  background: var(--field-bg);
+  border: 1px solid var(--panel-border);
+  color: var(--text-muted-local);
+}
+
+.app-main button.secondary:hover {
+  color: var(--text);
+  border-color: var(--text);
   background: var(--field-bg-active);
 }
 
-.form-grid-2 {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: 1fr 1fr;
+/* Small buttons (used in tables and lists) */
+.app-main .btn-xs {
+  padding: 0.4rem 0.6rem;
+  font-size: 1.1rem;
+  line-height: 1;
+  border-radius: 6px;
+  height: 32px;
+  width: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.form-actions {
-  margin-top: 1rem;
+/* ---------------------------------------------------------
+   PEOPLE LIST
+   --------------------------------------------------------- */
+.people-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-/* Buttons */
-button {
-  cursor: pointer;
-  padding: 0.75rem 1.5rem;
-  border-radius: 12px;
-  font-weight: 600;
+.person-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: var(--field-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
   transition: all 0.2s;
+}
+
+.person-row:hover,
+.person-row:focus-within {
+  border-color: var(--accent);
+  background: var(--field-bg-active);
+}
+
+.person-name {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-weight: 600;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.person-name:focus {
+  box-shadow: none;
+  background: transparent;
   border: none;
 }
 
-button.primary {
-  background: var(--accent-gradient);
-  color: white;
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
-}
-
-button.primary:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.1);
-  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
-}
-
-button.secondary {
-  background: transparent;
+/* ---------------------------------------------------------
+   EXPENSES TABLE
+   --------------------------------------------------------- */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
   border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: var(--field-bg);
+}
+
+.app-main table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.app-main thead {
+  background: var(--field-bg-active);
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.app-main th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: var(--text-muted-local);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* Align Amount and Actions to right */
+.app-main th:nth-child(2),
+.app-main td:nth-child(2),
+.app-main th:nth-child(3),
+.app-main td:nth-child(3) {
+  text-align: right;
+}
+
+.app-main td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--panel-border);
   color: var(--text);
 }
 
-button.secondary:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: rgba(124, 58, 237, 0.05);
+.app-main tr:last-child td {
+  border-bottom: none;
 }
 
-/* Lists (People & Balances) */
-.people-list,
+/* Table value styling */
+.app-main td:nth-child(2) {
+  font-family: var(--font-numbers);
+  font-weight: 600;
+}
+
+.table-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.table-actions .btn-xs {
+  font-size: 0.75rem;
+  width: auto;
+  padding: 0 0.75rem;
+}
+
+.table-actions .btn-delete {
+  font-size: 1.2rem;
+  width: 32px;
+  padding: 0;
+}
+
+/* ---------------------------------------------------------
+   BALANCES LIST
+   --------------------------------------------------------- */
 .balances-list {
   list-style: none;
   padding: 0;
@@ -173,70 +393,157 @@ button.secondary:hover {
   gap: 0.75rem;
 }
 
-.person-row,
 .balance-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--field-bg);
+  border: 1px solid var(--panel-border);
+  border-left: 3px solid var(--text-muted-local);
+  border-radius: 8px;
+  align-items: center;
+}
+
+.balance-positive {
+  border-left-color: var(--positive);
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), transparent);
+}
+
+.balance-negative {
+  border-left-color: var(--negative);
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.1), transparent);
+}
+
+/* Left Side: Name + Badges */
+.balance-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.balance-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+/* The "Paid" / "Owes" badges row */
+.balance-metrics {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.metric-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--field-bg-active);
+  color: var(--text-muted-local);
+  white-space: nowrap;
+  border: 1px solid var(--panel-border);
+}
+
+/* Right Side: Net Amount */
+.balance-net {
+  font-family: var(--font-numbers);
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-align: right;
+}
+
+.text-pos {
+  color: var(--positive);
+}
+
+.text-neg {
+  color: var(--negative);
+}
+
+.text-muted {
+  color: var(--text-muted-local);
+  opacity: 0.7;
+}
+
+/* ---------------------------------------------------------
+   SETTLEMENT
+   --------------------------------------------------------- */
+.settlement-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1rem;
   background: var(--field-bg);
+  padding: 1.25rem;
   border-radius: 12px;
   border: 1px solid var(--panel-border);
 }
 
-.person-row input {
-  border: none;
-  background: transparent;
-  padding: 0;
-  font-weight: 600;
-}
-
-/* Settlement Area */
-.settlement-bar {
-  background: var(--field-bg);
-  padding: 1.5rem;
-  border-radius: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid var(--panel-border);
-}
-
-.total-summary strong {
+.total-label {
   display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted-local);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.total-val {
+  font-family: var(--font-numbers);
   font-size: 1.5rem;
+  font-weight: 700;
   color: var(--accent);
+}
+
+.settlement-results {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .transfer-line {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 1rem;
-  background: var(--field-bg);
-  border-radius: 12px;
-  margin-bottom: 0.5rem;
-  border-left: 4px solid var(--positive);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: rgba(16, 185, 129, 0.08);
+  /* Slightly stronger for visibility on light */
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--text);
 }
 
-.transfer-amount {
-  font-weight: bold;
+.transfer-arrow {
+  color: var(--text-muted-local);
+  margin: 0 0.5rem;
+}
+
+.transfer-money {
+  font-family: var(--font-numbers);
+  font-weight: 700;
   color: var(--positive);
 }
 
-.game-wrapper {
-  /* ... existing styles ... */
-
-  /* ADD THESE LINES: */
-  background: rgba(0, 0, 0, 0.85);
-  /* Dark background for contrast */
-  backdrop-filter: blur(10px);
-  z-index: 10;
-  /* Ensure it sits above particles */
+.form-feedback {
+  color: var(--negative);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  min-height: 1.2em;
 }
 
-.game-info {
-  /* Make the score board readable */
-  background: var(--color-surface-2);
-  backdrop-filter: blur(10px);
+/* Empty states */
+.expenses-empty td {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted-local);
+  font-style: italic;
+}
+
+.settlement-empty {
+  text-align: center;
+  color: var(--text-muted-local);
+  font-style: italic;
+  opacity: 0.8;
+  padding: 1rem;
 }

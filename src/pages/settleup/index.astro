@@ -1,104 +1,180 @@
 ---
 // src/pages/settleup/index.astro
-import MainLayout from '../../layouts/MainLayout.astro';
-// Import the external CSS
-import '../../styles/settleup.css';
+import MainLayout from "../../layouts/MainLayout.astro";
+import "../../styles/settleup.css";
 ---
 
 <MainLayout title="Settle Up (Ephemeral)">
-    <main class="app-main">
-      <div class="app-header">
-        <div class="header-brand">
-          <h1 class="app-title">Settle Up (Ephemeral)</h1>
-        </div>
-        <p class="header-note">No data is saved.</p>
+  <main class="app-main">
+    <div class="app-header">
+      <h1 class="app-title">Settle Up</h1>
+      <p class="header-note">Split expenses simply. No data is saved.</p>
+    </div>
+
+    <!-- People Section -->
+    <section id="people-section" class="panel" aria-labelledby="people-title">
+      <div class="panel-header">
+        <h2 id="people-title">
+          <!-- User Icon -->
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle
+              cx="9"
+              cy="7"
+              r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path
+              d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg
+          >
+          People
+        </h2>
+        <button type="button" id="add-person-btn" class="primary">
+          Add Guest
+        </button>
       </div>
+      <ul id="people-list" class="people-list" aria-live="polite"></ul>
+    </section>
 
-      <section id="people-section" class="panel" aria-labelledby="people-title">
-        <div class="panel-header">
-          <h2 id="people-title">People</h2>
-          <button type="button" id="add-person-btn" class="primary">
-            Add Guest
+    <!-- Expenses Section -->
+    <section
+      id="expenses-section"
+      class="panel"
+      aria-labelledby="expense-title"
+    >
+      <h2 id="expense-title">
+        <!-- Dollar Icon -->
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          ><line x1="12" y1="1" x2="12" y2="23"></line><path
+            d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg
+        >
+        Expenses
+      </h2>
+
+      <form id="expense-form" novalidate>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label for="expense-payer">Paid by</label>
+            <select id="expense-payer" required></select>
+          </div>
+          <div class="form-row">
+            <label for="expense-amount">Amount</label>
+            <input
+              id="expense-amount"
+              name="amount"
+              inputmode="decimal"
+              placeholder="0.00"
+              required
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <p id="expense-feedback" class="form-feedback" aria-live="polite"></p>
+
+        <div class="form-actions">
+          <button type="submit" class="primary" id="submit-expense-btn">
+            Add Expense
+          </button>
+          <button type="button" id="cancel-edit-btn" class="secondary" hidden>
+            Cancel
           </button>
         </div>
-        <ul id="people-list" class="people-list" aria-live="polite"></ul>
-      </section>
+      </form>
 
-      <section id="expenses-section" class="panel" aria-labelledby="expense-title">
-        <h2 id="expense-title">Expense Form</h2>
-        <form id="expense-form" novalidate>
-          <div class="form-grid-2">
-            <div class="form-row">
-              <label for="expense-payer">Paid by</label>
-              <select id="expense-payer" required></select>
-            </div>
-            <div class="form-row">
-              <label for="expense-amount">Amount</label>
-              <input
-                id="expense-amount"
-                name="amount"
-                inputmode="decimal"
-                pattern="^[0-9]+([.,][0-9]{1,2})?$"
-                placeholder="0,00"
-                required
-                autocomplete="off"
-                aria-describedby="expense-feedback"
-                enterkeyhint="done"
-              />
-            </div>
-          </div>
-          
-          <div class="form-actions">
-            <button type="submit" class="primary" id="submit-expense-btn">
-              Add Expense
-            </button>
-            <button type="button" id="cancel-edit-btn" class="secondary" hidden>
-              Cancel
-            </button>
-          </div>
-          <p id="expense-feedback" class="form-feedback" aria-live="polite"></p>
-        </form>
+      <div class="table-wrapper" aria-live="polite">
+        <table id="expenses-table">
+          <thead>
+            <tr>
+              <th scope="col">Payer</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="expenses-tbody"></tbody>
+        </table>
+      </div>
+    </section>
 
-        <div class="table-wrapper" aria-live="polite">
-          <table id="expenses-table">
-            <caption>Expenses</caption>
-            <thead>
-              <tr>
-                <th scope="col">Payer</th>
-                <th scope="col">Amount</th>
-                <th scope="col" class="actions">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="expenses-tbody"></tbody>
-          </table>
+    <!-- Balances Section -->
+    <section
+      id="balances-section"
+      class="panel"
+      aria-labelledby="balances-title"
+    >
+      <h2 id="balances-title">
+        <!-- Scale Icon -->
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          ><path d="M12 3v19"></path><path d="M5 10h14"></path><path
+            d="M5 17h14"></path></svg
+        >
+        Balances
+      </h2>
+      <ul id="balances-list" class="balances-list" aria-live="polite"></ul>
+    </section>
+
+    <!-- Settlement Section -->
+    <section
+      id="settlement-section"
+      class="panel settlement-section"
+      aria-labelledby="settlement-title"
+    >
+      <h2 id="settlement-title">
+        <!-- Check Icon -->
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          ><polyline points="20 6 9 17 4 12"></polyline></svg
+        >
+        Settlement
+      </h2>
+      <div class="settlement-bar">
+        <div>
+          <span class="total-label">Total Recorded</span>
+          <div class="total-val" id="total-amount">€0,00</div>
         </div>
-      </section>
+        <button type="button" id="compute-btn" class="primary">
+          Compute
+        </button>
+      </div>
+      <div
+        id="settlement-results"
+        class="settlement-results"
+        aria-live="polite"
+        role="status"
+      >
+      </div>
+    </section>
+  </main>
 
-      <section id="balances-section" class="panel" aria-labelledby="balances-title">
-        <h2 id="balances-title">Balances</h2>
-        <ul id="balances-list" class="balances-list" aria-live="polite"></ul>
-      </section>
-
-      <section id="settlement-section" class="panel settlement-section" aria-labelledby="settlement-title">
-        <h2 id="settlement-title">Settlement</h2>
-        <div class="settlement-bar">
-          <div class="total-summary">
-            <span>Total recorded</span>
-            <strong id="total-amount">€0,00</strong>
-          </div>
-          <button type="button" id="compute-btn" class="primary large">
-            Compute Transfers
-          </button>
-        </div>
-        <div id="settlement-results" class="settlement-results" aria-live="polite" role="status">
-          Tap Compute to see who should pay whom.
-        </div>
-      </section>
-    </main>
-
-    <script>
-        import { init } from '../../scripts/settleUp.js';
-        // Run init when DOM is ready
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+  <script>
+    import { init } from "../../scripts/settleUp.js";
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
 </MainLayout>
