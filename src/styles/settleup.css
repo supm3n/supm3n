@@ -177,10 +177,24 @@
   cursor: pointer;
 }
 
+/* 1) Closed select hover/focus: make it feel on-theme */
+.app-main select:hover,
+.app-main select:focus {
+  background: var(--field-bg-active);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3);
+}
+
 /* Fix for Dropdown Options Visibility */
 .app-main select option {
   background-color: var(--color-base);
-  /* Matches theme background */
+  color: var(--text);
+}
+
+/* Dropdown option hover/selected (dark & light theme via CSS vars) */
+.app-main select option:hover,
+.app-main select option:checked {
+  background-color: var(--field-bg-active);
   color: var(--text);
 }
 
