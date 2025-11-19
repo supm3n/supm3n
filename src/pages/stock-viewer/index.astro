@@ -24,23 +24,16 @@ import MainLayout from "../../layouts/MainLayout.astro";
               <option value="GOOGL">Alphabet (GOOGL)</option>
               <option value="AMZN">Amazon (AMZN)</option>
               <option value="TSLA">Tesla (TSLA)</option>
-              <option value="META">Meta (META)</option>
               <option value="NVDA">NVIDIA (NVDA)</option>
-              <option value="NFLX">Netflix (NFLX)</option>
             </optgroup>
-            <optgroup label="Finance & Retail">
+            <optgroup label="Finance">
               <option value="JPM">JPMorgan (JPM)</option>
               <option value="V">Visa (V)</option>
-              <option value="MA">Mastercard (MA)</option>
-              <option value="WMT">Walmart (WMT)</option>
-              <option value="PG">Procter & Gamble (PG)</option>
-              <option value="JNJ">Johnson & Johnson (JNJ)</option>
-              <option value="DIS">Disney (DIS)</option>
             </optgroup>
             <optgroup label="Crypto">
               <option value="BTC">Bitcoin (BTC)</option>
               <option value="ETH">Ethereum (ETH)</option>
-              <option value="XRP">XRP (XRP)</option>
+              <option value="SOL">Solana (SOL)</option>
             </optgroup>
           </select>
           <div class="select-arrow">
@@ -117,7 +110,17 @@ import MainLayout from "../../layouts/MainLayout.astro";
     <div id="error-banner" class="error-banner" style="display: none;"></div>
 
     <div id="chart-wrap" class="glass-panel">
-      <canvas id="chart"></canvas>
+      <div class="chart-controls hidden" id="chart-controls">
+        <button class="range-btn" data-range="1W">1W</button>
+        <button class="range-btn" data-range="1M">1M</button>
+        <button class="range-btn" data-range="3M">3M</button>
+        <button class="range-btn" data-range="1Y">1Y</button>
+        <button class="range-btn active" data-range="ALL">MAX</button>
+      </div>
+
+      <div class="chart-container-inner">
+        <canvas id="chart"></canvas>
+      </div>
 
       <div id="loading-overlay" class="hidden">
         <div class="spinner"></div>
@@ -155,7 +158,6 @@ import MainLayout from "../../layouts/MainLayout.astro";
 
   .hero-title {
     margin: 0 0 0.5rem 0;
-    /* Updated to match Settle Up size */
     font-size: clamp(2rem, 4vw, 3rem);
     line-height: 1.1;
     background: linear-gradient(
@@ -169,37 +171,31 @@ import MainLayout from "../../layouts/MainLayout.astro";
     background-clip: text;
     font-weight: 800;
     letter-spacing: -0.02em;
-    text-transform: uppercase; /* Added to match Settle Up style */
+    text-transform: uppercase;
   }
 
   .hero-subtitle {
     color: var(--color-text-muted);
-    /* Updated to match Settle Up size */
     font-size: 0.9rem;
-    font-family: var(--font-mono); /* Tech vibe */
+    font-family: var(--font-mono);
     opacity: 0.9;
   }
 
-  /* TOOLBAR GRID
-     Using CSS Grid for precise alignment of the 4 parts:
-     [Select] [OR] [Input] [Button]
-  */
+  /* Toolbar */
   .toolbar {
     display: grid;
     grid-template-columns: 2fr auto 1fr auto;
     gap: 1.5rem;
-    align-items: end; /* Align to bottom so inputs align with button */
+    align-items: end;
     margin-bottom: var(--space-lg);
     padding: 1.5rem;
   }
 
-  /* Input Groups */
   .input-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .input-label {
     font-family: var(--font-mono);
     font-size: 0.75rem;
@@ -210,39 +206,28 @@ import MainLayout from "../../layouts/MainLayout.astro";
     margin-left: 4px;
   }
 
-  /* Tech Inputs (Shared Styles) */
   .tech-input {
     width: 100%;
     height: 48px;
     padding: 0 1rem;
     border-radius: 12px;
     border: 1px solid var(--glass-border);
-    background: rgba(0, 0, 0, 0.2); /* Darker well */
+    background: rgba(0, 0, 0, 0.2);
     color: var(--color-text-primary);
     outline: none;
     font-family: var(--font-mono);
     font-size: 0.9rem;
     transition: all 0.2s ease;
   }
-
-  .tech-input::placeholder {
-    color: var(--color-text-muted);
-    opacity: 0.5;
-  }
-
-  .tech-input:hover {
-    border-color: var(--color-text-muted);
-    background: rgba(0, 0, 0, 0.3);
-  }
-
   .tech-input:focus {
     border-color: var(--stocks-accent);
     box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
     background: rgba(0, 0, 0, 0.4);
   }
 
-  /* Select Specifics */
-  .select-wrapper {
+  /* Select/Input Wrappers */
+  .select-wrapper,
+  .input-wrapper {
     position: relative;
   }
   select.tech-input {
@@ -250,7 +235,8 @@ import MainLayout from "../../layouts/MainLayout.astro";
     appearance: none;
     padding-right: 2.5rem;
   }
-  .select-arrow {
+  .select-arrow,
+  .input-icon {
     position: absolute;
     right: 1rem;
     top: 50%;
@@ -258,22 +244,6 @@ import MainLayout from "../../layouts/MainLayout.astro";
     pointer-events: none;
     color: var(--color-text-muted);
     display: flex;
-  }
-
-  /* Manual Input Specifics */
-  .input-wrapper {
-    position: relative;
-  }
-  .input-wrapper input {
-    padding-right: 2.5rem;
-  }
-  .input-icon {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--color-text-muted);
-    pointer-events: none;
     opacity: 0.5;
   }
 
@@ -283,7 +253,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 48px; /* Match input height */
+    height: 48px;
     gap: 4px;
   }
   .divider-text {
@@ -299,11 +269,10 @@ import MainLayout from "../../layouts/MainLayout.astro";
     background: var(--glass-border);
   }
 
-  /* Action Button */
+  /* Button */
   .action-group {
-    padding-bottom: 1px; /* Tiny optical alignment adjustment */
+    padding-bottom: 1px;
   }
-
   .btn-primary {
     height: 48px;
     padding: 0 1.5rem;
@@ -326,13 +295,11 @@ import MainLayout from "../../layouts/MainLayout.astro";
     gap: 0.5rem;
     white-space: nowrap;
   }
-
   .btn-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
     border-color: rgba(255, 255, 255, 0.3);
   }
-
   .btn-primary:disabled {
     opacity: 0.7;
     cursor: not-allowed;
@@ -340,20 +307,55 @@ import MainLayout from "../../layouts/MainLayout.astro";
     transform: none;
   }
 
-  /* Chart Area */
+  /* CHART AREA */
   #chart-wrap {
     position: relative;
-    height: 60vh;
-    min-height: 450px;
+    height: 65vh;
+    min-height: 500px;
     width: 100%;
-    padding: 1px; /* Border container */
+    padding: 1rem;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
-  #chart {
+  .chart-container-inner {
+    flex: 1;
     position: relative;
-    z-index: 2;
-    padding: 1rem;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Range Buttons */
+  .chart-controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    z-index: 5;
+  }
+
+  .range-btn {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--color-text-muted);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .range-btn:hover {
+    border-color: var(--color-text-primary);
+    color: var(--color-text-primary);
+  }
+
+  .range-btn.active {
+    background: rgba(124, 58, 237, 0.2);
+    border-color: var(--stocks-accent);
+    color: #fff;
   }
 
   /* Empty State */
@@ -373,7 +375,6 @@ import MainLayout from "../../layouts/MainLayout.astro";
       transparent 70%
     );
   }
-
   .empty-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
@@ -381,13 +382,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
     filter: grayscale(1);
   }
 
-  #empty-state p {
-    font-family: var(--font-mono);
-    font-size: 0.9rem;
-    opacity: 0.7;
-  }
-
-  /* Loading Spinner */
+  /* Spinner */
   #loading-overlay {
     position: absolute;
     inset: 0;
@@ -402,7 +397,6 @@ import MainLayout from "../../layouts/MainLayout.astro";
     z-index: 10;
     color: var(--color-text-primary);
   }
-
   .spinner {
     width: 40px;
     height: 40px;
@@ -412,23 +406,9 @@ import MainLayout from "../../layouts/MainLayout.astro";
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
-
-  #loading-overlay p {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    animation: pulse 1.5s infinite;
-  }
-
   @keyframes spin {
     to {
       transform: rotate(360deg);
-    }
-  }
-  @keyframes pulse {
-    50% {
-      opacity: 0.5;
     }
   }
 
@@ -451,21 +431,18 @@ import MainLayout from "../../layouts/MainLayout.astro";
     backdrop-filter: blur(10px);
   }
 
-  /* Mobile Responsive */
   @media (max-width: 850px) {
     .toolbar {
-      grid-template-columns: 1fr; /* Stack vertically */
+      grid-template-columns: 1fr;
       gap: 1.25rem;
       padding: 1.25rem;
     }
-
     .divider-wrapper {
       flex-direction: row;
       height: auto;
       width: 100%;
       margin: 0.5rem 0;
     }
-
     .divider-line {
       width: 100%;
       height: 1px;
@@ -476,47 +453,76 @@ import MainLayout from "../../layouts/MainLayout.astro";
         transparent
       );
     }
-
     .btn-primary {
       width: 100%;
       justify-content: center;
       margin-top: 0.5rem;
     }
-
     #chart-wrap {
       height: 50vh;
+    }
+    .chart-controls {
+      justify-content: center;
     }
   }
 </style>
 
 <script>
-  // Stock Viewer Logic
   document.addEventListener("DOMContentLoaded", () => {
+    // DOM Elements
     const input = document.getElementById("symbol");
     const selectEl = document.getElementById("symbol-select");
     const loadBtn = document.getElementById("load");
     const chartCanvas = document.getElementById("chart");
     const loadingOverlay = document.getElementById("loading-overlay");
     const emptyState = document.getElementById("empty-state");
+    const controlsDiv = document.getElementById("chart-controls");
+    const rangeBtns = document.querySelectorAll(".range-btn");
 
     if (!chartCanvas) return;
 
     const ctx = chartCanvas.getContext("2d");
     let chart;
     let isLoading = false;
+    let currentData = []; // Store full dataset
+    let currentSymbol = "";
 
+    // --- 1. CHART PLUGIN: CROSSHAIR ---
+    const crosshairPlugin = {
+      id: "crosshair",
+      afterDatasetsDraw(chart, args, plugins) {
+        const {
+          ctx,
+          tooltip,
+          chartArea: { top, bottom },
+        } = chart;
+        if (tooltip._active && tooltip._active.length) {
+          const x = tooltip._active[0].element.x;
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(x, top);
+          ctx.lineTo(x, bottom);
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.2)"; // Light dashed line
+          ctx.setLineDash([5, 5]);
+          ctx.stroke();
+          ctx.restore();
+        }
+      },
+    };
+
+    // --- 2. HELPER FUNCTIONS ---
     function normalizeSymbol(raw) {
       let s = String(raw || "")
         .trim()
         .toUpperCase();
-      if (s === "APPL") s = "AAPL"; // Common typo fix
+      if (s === "APPL") s = "AAPL";
       return s;
     }
 
     function getSymbol() {
       const fromInput = input && input.value ? input.value.trim() : "";
       const fromSelect = selectEl && selectEl.value ? selectEl.value : "";
-      // Input takes precedence if typed
       return normalizeSymbol(fromInput || fromSelect || "");
     }
 
@@ -536,9 +542,47 @@ import MainLayout from "../../layouts/MainLayout.astro";
       }
     }
 
-    async function fetchSymbol(symbol) {
-      let r = await fetch(`/api/price/${encodeURIComponent(symbol)}`);
+    // --- 3. DATA FILTERING ---
+    function filterDataByRange(data, range) {
+      if (range === "ALL" || !data.length) return data;
 
+      const end = new Date(data[data.length - 1].date);
+      let start = new Date(end);
+
+      switch (range) {
+        case "1W":
+          start.setDate(end.getDate() - 7);
+          break;
+        case "1M":
+          start.setMonth(end.getMonth() - 1);
+          break;
+        case "3M":
+          start.setMonth(end.getMonth() - 3);
+          break;
+        case "1Y":
+          start.setFullYear(end.getFullYear() - 1);
+          break;
+      }
+
+      return data.filter((item) => new Date(item.date) >= start);
+    }
+
+    function handleRangeChange(e) {
+      if (!currentData.length) return;
+
+      // UI Updates
+      rangeBtns.forEach((btn) => btn.classList.remove("active"));
+      e.target.classList.add("active");
+
+      const range = e.target.dataset.range;
+      const filtered = filterDataByRange(currentData, range);
+      render(filtered, currentSymbol);
+    }
+
+    // --- 4. MAIN FETCH ---
+    async function fetchSymbol(symbol) {
+      // Note: Using ALPHA_KEY environment variable name as per user request
+      let r = await fetch(`/api/price/${encodeURIComponent(symbol)}`);
       if (!r.ok) {
         let msg = `HTTP Error ${r.status}`;
         try {
@@ -547,29 +591,22 @@ import MainLayout from "../../layouts/MainLayout.astro";
         } catch (e) {}
         throw new Error(msg);
       }
-
-      // The proxy now returns exactly what we need: [{ date, close }, ...]
       const rows = await r.json();
-
       if (!Array.isArray(rows) || rows.length === 0) {
         throw new Error("Invalid data format received.");
       }
-
       return rows;
     }
 
+    // --- 5. RENDER CHART ---
     function render(rows, symbol) {
       if (!ctx) return;
       const labels = rows.map((r) => r.date);
       const data = rows.map((r) => r.close);
 
-      // Hide empty state
       if (emptyState) emptyState.style.display = "none";
-
       // @ts-ignore
-      if (chart) {
-        chart.destroy();
-      }
+      if (chart) chart.destroy();
 
       const gradient = ctx.createLinearGradient(0, 0, 0, 400);
       gradient.addColorStop(0, "rgba(124, 58, 237, 0.5)");
@@ -598,6 +635,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
             },
           ],
         },
+        plugins: [crosshairPlugin], // Add custom crosshair
         options: {
           maintainAspectRatio: false,
           responsive: true,
@@ -605,18 +643,28 @@ import MainLayout from "../../layouts/MainLayout.astro";
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: "rgba(15, 17, 20, 0.95)",
-              titleColor: "#e2e8f0",
-              titleFont: { family: "JetBrains Mono" },
+              backgroundColor: "rgba(11, 12, 16, 0.95)",
+              titleColor: "#94a3b8",
+              titleFont: { family: "JetBrains Mono", size: 13 },
               bodyColor: "#e2e8f0",
-              bodyFont: { family: "JetBrains Mono" },
+              bodyFont: { family: "JetBrains Mono", size: 14, weight: "bold" },
               borderColor: "rgba(124, 58, 237, 0.3)",
               borderWidth: 1,
-              padding: 12,
-              displayColors: false,
+              padding: 14,
+              displayColors: true,
+              boxPadding: 6,
               callbacks: {
+                title: function (context) {
+                  // Format Date: "Nov 14, 2025"
+                  const dateStr = context[0].label;
+                  return new Date(dateStr).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  });
+                },
                 label: function (context) {
-                  return "PRICE: $" + Number(context.parsed.y).toFixed(2);
+                  return " " + Number(context.parsed.y).toFixed(2) + " USD";
                 },
               },
             },
@@ -626,20 +674,21 @@ import MainLayout from "../../layouts/MainLayout.astro";
               ticks: {
                 maxTicksLimit: 8,
                 color: "#64748b",
-                font: { family: "JetBrains Mono", size: 10 },
+                font: { family: "JetBrains Mono", size: 12 }, // Increased size
               },
               grid: { display: false },
             },
             y: {
               beginAtZero: false,
+              position: "right", // Move price to right side (standard for trading)
               ticks: {
                 color: "#64748b",
-                font: { family: "JetBrains Mono", size: 10 },
+                font: { family: "JetBrains Mono", size: 12 }, // Increased size
                 callback: function (value) {
                   return "$" + value;
                 },
               },
-              grid: { color: "rgba(255,255,255,0.03)" },
+              grid: { color: "rgba(255,255,255,0.05)" },
             },
           },
         },
@@ -648,7 +697,6 @@ import MainLayout from "../../layouts/MainLayout.astro";
 
     async function load() {
       if (isLoading) return;
-
       clearError();
       const symbol = getSymbol();
       if (!symbol) {
@@ -664,8 +712,16 @@ import MainLayout from "../../layouts/MainLayout.astro";
         }
         if (loadingOverlay) loadingOverlay.classList.remove("hidden");
 
-        const rows = await fetchSymbol(symbol);
-        render(rows, symbol);
+        // Fetch Data
+        currentData = await fetchSymbol(symbol);
+        currentSymbol = symbol;
+
+        // Reset buttons to MAX
+        if (controlsDiv) controlsDiv.classList.remove("hidden");
+        rangeBtns.forEach((btn) => btn.classList.remove("active"));
+        document.querySelector('[data-range="ALL"]')?.classList.add("active");
+
+        render(currentData, symbol);
       } catch (err) {
         showError(err.message);
       } finally {
@@ -679,6 +735,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
       }
     }
 
+    // Event Listeners
     if (loadBtn) loadBtn.addEventListener("click", load);
     if (input)
       input.addEventListener("keydown", (e) => {
@@ -687,13 +744,16 @@ import MainLayout from "../../layouts/MainLayout.astro";
           load();
         }
       });
-
-    // Update input state on dropdown change, but DO NOT fetch
     if (selectEl)
       selectEl.addEventListener("change", () => {
         if (selectEl.value) {
-          input.value = ""; // Clear manual input
+          input.value = "";
         }
       });
+
+    // Range Buttons
+    rangeBtns.forEach((btn) =>
+      btn.addEventListener("click", handleRangeChange),
+    );
   });
 </script>
