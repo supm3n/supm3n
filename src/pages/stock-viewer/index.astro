@@ -520,27 +520,6 @@ import MainLayout from "../../layouts/MainLayout.astro";
       return normalizeSymbol(fromInput || fromSelect || "");
     }
 
-    function pickSeries(json) {
-      return (
-        json["Time Series (Daily)"] ||
-        json["Time Series (Digital Currency Daily)"] ||
-        json["Time Series (5min)"] ||
-        json["Time Series (60min)"] ||
-        null
-      );
-    }
-
-    function toRows(series) {
-      const rows = Object.entries(series).map(([date, o]) => ({
-        date,
-        close: Number(
-          o["4. close"] || o["4a. close (USD)"] || o["5. adjusted close"] || 0,
-        ),
-      }));
-      rows.sort((a, b) => new Date(a.date) - new Date(b.date));
-      return rows;
-    }
-
     function showError(msg) {
       const el = document.getElementById("error-banner");
       if (el) {
@@ -561,25 +540,22 @@ import MainLayout from "../../layouts/MainLayout.astro";
       let r = await fetch(`/api/price/${encodeURIComponent(symbol)}`);
 
       if (!r.ok) {
-        const text = await r.text();
-        let json;
+        let msg = `HTTP Error ${r.status}`;
         try {
-          json = JSON.parse(text);
+          const json = await r.json();
+          msg = json.error || msg;
         } catch (e) {}
-        const msg = json?.message || json?.error || `HTTP Error ${r.status}`;
         throw new Error(msg);
       }
 
-      const json = await r.json();
-      if (json.Note) throw new Error(json.Note);
-      if (json["Error Message"]) throw new Error(json["Error Message"]);
+      // The proxy now returns exactly what we need: [{ date, close }, ...]
+      const rows = await r.json();
 
-      const series = pickSeries(json);
-      if (!series || !Object.keys(series).length) {
-        throw new Error("No data available for this symbol.");
+      if (!Array.isArray(rows) || rows.length === 0) {
+        throw new Error("Invalid data format received.");
       }
 
-      return toRows(series);
+      return rows;
     }
 
     function render(rows, symbol) {

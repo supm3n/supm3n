@@ -1,98 +1,65 @@
 // functions/api/price/[symbol].js
 
 export const onRequest = async (context) => {
-  const { request, params, env } = context;
-  const url = new URL(request.url);
-  const interval = url.searchParams.get('interval') || '';
+  const { params, env } = context;
 
   // 1. Clean up the symbol
   let symbol = (params.symbol || '').toUpperCase().trim();
   if (!symbol) {
-    return new Response(JSON.stringify({ error: 'Missing symbol' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return new Response(JSON.stringify({ error: 'Missing symbol' }), { status: 400 });
   }
 
-  // 2. Handle Common Mapping/Typos
-  if (symbol === 'APPL') symbol = 'AAPL';
-
-  // 3. Determine if it's Crypto or Stock
-  // Add any other coins you want to support here
-  const cryptoList = new Set(['BTC', 'ETH', 'XRP', 'DOGE', 'SOL', 'ADA', 'DOT', 'MATIC']);
-  const isCrypto = cryptoList.has(symbol);
-
-  // 4. Select the correct API Function
-  // Stocks use TIME_SERIES_DAILY, Crypto uses DIGITAL_CURRENCY_DAILY
-  let fn = isCrypto ? 'DIGITAL_CURRENCY_DAILY' : 'TIME_SERIES_DAILY';
-
-  // Override if 'function' or 'interval' was explicitly passed in query params (for advanced use)
-  const queryFn = url.searchParams.get('function');
-  if (queryFn) fn = queryFn.toUpperCase();
-
-  // 5. Build the Upstream URL
-  const key = env.ALPHA_KEY;
-  if (!key) {
-    return new Response(JSON.stringify({ error: 'Server missing ALPHA_KEY' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+  // 2. Handle Crypto Mapping
+  const cryptoMap = new Set(['BTC', 'ETH', 'XRP', 'DOGE', 'SOL', 'ADA', 'MATIC']);
+  if (cryptoMap.has(symbol)) {
+    symbol = `${symbol}/USD`;
   }
 
-  let upstream = `https://www.alphavantage.co/query?function=${fn}&symbol=${encodeURIComponent(symbol)}&apikey=${key}`;
-
-  // Crypto requires a 'market' parameter (e.g., USD)
-  if (fn.includes('DIGITAL_CURRENCY')) {
-    upstream += `&market=USD`;
+  // 3. Build URL (Twelve Data)
+  const apiKey = env.TWELVE_DATA_KEY;
+  if (!apiKey) {
+    return new Response(JSON.stringify({ error: 'Server missing API Key' }), { status: 500 });
   }
 
-  // 6. Cache Configuration
-  const CACHE_DURATION = 900; // 15 minutes
+  // FIX: Increased outputsize to 5000 (API Max) to show ~20 years of history
+  const url = `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=1day&outputsize=5000&apikey=${apiKey}`;
+
+  // 4. Check Cache
   const cache = caches.default;
-  const cacheKey = new Request(upstream); // Use upstream URL as cache key for uniqueness
-
-  // Check Cache
+  const cacheKey = new Request(url);
   const cached = await cache.match(cacheKey);
-  if (cached) {
-    const newRes = new Response(cached.body, cached);
-    newRes.headers.set('X-Cache-Status', 'HIT');
-    return newRes;
-  }
+  if (cached) return cached;
 
-  // 7. Fetch from Alpha Vantage
+  // 5. Fetch
   try {
-    const res = await fetch(upstream);
-    const text = await res.text();
-    let data;
+    const response = await fetch(url);
+    const data = await response.json();
 
-    try {
-      data = JSON.parse(text);
-    } catch (e) {
-      return new Response(JSON.stringify({ error: 'Upstream Not JSON', details: text.substring(0, 100) }), { status: 502 });
+    if (data.code && data.code !== 200) {
+      return new Response(JSON.stringify({ error: data.message }), { status: 400 });
+    }
+    if (!data.values) {
+      return new Response(JSON.stringify({ error: 'No data found' }), { status: 404 });
     }
 
-    // Handle API Errors / Rate Limits
-    if (data.Note) {
-      // Rate limit hit
-      return new Response(JSON.stringify({ error: 'rate_limited', message: data.Note }), { status: 429 });
-    }
-    if (data['Error Message']) {
-      return new Response(JSON.stringify({ error: 'upstream_error', message: data['Error Message'] }), { status: 400 });
-    }
+    // 6. Transform Data
+    const cleanData = data.values.map(item => ({
+      date: item.datetime,
+      close: parseFloat(item.close)
+    })).reverse();
 
-    // 8. Return & Cache
-    const okResp = new Response(JSON.stringify(data), {
+    const jsonResponse = new Response(JSON.stringify(cleanData), {
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': `public, max-age=${CACHE_DURATION}`,
-        'X-Cache-Status': 'MISS'
+        'Cache-Control': 'public, max-age=900',
+        'Access-Control-Allow-Origin': '*'
       }
     });
 
-    context.waitUntil(cache.put(cacheKey, okResp.clone()));
-    return okResp;
+    context.waitUntil(cache.put(cacheKey, jsonResponse.clone()));
+    return jsonResponse;
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'Fetch Failed', message: err.message }), { status: 500 });
+    return new Response(JSON.stringify({ error: 'Fetch failed', details: err.message }), { status: 500 });
   }
 };
