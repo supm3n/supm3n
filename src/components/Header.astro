@@ -102,7 +102,7 @@ const pathname = new URL(Astro.request.url).pathname;
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
 
-    /* The Extra: Gradient Border Bottom */
+    /* Gradient Border Bottom */
     border-bottom: 1px solid transparent;
     border-image: linear-gradient(
         to right,
@@ -147,7 +147,7 @@ const pathname = new URL(Astro.request.url).pathname;
     justify-self: start;
   }
 
-  /* The Extra: Logo Animation */
+  /* Logo Animation */
   .brand-logo-wrapper {
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
@@ -162,56 +162,54 @@ const pathname = new URL(Astro.request.url).pathname;
     filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.4));
   }
 
-  /* NAV (Center) - Original Container Style */
+  /* NAV (Center) - REWRITTEN STYLE 
+     Removed the background pill container, increased gap, added underline effect
+  */
   .main-nav {
     display: flex;
     align-items: center;
-    gap: 4px;
-    background: var(--color-surface-2);
-    padding: 4px;
-    border-radius: 12px;
-    border: 1px solid var(--glass-border);
+    gap: 2rem; /* More breathing room */
     justify-self: center;
-    transition: box-shadow 0.3s ease;
-  }
-
-  /* The Extra: Subtle glow on the container itself */
-  .main-nav:hover {
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-color: rgba(139, 92, 246, 0.2);
   }
 
   .nav-link {
     position: relative;
-    padding: 6px 16px;
-    border-radius: 8px;
+    padding: 0.5rem 0; /* Vertical padding only */
     font-size: var(--text-sm);
     font-weight: 500;
     color: var(--color-text-muted);
     text-decoration: none;
-    transition:
-      color 0.2s,
-      background 0.2s,
-      box-shadow 0.2s;
+    transition: color 0.3s ease;
   }
 
-  .nav-link:hover {
-    color: var(--color-text-primary);
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  [data-theme="light"] .nav-link:hover {
-    background: rgba(0, 0, 0, 0.05);
-  }
-
+  /* Hover & Active Text Color */
+  .nav-link:hover,
   .nav-link.active {
     color: var(--color-text-primary);
-    background: var(--color-surface-1);
+  }
 
-    /* The Extra: Slightly enhanced active state */
-    box-shadow:
-      var(--shadow-sm),
-      0 0 0 1px rgba(139, 92, 246, 0.1);
+  /* The Magic Underline */
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0; /* Start width at 0 */
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--color-accent-start),
+      var(--color-accent-end)
+    );
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth expansion */
+    border-radius: 2px;
+    box-shadow: 0 0 8px var(--color-accent-start); /* Subtle glow */
+  }
+
+  /* Expand line on hover or active */
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    width: 100%;
   }
 
   /* ACTIONS (Right) */
@@ -235,7 +233,6 @@ const pathname = new URL(Astro.request.url).pathname;
     cursor: pointer;
   }
 
-  /* The Extra: Toggle Rotation */
   .theme-toggle:hover {
     background: var(--color-surface-2);
     color: var(--color-accent-start);
@@ -253,21 +250,13 @@ const pathname = new URL(Astro.request.url).pathname;
       display: none;
     }
 
-    /* Simplify nav on mobile */
+    /* Adjust gap for mobile */
     .main-nav {
-      gap: 0;
-      padding: 2px;
-      background: transparent;
-      border: none;
+      gap: 1.5rem;
     }
+
     .nav-link {
-      padding: 6px 10px;
-      font-size: 0.85rem;
-    }
-    .nav-link.active {
-      background: transparent;
-      color: var(--color-accent-start);
-      box-shadow: none;
+      font-size: 0.9rem;
     }
   }
 </style>
