@@ -27,7 +27,7 @@ export const projects = [
     featured: true
   },
   {
-    name: "Trace V9",
+    name: "IP Trace",
     description: "Cinematic neural network connection tracer.",
     url: "/trace",
     tag: "Tool",
