@@ -1,0 +1,71 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import "../../styles/trace.css";
+---
+
+<MainLayout title="Network Trace // V9">
+    <div class="trace-scope">
+        <main id="main-content" class="trace-page-container">
+            <div class="bg-noise"></div>
+
+            <div class="console-wrapper">
+                <div class="ip-wrapper">
+                    <div id="big-ip" class="ip-display"></div>
+                </div>
+
+                <div class="terminal-window" id="terminal">
+                    <div class="corner-bracket cb-tl"></div>
+                    <div class="corner-bracket cb-tr"></div>
+                    <div class="corner-bracket cb-bl"></div>
+                    <div class="corner-bracket cb-br"></div>
+
+                    <div class="panel-log">
+                        <div class="terminal-header">
+                            <span class="console-header-title"
+                                >CYBER_TRACE // V9</span
+                            >
+                            <span id="status-text" class="console-header-status"
+                                >STANDBY</span
+                            >
+                        </div>
+                        <div id="console-out" class="terminal-body">
+                            <div class="log-line">Awaiting input...</div>
+                        </div>
+                    </div>
+
+                    <div class="panel-visual">
+                        <div class="scan-line"></div>
+                        <div class="target-reticle" id="reticle"></div>
+
+                        <canvas id="neural-canvas"></canvas>
+
+                        <div id="summary" class="summary-grid">
+                            <div class="stat-block">
+                                <h4>ORIGIN</h4>
+                                <p id="val-loc">--</p>
+                            </div>
+                            <div class="stat-block">
+                                <h4>NODE</h4>
+                                <p id="val-isp">--</p>
+                            </div>
+                            <div class="stat-block">
+                                <h4>PING</h4>
+                                <p id="val-lat">--</p>
+                            </div>
+                        </div>
+
+                        <button id="rerun" class="rerun-btn">REBOOT</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        import { TraceSystem } from "../../scripts/traceLog.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            new TraceSystem();
+        });
+    </script>
+</MainLayout>
