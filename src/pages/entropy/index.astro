@@ -6,6 +6,8 @@ import {
     MAT_CACHE,
     MAT_VIRUS,
     MAT_PROCESS,
+    MAT_FIREWALL,
+    MAT_ANTIDATA,
     MAT_EMPTY,
 } from "../../components/entropy/Constants";
 ---
@@ -18,68 +20,123 @@ import {
 
     <!-- UI Layer -->
     <div class="entropy-ui">
-        <p class="instruction-text">SELECT ELEMENT // DRAW TO SIMULATE</p>
+        <div class="ui-header">
+            <h1 class="entropy-title">ENTROPY_GRID // V2</h1>
+            <p class="instruction-text">SELECT ELEMENT & DRAW</p>
+        </div>
 
         <div class="toolbar">
-            <button class="tool-btn active" data-mat={MAT_DATA}>
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    ><circle cx="12" cy="12" r="10"></circle><path
-                        d="M8 12a4 4 0 0 0 4 4 4 4 0 0 0 4-4H8z"></path></svg
+            <div class="tool-group">
+                <button
+                    class="tool-btn active"
+                    data-mat={MAT_DATA}
+                    title="Raw Data (Liquid)"
                 >
-                Data
-            </button>
-
-            <button class="tool-btn" data-mat={MAT_CACHE}>
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    ><rect x="3" y="3" width="18" height="18" rx="2"
-                    ></rect><path d="M9 3v18"></path><path d="M15 3v18"
-                    ></path><path d="M3 9h18"></path><path d="M3 15h18"
-                    ></path></svg
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        ><circle cx="12" cy="12" r="10"></circle><path
+                            d="M8 12a4 4 0 0 0 4 4 4 4 0 0 0 4-4H8z"
+                        ></path></svg
+                    >
+                    Data
+                </button>
+                <button
+                    class="tool-btn"
+                    data-mat={MAT_ANTIDATA}
+                    title="Anti-Data (Anti-Gravity)"
                 >
-                Cache
-            </button>
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        ><circle cx="12" cy="12" r="10"></circle><path
+                            d="M8 12a4 4 0 0 1 4-4 4 4 0 0 1 4 4H8z"
+                        ></path></svg
+                    >
+                    Anti
+                </button>
+            </div>
 
-            <button class="tool-btn" data-mat={MAT_PROCESS}>
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    ><path d="M12 2v4"></path><path d="M12 18v4"></path><path
-                        d="M4.93 4.93l2.83 2.83"></path><path
-                        d="M16.24 16.24l2.83 2.83"></path><path d="M2 12h4"
-                    ></path><path d="M18 12h4"></path><path
-                        d="M4.93 19.07l2.83-2.83"></path><path
-                        d="M16.24 7.76l2.83-2.83"></path></svg
+            <div class="tool-group">
+                <button
+                    class="tool-btn"
+                    data-mat={MAT_CACHE}
+                    title="Static Cache (Wall)"
                 >
-                Proc
-            </button>
-
-            <button class="tool-btn" data-mat={MAT_VIRUS}>
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    ><path d="M9 12l2 2 4-4"></path><circle
-                        cx="12"
-                        cy="12"
-                        r="10"></circle><path
-                        d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"
-                    ></path></svg
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        ><rect x="3" y="3" width="18" height="18" rx="2"
+                        ></rect><path d="M9 3v18"></path><path d="M15 3v18"
+                        ></path><path d="M3 9h18"></path><path d="M3 15h18"
+                        ></path></svg
+                    >
+                    Cache
+                </button>
+                <button
+                    class="tool-btn"
+                    data-mat={MAT_PROCESS}
+                    title="Process (Generator)"
                 >
-                Virus
-            </button>
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        ><path d="M12 2v4"></path><path d="M12 18v4"
+                        ></path><path d="M4.93 4.93l2.83 2.83"></path><path
+                            d="M16.24 16.24l2.83 2.83"></path><path d="M2 12h4"
+                        ></path><path d="M18 12h4"></path></svg
+                    >
+                    Proc
+                </button>
+            </div>
 
-            <button class="tool-btn" data-mat={MAT_EMPTY}>
+            <div class="tool-group">
+                <button
+                    class="tool-btn"
+                    data-mat={MAT_VIRUS}
+                    title="Virus (Corruptor)"
+                >
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        ><path d="M9 12l2 2 4-4"></path><circle
+                            cx="12"
+                            cy="12"
+                            r="10"></circle><path
+                            d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"
+                        ></path></svg
+                    >
+                    Virus
+                </button>
+                <button
+                    class="tool-btn"
+                    data-mat={MAT_FIREWALL}
+                    title="Firewall (Burn)"
+                >
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        ><path
+                            d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.1.2-2.2.6-3.3.33 1.73 1.2 2.6 2.9 2.8z"
+                        ></path></svg
+                    >
+                    Fire
+                </button>
+            </div>
+
+            <button class="tool-btn erase" data-mat={MAT_EMPTY} title="Erase">
                 <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -118,8 +175,12 @@ import {
                         const target = e.currentTarget as HTMLElement;
                         target.classList.add("active");
 
-                        const mat = parseInt(target.dataset.mat || "1");
-                        game.setMaterial(mat);
+                        // Get Data Attribute
+                        const matStr = target.dataset.mat;
+                        if (matStr) {
+                            const mat = parseInt(matStr);
+                            game.setMaterial(mat);
+                        }
                     });
                 });
 
@@ -134,3 +195,47 @@ import {
         });
     </script>
 </MainLayout>
+
+<style>
+    .entropy-title {
+        color: #fff;
+        font-family: var(--font-mono);
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+    }
+    .ui-header {
+        text-align: center;
+    }
+    .tool-group {
+        display: flex;
+        gap: 0.5rem;
+        padding: 0 0.5rem;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .tool-group:last-of-type {
+        border-right: none;
+    }
+    /* Colors for new buttons */
+    .tool-btn[data-mat="5"].active {
+        color: #ff5500;
+        box-shadow: 0 0 15px rgba(255, 85, 0, 0.4);
+    }
+    .tool-btn[data-mat="6"].active {
+        color: #ff00ff;
+        box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+    }
+
+    /* Erase specific */
+    .tool-btn.erase {
+        margin-left: auto;
+        border-color: rgba(239, 68, 68, 0.3);
+        color: #ef4444;
+    }
+    .tool-btn.erase.active {
+        background: rgba(239, 68, 68, 0.2);
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        color: #fff;
+    }
+</style>
