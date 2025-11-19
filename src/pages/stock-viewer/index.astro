@@ -485,11 +485,10 @@ import MainLayout from "../../layouts/MainLayout.astro";
   const rangeBtns = document.querySelectorAll(".range-btn");
   const ctx = chartCanvas?.getContext("2d");
 
-  // --- 1. CHART PLUGIN: CROSSHAIR (Safe for v4) ---
+  // --- 1. CHART PLUGIN: CROSSHAIR (X & Y Lines) ---
   const crosshairPlugin = {
     id: "crosshair",
     afterDatasetsDraw(chart) {
-      // Check if tooltip exists and has active elements to avoid crash
       if (
         chart.tooltip &&
         chart.tooltip.getActiveElements &&
@@ -498,17 +497,25 @@ import MainLayout from "../../layouts/MainLayout.astro";
         const activePoint = chart.tooltip.getActiveElements()[0];
         const {
           ctx,
-          chartArea: { top, bottom },
+          chartArea: { top, bottom, left, right },
         } = chart;
         const x = activePoint.element.x;
+        const y = activePoint.element.y;
 
         ctx.save();
         ctx.beginPath();
+
+        // Vertical Line
         ctx.moveTo(x, top);
         ctx.lineTo(x, bottom);
+
+        // Horizontal Line (New)
+        ctx.moveTo(left, y);
+        ctx.lineTo(right, y);
+
         ctx.lineWidth = 1;
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.2)"; // Light dashed line
-        ctx.setLineDash([5, 5]);
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.15)"; // Subtle tech dash
+        ctx.setLineDash([4, 4]);
         ctx.stroke();
         ctx.restore();
       }
@@ -609,16 +616,28 @@ import MainLayout from "../../layouts/MainLayout.astro";
 
     if (emptyState) emptyState.style.display = "none";
 
-    // FIX: Destroy existing chart cleanly using Chart.getChart (safe for reuse)
     // @ts-ignore
     const existingChart = Chart.getChart(chartCanvas);
     if (existingChart) {
       existingChart.destroy();
     }
 
+    // 1. Determine Trend Color (Green vs Red)
+    const startPrice = data[0];
+    const endPrice = data[data.length - 1];
+    const isUp = endPrice >= startPrice;
+
+    // Tech Green (#10B981) or Tech Red (#EF4444)
+    const lineColor = isUp ? "#10B981" : "#EF4444";
+    // Matching Gradient Colors
+    const gradientStart = isUp
+      ? "rgba(16, 185, 129, 0.5)"
+      : "rgba(239, 68, 68, 0.5)";
+    const gradientEnd = isUp ? "rgba(16, 185, 129, 0)" : "rgba(239, 68, 68, 0)";
+
     const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, "rgba(124, 58, 237, 0.5)");
-    gradient.addColorStop(1, "rgba(124, 58, 237, 0)");
+    gradient.addColorStop(0, gradientStart);
+    gradient.addColorStop(1, gradientEnd);
 
     // @ts-ignore
     new Chart(ctx, {
@@ -631,15 +650,16 @@ import MainLayout from "../../layouts/MainLayout.astro";
             data,
             fill: true,
             backgroundColor: gradient,
-            borderColor: "#7c3aed",
-            pointBackgroundColor: "#06b6d4",
+            borderColor: lineColor, // Dynamic Color
+            pointBackgroundColor: lineColor,
             pointBorderColor: "#fff",
             pointHoverBackgroundColor: "#fff",
-            pointHoverBorderColor: "#06b6d4",
-            tension: 0.2, // Slightly tighter curves
+            pointHoverBorderColor: lineColor,
+            tension: 0.2,
             borderWidth: 2,
             pointRadius: 0,
             pointHoverRadius: 6,
+            pointHitRadius: 10, // Easier to hover
           },
         ],
       },
@@ -647,31 +667,43 @@ import MainLayout from "../../layouts/MainLayout.astro";
       options: {
         maintainAspectRatio: false,
         responsive: true,
-        interaction: { mode: "index", intersect: false },
+        interaction: {
+          mode: "index",
+          intersect: false,
+        },
         plugins: {
           legend: { display: false },
           tooltip: {
+            enabled: true,
+            displayColors: false, // <--- FIX: REMOVES THE BLUE BOX
             backgroundColor: "rgba(11, 12, 16, 0.95)",
             titleColor: "#94a3b8",
-            titleFont: { family: "JetBrains Mono", size: 13 },
+            titleFont: { family: "JetBrains Mono", size: 12 },
             bodyColor: "#e2e8f0",
             bodyFont: { family: "JetBrains Mono", size: 14, weight: "bold" },
-            borderColor: "rgba(124, 58, 237, 0.3)",
+            borderColor: "rgba(255, 255, 255, 0.1)",
             borderWidth: 1,
-            padding: 14,
-            displayColors: true,
-            boxPadding: 6,
+            padding: 12,
+            cornerRadius: 8,
             callbacks: {
               title: function (context) {
                 const dateStr = context[0].label;
                 return new Date(dateStr).toLocaleDateString(undefined, {
-                  year: "numeric",
                   month: "short",
                   day: "numeric",
+                  year: "numeric",
                 });
               },
               label: function (context) {
-                return " " + Number(context.parsed.y).toFixed(2) + " USD";
+                // Add commas for thousands: $1,234.56
+                const value = Number(context.parsed.y).toLocaleString(
+                  undefined,
+                  {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  },
+                );
+                return `$${value}`;
               },
             },
           },
@@ -679,22 +711,28 @@ import MainLayout from "../../layouts/MainLayout.astro";
         scales: {
           x: {
             ticks: {
-              maxTicksLimit: 6, // Fewer ticks to avoid clutter
+              maxTicksLimit: 6,
               color: "#64748b",
               font: { family: "JetBrains Mono", size: 11 },
+              maxRotation: 0, // Keep dates horizontal
+              autoSkip: true,
             },
             grid: { display: false },
           },
           y: {
-            position: "right", // Price on right
+            position: "right",
             ticks: {
               color: "#64748b",
               font: { family: "JetBrains Mono", size: 11 },
               callback: function (value) {
-                return "$" + value;
+                // Format Y-Axis numbers too
+                return "$" + Number(value).toLocaleString();
               },
             },
-            grid: { color: "rgba(255,255,255,0.05)" },
+            grid: {
+              color: "rgba(255,255,255,0.03)",
+              drawBorder: false, // Cleaner look
+            },
           },
         },
       },
