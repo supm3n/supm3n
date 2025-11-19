@@ -1,0 +1,167 @@
+/* src/styles/entropy.css */
+
+:root {
+    --entropy-ui-bg: rgba(10, 10, 12, 0.85);
+    --entropy-border: rgba(255, 255, 255, 0.1);
+    --entropy-glow: 0 0 15px rgba(6, 182, 212, 0.3);
+}
+
+/* Fullscreen setup */
+html,
+body {
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+.entropy-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    /* Behind UI but above base background */
+    background-color: #050505;
+
+    /* Hex Grid Background Pattern */
+    background-image:
+        linear-gradient(30deg, #111 12%, transparent 12.5%, transparent 87%, #111 87.5%, #111),
+        linear-gradient(150deg, #111 12%, transparent 12.5%, transparent 87%, #111 87.5%, #111),
+        linear-gradient(30deg, #111 12%, transparent 12.5%, transparent 87%, #111 87.5%, #111),
+        linear-gradient(150deg, #111 12%, transparent 12.5%, transparent 87%, #111 87.5%, #111),
+        linear-gradient(60deg, #1a1a1a 25%, transparent 25.5%, transparent 75%, #1a1a1a 75%, #1a1a1a),
+        linear-gradient(60deg, #1a1a1a 25%, transparent 25.5%, transparent 75%, #1a1a1a 75%, #1a1a1a);
+    background-size: 20px 35px;
+    background-position: 0 0, 0 0, 10px 18px, 10px 18px, 0 0, 10px 18px;
+    opacity: 0.8;
+}
+
+/* The Game Canvas */
+#entropy-canvas {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    /* Critical for crisp pixel look */
+    /* Bloom Effect for Cyberpunk feel */
+    filter: drop-shadow(0 0 4px rgba(6, 182, 212, 0.6));
+}
+
+/* UI Controls Overlay */
+.entropy-ui {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    width: 90%;
+    max-width: 600px;
+}
+
+.toolbar {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--entropy-ui-bg);
+    border: 1px solid var(--entropy-border);
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tool-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    gap: 4px;
+}
+
+.tool-btn svg {
+    width: 20px;
+    height: 20px;
+    margin-bottom: 2px;
+}
+
+.tool-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.tool-btn.active {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: currentColor;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+/* Specific Colors for Active States */
+.tool-btn[data-mat="1"].active {
+    color: #06b6d4;
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+}
+
+.tool-btn[data-mat="2"].active {
+    color: #10b981;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+}
+
+.tool-btn[data-mat="3"].active {
+    color: #d946ef;
+    box-shadow: 0 0 15px rgba(217, 70, 239, 0.4);
+}
+
+.tool-btn[data-mat="4"].active {
+    color: #f59e0b;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+}
+
+.tool-btn[data-mat="0"].active {
+    color: #ef4444;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+.clear-btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--entropy-border);
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.clear-btn:hover {
+    background: rgba(239, 68, 68, 0.3);
+}
+
+.instruction-text {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    opacity: 0.7;
+    text-shadow: 0 1px 2px #000;
+    pointer-events: none;
+}

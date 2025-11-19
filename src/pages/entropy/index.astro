@@ -1,0 +1,136 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import "../../styles/entropy.css";
+import {
+    MAT_DATA,
+    MAT_CACHE,
+    MAT_VIRUS,
+    MAT_PROCESS,
+    MAT_EMPTY,
+} from "../../components/entropy/Constants";
+---
+
+<MainLayout title="Entropy Grid">
+    <!-- Full Screen Canvas Layer -->
+    <div class="entropy-container">
+        <canvas id="entropy-canvas"></canvas>
+    </div>
+
+    <!-- UI Layer -->
+    <div class="entropy-ui">
+        <p class="instruction-text">SELECT ELEMENT // DRAW TO SIMULATE</p>
+
+        <div class="toolbar">
+            <button class="tool-btn active" data-mat={MAT_DATA}>
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    ><circle cx="12" cy="12" r="10"></circle><path
+                        d="M8 12a4 4 0 0 0 4 4 4 4 0 0 0 4-4H8z"></path></svg
+                >
+                Data
+            </button>
+
+            <button class="tool-btn" data-mat={MAT_CACHE}>
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    ><rect x="3" y="3" width="18" height="18" rx="2"
+                    ></rect><path d="M9 3v18"></path><path d="M15 3v18"
+                    ></path><path d="M3 9h18"></path><path d="M3 15h18"
+                    ></path></svg
+                >
+                Cache
+            </button>
+
+            <button class="tool-btn" data-mat={MAT_PROCESS}>
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    ><path d="M12 2v4"></path><path d="M12 18v4"></path><path
+                        d="M4.93 4.93l2.83 2.83"></path><path
+                        d="M16.24 16.24l2.83 2.83"></path><path d="M2 12h4"
+                    ></path><path d="M18 12h4"></path><path
+                        d="M4.93 19.07l2.83-2.83"></path><path
+                        d="M16.24 7.76l2.83-2.83"></path></svg
+                >
+                Proc
+            </button>
+
+            <button class="tool-btn" data-mat={MAT_VIRUS}>
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    ><path d="M9 12l2 2 4-4"></path><circle
+                        cx="12"
+                        cy="12"
+                        r="10"></circle><path
+                        d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"
+                    ></path></svg
+                >
+                Virus
+            </button>
+
+            <button class="tool-btn" data-mat={MAT_EMPTY}>
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    ><line x1="18" y1="6" x2="6" y2="18"></line><line
+                        x1="6"
+                        y1="6"
+                        x2="18"
+                        y2="18"></line></svg
+                >
+                Erase
+            </button>
+        </div>
+
+        <button id="reset-sim" class="clear-btn">System Reset</button>
+    </div>
+
+    <script>
+        import { EntropyGame } from "../../components/entropy/EntropyGame";
+
+        let game: EntropyGame;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            try {
+                game = new EntropyGame("entropy-canvas");
+
+                // Bind UI
+                const buttons = document.querySelectorAll(".tool-btn");
+                buttons.forEach((btn) => {
+                    btn.addEventListener("click", (e) => {
+                        // Remove active from all
+                        buttons.forEach((b) => b.classList.remove("active"));
+
+                        // Add to clicked
+                        const target = e.currentTarget as HTMLElement;
+                        target.classList.add("active");
+
+                        const mat = parseInt(target.dataset.mat || "1");
+                        game.setMaterial(mat);
+                    });
+                });
+
+                document
+                    .getElementById("reset-sim")
+                    ?.addEventListener("click", () => {
+                        game.clear();
+                    });
+            } catch (e) {
+                console.error("Failed to init Entropy Game", e);
+            }
+        });
+    </script>
+</MainLayout>
