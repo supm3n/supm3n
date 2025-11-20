@@ -4,6 +4,12 @@ var __name = (target, value) => __defProp(target, "name", { value, configurable:
 // .wrangler/tmp/pages-HETLV9/functionsWorker-0.24082551837540955.mjs
 var __defProp2 = Object.defineProperty;
 var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
+var FISCAL_OFFSETS = {
+  "AAPL": 9,
+  "MSFT": 6,
+  "NVDA": 1,
+  "DEFAULT": 0
+};
 var TAGS = {
   revenue: ["RevenueFromContractWithCustomerExcludingAssessedTax", "RevenueFromContractWithCustomerIncludingAssessedTax", "Revenues", "Revenue", "SalesRevenueNet", "NetSales"],
   operating_income: ["OperatingIncomeLoss"],
@@ -16,21 +22,12 @@ function getFiscalPeriod(ticker, periodEndDate) {
   const date = new Date(periodEndDate);
   const calMonth = date.getMonth() + 1;
   const calYear = date.getFullYear();
-  const FY_END_MONTH = {
-    "AAPL": 9,
-    // Ends Sept
-    "MSFT": 6,
-    // Ends June
-    "NVDA": 1,
-    // Ends Jan
-    "DEFAULT": 12
-    // Calendar Year
-  };
-  const endMonth = FY_END_MONTH[ticker] || FY_END_MONTH["DEFAULT"];
+  const endMonth = FISCAL_OFFSETS[ticker] || FISCAL_OFFSETS["DEFAULT"];
   let fiscalYear = calYear;
   if (calMonth > endMonth) {
     fiscalYear += 1;
   }
+  if (ticker === "NVDA" && calMonth === 1) fiscalYear = calYear;
   let fiscalMonthIndex = calMonth - endMonth;
   if (fiscalMonthIndex <= 0) fiscalMonthIndex += 12;
   let fp = "Q?";
@@ -125,12 +122,19 @@ var onRequest = /* @__PURE__ */ __name2(async (context) => {
       const finalFp = formType === "10-K" ? "FY" : fp;
       const cleanFiled = filedAt.split("T")[0];
       await env.DB.prepare(`
+
             INSERT INTO company_quarterly (
+
                 ticker, company_name, cik, adsh, form, fy, fp, period_end, filed_at,
-                revenue, operating_income, net_income, diluted_eps, 
-                operating_cash_flow, capex, 
+
+                revenue, operating_income, net_income, diluted_eps,
+
+                operating_cash_flow, capex,
+
                 net_margin, operating_margin, free_cash_flow
+
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+
         `).bind(
         ticker,
         companyName,
