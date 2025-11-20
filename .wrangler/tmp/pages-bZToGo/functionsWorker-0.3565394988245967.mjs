@@ -158,7 +158,7 @@ async function onRequest2(context) {
   const ticker = params.ticker.toUpperCase();
   try {
     if (!env.DB) {
-      throw new Error("Database binding 'DB' not found. Check wrangler.toml");
+      throw new Error("Database binding 'DB' not found.");
     }
     const stmt = env.DB.prepare(`
             SELECT 
@@ -177,12 +177,12 @@ async function onRequest2(context) {
                 net_margin,
                 operating_margin
             FROM company_quarterly 
-            WHERE ticker = ? 
+            WHERE ticker = ? AND form = '10-Q'
             ORDER BY period_end ASC
         `);
     const { results } = await stmt.bind(ticker).all();
     if (!results || results.length === 0) {
-      return new Response(JSON.stringify({ error: `No data found for ${ticker}` }), {
+      return new Response(JSON.stringify({ error: `No quarterly data found for ${ticker}` }), {
         status: 404,
         headers: { "Content-Type": "application/json" }
       });
@@ -762,7 +762,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// ../.wrangler/tmp/bundle-scupze/middleware-insertion-facade.js
+// ../.wrangler/tmp/bundle-blmW4r/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -794,7 +794,7 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// ../.wrangler/tmp/bundle-scupze/middleware-loader.entry.ts
+// ../.wrangler/tmp/bundle-blmW4r/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;

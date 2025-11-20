@@ -4,9 +4,11 @@ export async function onRequest(context) {
 
     try {
         if (!env.DB) {
-            throw new Error("Database binding 'DB' not found. Check wrangler.toml");
+            throw new Error("Database binding 'DB' not found.");
         }
 
+        // FIXED: Added "AND form = '10-Q'" to ignore Annual reports (10-K)
+        // This prevents the "Down 75%" error where a Quarter is compared to a Full Year
         const stmt = env.DB.prepare(`
             SELECT 
                 ticker,
@@ -24,14 +26,14 @@ export async function onRequest(context) {
                 net_margin,
                 operating_margin
             FROM company_quarterly 
-            WHERE ticker = ? 
+            WHERE ticker = ? AND form = '10-Q'
             ORDER BY period_end ASC
         `);
 
         const { results } = await stmt.bind(ticker).all();
 
         if (!results || results.length === 0) {
-            return new Response(JSON.stringify({ error: `No data found for ${ticker}` }), {
+            return new Response(JSON.stringify({ error: `No quarterly data found for ${ticker}` }), {
                 status: 404,
                 headers: { "Content-Type": "application/json" }
             });
