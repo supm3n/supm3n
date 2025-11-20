@@ -1,4 +1,4 @@
-name = "supm3n"
+name = "landingpage"
 pages_build_output_dir = "./dist"
 compatibility_date = "2025-11-20"  # Good to add this since the warning mentioned it
 
