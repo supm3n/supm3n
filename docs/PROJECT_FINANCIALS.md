@@ -167,9 +167,9 @@ Calculated: OCF - Capex
 │           └── update.js                  # Secured Write/Update API
 └── src/
     ├── components/
-    │   └── AdminControls.astro             # Hidden Admin UI (Ctrl+Shift+U)
+    │   └── DashboardControls.astro             # Hidden Admin UI (Ctrl+Shift+U)
     ├── layouts/
-    │   └── MainLayout.astro                # Includes AdminControls
+    │   └── MainLayout.astro                # Includes DashboardControls
     ├── pages/
     │   └── financial-analysis/
     │       └── index.astro                 # Main Dashboard Page
@@ -262,9 +262,9 @@ database_id = "99747b6f-466d-4c63-956c-c01e2ffcb21f"
 
 7. Troubleshooting
 
-Error: AdminControls is not defined
+Error: DashboardControls is not defined
 
-Fix: Ensure src/layouts/MainLayout.astro has the import statement AND the <AdminControls /> tag inside the body.
+Fix: Ensure src/layouts/MainLayout.astro has the import statement AND the <DashboardControls /> tag inside the body.
 
 Error: SQLITE_TOOBIG
 

@@ -1,5 +1,5 @@
 ---
-// src/components/AdminControls.astro
+// src/components/DashboardControls.astro
 ---
 
 <div id="admin-trigger-area">
@@ -120,12 +120,3 @@
         display: none;
     }
 </style>
-``` ### **How to integrate the button:** Add `<AdminControls />` to
-`src/layouts/MainLayout.astro` just before ``. This ensures it's available on
-every page but invisible. **Update `src/layouts/MainLayout.astro`:** ```astro
---- // ... imports import AdminControls from
-"../components/AdminControls.astro"; ---
-<!-- ... inside body ... -->
-<AdminControls />
-<Footer />
-<!-- ... -->
