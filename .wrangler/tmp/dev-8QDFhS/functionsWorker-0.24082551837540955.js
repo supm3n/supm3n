@@ -122,19 +122,12 @@ var onRequest = /* @__PURE__ */ __name2(async (context) => {
       const finalFp = formType === "10-K" ? "FY" : fp;
       const cleanFiled = filedAt.split("T")[0];
       await env.DB.prepare(`
-
             INSERT INTO company_quarterly (
-
                 ticker, company_name, cik, adsh, form, fy, fp, period_end, filed_at,
-
-                revenue, operating_income, net_income, diluted_eps,
-
-                operating_cash_flow, capex,
-
+                revenue, operating_income, net_income, diluted_eps, 
+                operating_cash_flow, capex, 
                 net_margin, operating_margin, free_cash_flow
-
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-
         `).bind(
         ticker,
         companyName,
