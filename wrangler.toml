@@ -1,8 +1,8 @@
 name = "supm3n"
 pages_build_output_dir = "./dist"
+compatibility_date = "2025-11-20"  # Good to add this since the warning mentioned it
 
-# Connect the D1 Database
 [[d1_databases]]
-binding = "DB" # This matches 'env.DB' in your API code
+binding = "DB"
 database_name = "supm3n-db"
-database_id = "xxxx-xxxx-xxxx-xxxx" # We don't need a real ID for local dev
+database_id = "99747b6f-466d-4c63-956c-c01e2ffcb21f"
