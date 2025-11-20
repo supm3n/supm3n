@@ -1,0 +1,282 @@
+---
+// src/pages/financial-analysis/index.astro
+import MainLayout from "../../layouts/MainLayout.astro";
+import "../../styles/financials.css";
+---
+
+<MainLayout title="Financial Analysis | Supm3n">
+    <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <div class="container analysis-container">
+        <section class="hero">
+            <h1 class="hero-title">Financial Intelligence</h1>
+            <p class="hero-subtitle">Fundamentals & SEC Filing Data</p>
+        </section>
+
+        <section class="toolbar glass-panel">
+            <div class="input-group">
+                <label class="input-label" for="ticker-select"
+                    >Select Company</label
+                >
+                <div class="select-wrapper">
+                    <select id="ticker-select" class="tech-input">
+                        <option value="" disabled selected
+                            >Choose Entity...</option
+                        >
+                        <option value="NVDA">NVIDIA (NVDA)</option>
+                        <option value="AAPL">Apple (AAPL)</option>
+                        <option value="MSFT">Microsoft (MSFT)</option>
+                        <option value="GOOGL">Alphabet (GOOGL)</option>
+                        <option value="AMZN">Amazon (AMZN)</option>
+                        <option value="AVGO">Broadcom (AVGO)</option>
+                        <option value="META">Meta (META)</option>
+                        <option value="BRK.B">Berkshire (BRK.B)</option>
+                        <option value="TSLA">Tesla (TSLA)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Metric View</label>
+                <div class="tab-group">
+                    <button class="tab-btn active" data-view="growth"
+                        >Growth</button
+                    >
+                    <button class="tab-btn" data-view="margins">Margins</button>
+                    <button class="tab-btn" data-view="cashflow"
+                        >Cash Flow</button
+                    >
+                </div>
+            </div>
+
+            <div class="action-group">
+                <button id="generate-report" class="btn-primary" disabled>
+                    <span>Run AI Analysis</span>
+                    <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ><path
+                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                        ></path></svg
+                    >
+                </button>
+            </div>
+        </section>
+
+        <div id="error-banner" class="error-banner" style="display: none;">
+        </div>
+
+        <div id="empty-state">
+            <div class="empty-icon">📊</div>
+            <p>System Ready. Select a company to load SEC data.</p>
+        </div>
+
+        <div id="dashboard" class="dashboard-grid hidden">
+            <div class="glass-panel chart-card full-width">
+                <div class="chart-header">
+                    <h3 class="chart-title" id="title-main">Overview</h3>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="chart-main"></canvas>
+                </div>
+            </div>
+
+            <div class="glass-panel chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title" id="title-sub1">
+                        Secondary Metrics
+                    </h3>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="chart-sub1"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div id="loading-overlay" class="hidden">
+            <div class="spinner"></div>
+            <p>Querying Database...</p>
+        </div>
+    </div>
+</MainLayout>
+
+<style>
+    /* Local specific overrides if any, otherwise using financials.css */
+    .hero {
+        text-align: center;
+        margin-bottom: var(--space-xl);
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    .hero-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        background: linear-gradient(
+            135deg,
+            var(--color-text-primary),
+            var(--color-accent-start)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin: 0 0 0.5rem 0;
+    }
+    .hero-subtitle {
+        color: var(--color-text-muted);
+        font-family: var(--font-mono);
+    }
+    .btn-primary {
+        height: 48px;
+        padding: 0 1.5rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(
+            135deg,
+            var(--color-accent-start),
+            var(--color-accent-end)
+        );
+        color: white;
+        font-family: var(--font-sans);
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: transform 0.2s;
+    }
+    .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        filter: grayscale(1);
+    }
+    .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+    }
+
+    .error-banner {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-left: 4px solid #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+        color: #ff8888;
+        font-family: var(--font-mono);
+    }
+    .hidden {
+        display: none !important;
+    }
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: var(--color-accent-start);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<script>
+    import {
+        renderGrowthView,
+        renderMarginsView,
+        renderCashFlowView,
+        destroyCharts,
+    } from "../../scripts/financial-charts.js";
+
+    // State
+    let currentData = [];
+    let currentView = "growth";
+
+    // DOM
+    const selectEl = document.getElementById("ticker-select");
+    const loader = document.getElementById("loading-overlay");
+    const dashboard = document.getElementById("dashboard");
+    const emptyState = document.getElementById("empty-state");
+    const errorBanner = document.getElementById("error-banner");
+    const aiBtn = document.getElementById("generate-report");
+    const viewBtns = document.querySelectorAll(".tab-btn");
+
+    // Containers
+    const containers = { main: "chart-main", sub1: "chart-sub1" };
+
+    // Functions
+    async function loadData(ticker) {
+        try {
+            loader.classList.remove("hidden");
+            errorBanner.style.display = "none";
+
+            const res = await fetch(`/api/financials/${ticker}`);
+
+            if (!res.ok) {
+                const json = await res.json();
+                throw new Error(json.error || "Failed to fetch data");
+            }
+
+            currentData = await res.json();
+
+            // Update UI
+            emptyState.style.display = "none";
+            dashboard.classList.remove("hidden");
+            aiBtn.disabled = false;
+
+            updateCharts();
+        } catch (err) {
+            console.error(err);
+            errorBanner.textContent = `> ERROR: ${err.message}`;
+            errorBanner.style.display = "block";
+            dashboard.classList.add("hidden");
+        } finally {
+            loader.classList.add("hidden");
+        }
+    }
+
+    function updateCharts() {
+        if (!currentData.length) return;
+        destroyCharts();
+
+        const titles = {
+            growth: ["Revenue vs Net Income", "Diluted EPS"],
+            margins: ["Margin Trends", ""],
+            cashflow: ["Operating Cash Flow vs CapEx", "Free Cash Flow"],
+        };
+
+        document.getElementById("title-main").textContent =
+            titles[currentView][0];
+        document.getElementById("title-sub1").textContent =
+            titles[currentView][1];
+
+        if (currentView === "growth") renderGrowthView(currentData, containers);
+        else if (currentView === "margins")
+            renderMarginsView(currentData, containers);
+        else if (currentView === "cashflow")
+            renderCashFlowView(currentData, containers);
+    }
+
+    // Event Listeners
+    selectEl.addEventListener("change", (e) => {
+        if (e.target.value) loadData(e.target.value);
+    });
+
+    viewBtns.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            viewBtns.forEach((b) => b.classList.remove("active"));
+            e.target.classList.add("active");
+            currentView = e.target.dataset.view;
+            updateCharts();
+        });
+    });
+
+    aiBtn.addEventListener("click", () => {
+        alert("AI Narrative Analysis: Coming in next phase.");
+    });
+</script>
