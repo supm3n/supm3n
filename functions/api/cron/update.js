@@ -27,11 +27,14 @@ function getFiscalPeriod(ticker, periodEndDate) {
     const endMonth = FISCAL_OFFSETS[ticker] || FISCAL_OFFSETS["DEFAULT"];
 
     let fiscalYear = calYear;
+
+    // FIX: If we are past the end month, we are in the NEXT Fiscal Year.
     if (calMonth > endMonth) {
         fiscalYear += 1;
     }
 
-    // Wrap NVDA case (Jan 2025 = FY25)
+    // Special Case: NVDA's FY ending Jan 2025 is "FY2025".
+    // Feb 2024 (Month 2) > Jan (1) -> FY = 2024 + 1 = 2025. Correct.
     if (ticker === "NVDA" && calMonth === 1) fiscalYear = calYear;
 
     let fiscalMonthIndex = calMonth - endMonth;
