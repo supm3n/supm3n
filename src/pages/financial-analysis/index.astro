@@ -37,51 +37,59 @@ const COMPANIES = [
             </div>
         </section>
 
-        <!-- 2. Executive Summary -->
+        <!-- 2. Executive Summary (Redesigned) -->
         <section id="summary-panel" class="summary-section hidden">
-            <div class="summary-header-tight">
-                <div class="summary-identity">
-                    <h2 id="sum-ticker" class="sum-ticker-sm">--</h2>
-                    <span id="sum-period" class="sum-period-sm">--</span>
+            <!-- Top Row: Identity -->
+            <div class="summary-header">
+                <div class="identity-group">
+                    <h2 id="sum-ticker" class="ticker-text">--</h2>
+                    <span id="sum-period" class="period-badge">--</span>
                 </div>
-                <div class="summary-date-sm">
-                    <span>Filed: </span><span id="sum-filed">--</span>
+                <div class="date-group">
+                    <span class="date-label">FILED</span>
+                    <span id="sum-filed" class="date-value">--</span>
                 </div>
             </div>
 
-            <div class="stats-grid-tight">
+            <!-- Bottom Row: Data Strip -->
+            <div class="stats-strip">
                 <!-- Revenue -->
-                <div class="stat-card-tight">
-                    <div class="stat-header-row">
-                        <span>Total Revenue</span>
-                        <span id="delta-rev" class="stat-badge">--</span>
+                <div class="stat-block">
+                    <span class="stat-label">Revenue</span>
+                    <div class="stat-content">
+                        <span id="val-rev" class="stat-number">--</span>
+                        <span id="delta-rev" class="stat-delta">--</span>
                     </div>
-                    <div id="val-rev" class="stat-value-sm">--</div>
                 </div>
+
+                <!-- Divider -->
+                <div class="stat-divider"></div>
 
                 <!-- Net Income -->
-                <div class="stat-card-tight">
-                    <div class="stat-header-row">
-                        <span>Net Income</span>
-                        <span id="delta-net" class="stat-badge">--</span>
+                <div class="stat-block">
+                    <span class="stat-label">Net Income</span>
+                    <div class="stat-content">
+                        <span id="val-net" class="stat-number">--</span>
+                        <span id="delta-net" class="stat-delta">--</span>
                     </div>
-                    <div id="val-net" class="stat-value-sm">--</div>
                 </div>
 
+                <!-- Divider -->
+                <div class="stat-divider"></div>
+
                 <!-- Free Cash Flow -->
-                <div class="stat-card-tight">
-                    <div class="stat-header-row">
-                        <span>Free Cash Flow</span>
-                        <span id="delta-fcf" class="stat-badge">--</span>
+                <div class="stat-block">
+                    <span class="stat-label">Free Cash Flow</span>
+                    <div class="stat-content">
+                        <span id="val-fcf" class="stat-number">--</span>
+                        <span id="delta-fcf" class="stat-delta">--</span>
                     </div>
-                    <div id="val-fcf" class="stat-value-sm">--</div>
                 </div>
             </div>
         </section>
 
         <!-- 3. Charts Dashboard -->
         <section id="dashboard" class="dashboard-wrapper hidden">
-            <!-- View Tabs -->
             <div class="chart-controls">
                 <div class="tab-group">
                     <button class="tab-btn active" data-view="growth"
@@ -95,7 +103,6 @@ const COMPANIES = [
             </div>
 
             <div class="charts-grid">
-                <!-- Main Chart (Left/Top) -->
                 <div class="chart-card main-chart">
                     <div class="chart-header">
                         <h3 class="chart-title" id="title-main">Overview</h3>
@@ -105,7 +112,6 @@ const COMPANIES = [
                     </div>
                 </div>
 
-                <!-- Secondary Chart (Right/Bottom) -->
                 <div class="chart-card sub-chart">
                     <div class="chart-header">
                         <h3 class="chart-title" id="title-sub1">Analysis</h3>
@@ -117,15 +123,14 @@ const COMPANIES = [
             </div>
         </section>
 
-        <!-- Loading / States -->
+        <!-- States -->
         <div id="loading-overlay" class="hidden">
             <div class="spinner"></div>
         </div>
-
         <div id="error-banner" class="error-banner hidden"></div>
-
         <div id="empty-state">
-            <p>Select a company above to view the latest SEC financial data.</p>
+            <div class="empty-icon">⚡</div>
+            <p>Select a company to view financials</p>
         </div>
     </div>
 </MainLayout>
@@ -141,7 +146,6 @@ const COMPANIES = [
     let currentData = [];
     let currentView = "growth";
 
-    // DOM
     const summaryPanel = document.getElementById("summary-panel");
     const dashboard = document.getElementById("dashboard");
     const emptyState = document.getElementById("empty-state");
@@ -153,40 +157,33 @@ const COMPANIES = [
 
     async function loadData(ticker) {
         if (!ticker) return;
-
         try {
-            // Loading State
             loader.classList.remove("hidden");
             errorBanner.classList.add("hidden");
             dashboard.classList.add("hidden");
             summaryPanel.classList.add("hidden");
             emptyState.classList.add("hidden");
 
-            chipButtons.forEach((btn) => {
-                btn.classList.toggle("active", btn.dataset.ticker === ticker);
-            });
+            chipButtons.forEach((btn) =>
+                btn.classList.toggle("active", btn.dataset.ticker === ticker),
+            );
 
             const res = await fetch(`/api/financials/${ticker}`);
             if (!res.ok) throw new Error(`Failed to load ${ticker}`);
 
             const json = await res.json();
-
-            // Filter ghost data
+            // Filter invalid rows
             const validData = json.filter(
                 (item) => item.revenue !== null && item.revenue > 0,
             );
 
-            if (validData.length < 2) {
-                throw new Error("Insufficient valid historical data.");
-            }
+            if (validData.length < 2)
+                throw new Error("Insufficient historical data.");
 
             currentData = validData;
-
-            // Render
             renderExecutiveSummary(currentData);
             updateCharts();
 
-            // Success State
             loader.classList.add("hidden");
             summaryPanel.classList.remove("hidden");
             dashboard.classList.remove("hidden");
@@ -199,7 +196,7 @@ const COMPANIES = [
 
     function formatCompact(val) {
         if (!val) return "--";
-        return `$${(val / 1_000_000_000).toFixed(1)}B`;
+        return `$${(val / 1_000_000_000).toFixed(2)}B`;
     }
 
     function calculateChange(curr, prev) {
@@ -211,8 +208,7 @@ const COMPANIES = [
         const latest = data[data.length - 1];
         const previous = data[data.length - 2];
 
-        document.getElementById("sum-ticker").textContent =
-            `${latest.company_name}`;
+        document.getElementById("sum-ticker").textContent = latest.company_name;
         document.getElementById("sum-period").textContent =
             `${latest.fp} ${latest.fy}`;
 
@@ -221,7 +217,11 @@ const COMPANIES = [
             dateObj.getTime(),
         )
             ? latest.filed_at
-            : dateObj.toLocaleDateString();
+            : dateObj.toLocaleDateString(undefined, {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+              });
 
         const updateStat = (id, curr, prev) => {
             document.getElementById(`val-${id}`).textContent =
@@ -231,11 +231,12 @@ const COMPANIES = [
 
             if (pct === null) {
                 deltaEl.textContent = "-";
-                deltaEl.className = "stat-badge";
+                deltaEl.className = "stat-delta";
             } else {
                 const isUp = pct >= 0;
-                deltaEl.textContent = `${isUp ? "▲" : "▼"} ${Math.abs(pct).toFixed(1)}%`;
-                deltaEl.className = `stat-badge ${isUp ? "pos" : "neg"}`;
+                const arrow = isUp ? "▲" : "▼";
+                deltaEl.textContent = `${arrow} ${Math.abs(pct).toFixed(1)}%`;
+                deltaEl.className = `stat-delta ${isUp ? "pos" : "neg"}`;
             }
         };
 
@@ -247,13 +248,11 @@ const COMPANIES = [
     function updateCharts() {
         if (!currentData.length) return;
         destroyCharts();
-
         const titles = {
-            growth: ["Revenue vs Net Income", "Diluted EPS"],
-            margins: ["Margin Trends", "Operating vs Net Margin"],
+            growth: ["Revenue vs Net Income", "Diluted EPS Trend"],
+            margins: ["Margin Analysis", "Profit Efficiency"],
             cashflow: ["Cash Flow Breakdown", "FCF vs CapEx"],
         };
-
         document.getElementById("title-main").textContent =
             titles[currentView][0];
         document.getElementById("title-sub1").textContent =
@@ -269,10 +268,8 @@ const COMPANIES = [
     chipButtons.forEach((btn) =>
         btn.addEventListener("click", () => loadData(btn.dataset.ticker)),
     );
-
     viewBtns.forEach((btn) =>
         btn.addEventListener("click", (e) => {
-            // Safe casting for event target
             const target = e.currentTarget;
             viewBtns.forEach((b) => b.classList.remove("active"));
             target.classList.add("active");
