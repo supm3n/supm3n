@@ -1,43 +1,88 @@
 ---
-// src/pages/financial-analysis/index.astro
 import MainLayout from "../../layouts/MainLayout.astro";
 import "../../styles/financials.css";
+
+const COMPANIES = [
+    { ticker: "NVDA", name: "NVIDIA" },
+    { ticker: "AAPL", name: "Apple" },
+    { ticker: "MSFT", name: "Microsoft" },
+    { ticker: "GOOGL", name: "Alphabet" },
+    { ticker: "AMZN", name: "Amazon" },
+    { ticker: "META", name: "Meta" },
+    { ticker: "TSLA", name: "Tesla" },
+    { ticker: "AVGO", name: "Broadcom" },
+    { ticker: "BRK.B", name: "Berkshire" },
+];
 ---
 
 <MainLayout title="Financial Analysis | Supm3n">
     <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <div class="container analysis-container">
-        <section class="hero">
+        <!-- 1. Header & Company Chips -->
+        <section class="hero compact-hero">
             <h1 class="hero-title">Financial Intelligence</h1>
-            <p class="hero-subtitle">Fundamentals & SEC Filing Data</p>
+            <div class="company-grid">
+                {
+                    COMPANIES.map((c) => (
+                        <button
+                            class="company-chip-compact"
+                            data-ticker={c.ticker}
+                            aria-label={`Select ${c.name}`}
+                        >
+                            <span class="chip-ticker">{c.ticker}</span>
+                        </button>
+                    ))
+                }
+            </div>
         </section>
 
-        <section class="toolbar glass-panel">
-            <div class="input-group">
-                <label class="input-label" for="ticker-select"
-                    >Select Company</label
-                >
-                <div class="select-wrapper">
-                    <select id="ticker-select" class="tech-input">
-                        <option value="" disabled selected
-                            >Choose Entity...</option
-                        >
-                        <option value="NVDA">NVIDIA (NVDA)</option>
-                        <option value="AAPL">Apple (AAPL)</option>
-                        <option value="MSFT">Microsoft (MSFT)</option>
-                        <option value="GOOGL">Alphabet (GOOGL)</option>
-                        <option value="AMZN">Amazon (AMZN)</option>
-                        <option value="AVGO">Broadcom (AVGO)</option>
-                        <option value="META">Meta (META)</option>
-                        <option value="BRK.B">Berkshire (BRK.B)</option>
-                        <option value="TSLA">Tesla (TSLA)</option>
-                    </select>
+        <!-- 2. Executive Summary -->
+        <section id="summary-panel" class="summary-section hidden">
+            <div class="summary-header-tight">
+                <div class="summary-identity">
+                    <h2 id="sum-ticker" class="sum-ticker-sm">--</h2>
+                    <span id="sum-period" class="sum-period-sm">--</span>
+                </div>
+                <div class="summary-date-sm">
+                    <span>Filed: </span><span id="sum-filed">--</span>
                 </div>
             </div>
 
-            <div class="input-group">
-                <label class="input-label">Metric View</label>
+            <div class="stats-grid-tight">
+                <!-- Revenue -->
+                <div class="stat-card-tight">
+                    <div class="stat-header-row">
+                        <span>Total Revenue</span>
+                        <span id="delta-rev" class="stat-badge">--</span>
+                    </div>
+                    <div id="val-rev" class="stat-value-sm">--</div>
+                </div>
+
+                <!-- Net Income -->
+                <div class="stat-card-tight">
+                    <div class="stat-header-row">
+                        <span>Net Income</span>
+                        <span id="delta-net" class="stat-badge">--</span>
+                    </div>
+                    <div id="val-net" class="stat-value-sm">--</div>
+                </div>
+
+                <!-- Free Cash Flow -->
+                <div class="stat-card-tight">
+                    <div class="stat-header-row">
+                        <span>Free Cash Flow</span>
+                        <span id="delta-fcf" class="stat-badge">--</span>
+                    </div>
+                    <div id="val-fcf" class="stat-value-sm">--</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Charts Dashboard -->
+        <section id="dashboard" class="dashboard-wrapper hidden">
+            <!-- View Tabs -->
+            <div class="chart-controls">
                 <div class="tab-group">
                     <button class="tab-btn active" data-view="growth"
                         >Growth</button
@@ -49,141 +94,41 @@ import "../../styles/financials.css";
                 </div>
             </div>
 
-            <div class="action-group">
-                <button id="generate-report" class="btn-primary" disabled>
-                    <span>Run AI Analysis</span>
-                    <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        ><path
-                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
-                        ></path></svg
-                    >
-                </button>
+            <div class="charts-grid">
+                <!-- Main Chart (Left/Top) -->
+                <div class="chart-card main-chart">
+                    <div class="chart-header">
+                        <h3 class="chart-title" id="title-main">Overview</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chart-main"></canvas>
+                    </div>
+                </div>
+
+                <!-- Secondary Chart (Right/Bottom) -->
+                <div class="chart-card sub-chart">
+                    <div class="chart-header">
+                        <h3 class="chart-title" id="title-sub1">Analysis</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chart-sub1"></canvas>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <div id="error-banner" class="error-banner" style="display: none;">
-        </div>
-
-        <div id="empty-state">
-            <div class="empty-icon">📊</div>
-            <p>System Ready. Select a company to load SEC data.</p>
-        </div>
-
-        <div id="dashboard" class="dashboard-grid hidden">
-            <div class="glass-panel chart-card full-width">
-                <div class="chart-header">
-                    <h3 class="chart-title" id="title-main">Overview</h3>
-                </div>
-                <div class="chart-wrapper">
-                    <canvas id="chart-main"></canvas>
-                </div>
-            </div>
-
-            <div class="glass-panel chart-card">
-                <div class="chart-header">
-                    <h3 class="chart-title" id="title-sub1">
-                        Secondary Metrics
-                    </h3>
-                </div>
-                <div class="chart-wrapper">
-                    <canvas id="chart-sub1"></canvas>
-                </div>
-            </div>
-        </div>
-
+        <!-- Loading / States -->
         <div id="loading-overlay" class="hidden">
             <div class="spinner"></div>
-            <p>Querying Database...</p>
+        </div>
+
+        <div id="error-banner" class="error-banner hidden"></div>
+
+        <div id="empty-state">
+            <p>Select a company above to view the latest SEC financial data.</p>
         </div>
     </div>
 </MainLayout>
-
-<style>
-    /* Local specific overrides if any, otherwise using financials.css */
-    .hero {
-        text-align: center;
-        margin-bottom: var(--space-xl);
-        padding-bottom: 1.5rem;
-        border-bottom: 1px solid var(--glass-border);
-    }
-    .hero-title {
-        font-size: clamp(2rem, 4vw, 3rem);
-        background: linear-gradient(
-            135deg,
-            var(--color-text-primary),
-            var(--color-accent-start)
-        );
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: 800;
-        text-transform: uppercase;
-        margin: 0 0 0.5rem 0;
-    }
-    .hero-subtitle {
-        color: var(--color-text-muted);
-        font-family: var(--font-mono);
-    }
-    .btn-primary {
-        height: 48px;
-        padding: 0 1.5rem;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        background: linear-gradient(
-            135deg,
-            var(--color-accent-start),
-            var(--color-accent-end)
-        );
-        color: white;
-        font-family: var(--font-sans);
-        font-weight: 600;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: transform 0.2s;
-    }
-    .btn-primary:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        filter: grayscale(1);
-    }
-    .btn-primary:hover:not(:disabled) {
-        transform: translateY(-2px);
-    }
-
-    .error-banner {
-        margin-bottom: 1rem;
-        padding: 1rem;
-        border-left: 4px solid #ef4444;
-        background: rgba(239, 68, 68, 0.1);
-        color: #ff8888;
-        font-family: var(--font-mono);
-    }
-    .hidden {
-        display: none !important;
-    }
-    .spinner {
-        width: 40px;
-        height: 40px;
-        border: 3px solid rgba(255, 255, 255, 0.1);
-        border-top-color: var(--color-accent-start);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
-    }
-</style>
 
 <script>
     import {
@@ -193,51 +138,110 @@ import "../../styles/financials.css";
         destroyCharts,
     } from "../../scripts/financial-charts.js";
 
-    // State
     let currentData = [];
     let currentView = "growth";
 
     // DOM
-    const selectEl = document.getElementById("ticker-select");
-    const loader = document.getElementById("loading-overlay");
+    const summaryPanel = document.getElementById("summary-panel");
     const dashboard = document.getElementById("dashboard");
     const emptyState = document.getElementById("empty-state");
+    const loader = document.getElementById("loading-overlay");
     const errorBanner = document.getElementById("error-banner");
-    const aiBtn = document.getElementById("generate-report");
+    const chipButtons = document.querySelectorAll(".company-chip-compact");
     const viewBtns = document.querySelectorAll(".tab-btn");
-
-    // Containers
     const containers = { main: "chart-main", sub1: "chart-sub1" };
 
-    // Functions
     async function loadData(ticker) {
+        if (!ticker) return;
+
         try {
+            // Loading State
             loader.classList.remove("hidden");
-            errorBanner.style.display = "none";
+            errorBanner.classList.add("hidden");
+            dashboard.classList.add("hidden");
+            summaryPanel.classList.add("hidden");
+            emptyState.classList.add("hidden");
+
+            chipButtons.forEach((btn) => {
+                btn.classList.toggle("active", btn.dataset.ticker === ticker);
+            });
 
             const res = await fetch(`/api/financials/${ticker}`);
+            if (!res.ok) throw new Error(`Failed to load ${ticker}`);
 
-            if (!res.ok) {
-                const json = await res.json();
-                throw new Error(json.error || "Failed to fetch data");
+            const json = await res.json();
+
+            // Filter ghost data
+            const validData = json.filter(
+                (item) => item.revenue !== null && item.revenue > 0,
+            );
+
+            if (validData.length < 2) {
+                throw new Error("Insufficient valid historical data.");
             }
 
-            currentData = await res.json();
+            currentData = validData;
 
-            // Update UI
-            emptyState.style.display = "none";
-            dashboard.classList.remove("hidden");
-            aiBtn.disabled = false;
-
+            // Render
+            renderExecutiveSummary(currentData);
             updateCharts();
-        } catch (err) {
-            console.error(err);
-            errorBanner.textContent = `> ERROR: ${err.message}`;
-            errorBanner.style.display = "block";
-            dashboard.classList.add("hidden");
-        } finally {
+
+            // Success State
             loader.classList.add("hidden");
+            summaryPanel.classList.remove("hidden");
+            dashboard.classList.remove("hidden");
+        } catch (err) {
+            loader.classList.add("hidden");
+            errorBanner.textContent = err.message;
+            errorBanner.classList.remove("hidden");
         }
+    }
+
+    function formatCompact(val) {
+        if (!val) return "--";
+        return `$${(val / 1_000_000_000).toFixed(1)}B`;
+    }
+
+    function calculateChange(curr, prev) {
+        if (!prev) return null;
+        return ((curr - prev) / Math.abs(prev)) * 100;
+    }
+
+    function renderExecutiveSummary(data) {
+        const latest = data[data.length - 1];
+        const previous = data[data.length - 2];
+
+        document.getElementById("sum-ticker").textContent =
+            `${latest.company_name}`;
+        document.getElementById("sum-period").textContent =
+            `${latest.fp} ${latest.fy}`;
+
+        const dateObj = new Date(latest.filed_at);
+        document.getElementById("sum-filed").textContent = isNaN(
+            dateObj.getTime(),
+        )
+            ? latest.filed_at
+            : dateObj.toLocaleDateString();
+
+        const updateStat = (id, curr, prev) => {
+            document.getElementById(`val-${id}`).textContent =
+                formatCompact(curr);
+            const deltaEl = document.getElementById(`delta-${id}`);
+            const pct = calculateChange(curr, prev);
+
+            if (pct === null) {
+                deltaEl.textContent = "-";
+                deltaEl.className = "stat-badge";
+            } else {
+                const isUp = pct >= 0;
+                deltaEl.textContent = `${isUp ? "▲" : "▼"} ${Math.abs(pct).toFixed(1)}%`;
+                deltaEl.className = `stat-badge ${isUp ? "pos" : "neg"}`;
+            }
+        };
+
+        updateStat("rev", latest.revenue, previous.revenue);
+        updateStat("net", latest.net_income, previous.net_income);
+        updateStat("fcf", latest.free_cash_flow, previous.free_cash_flow);
     }
 
     function updateCharts() {
@@ -246,8 +250,8 @@ import "../../styles/financials.css";
 
         const titles = {
             growth: ["Revenue vs Net Income", "Diluted EPS"],
-            margins: ["Margin Trends", ""],
-            cashflow: ["Operating Cash Flow vs CapEx", "Free Cash Flow"],
+            margins: ["Margin Trends", "Operating vs Net Margin"],
+            cashflow: ["Cash Flow Breakdown", "FCF vs CapEx"],
         };
 
         document.getElementById("title-main").textContent =
@@ -262,21 +266,18 @@ import "../../styles/financials.css";
             renderCashFlowView(currentData, containers);
     }
 
-    // Event Listeners
-    selectEl.addEventListener("change", (e) => {
-        if (e.target.value) loadData(e.target.value);
-    });
+    chipButtons.forEach((btn) =>
+        btn.addEventListener("click", () => loadData(btn.dataset.ticker)),
+    );
 
-    viewBtns.forEach((btn) => {
+    viewBtns.forEach((btn) =>
         btn.addEventListener("click", (e) => {
+            // Safe casting for event target
+            const target = e.currentTarget;
             viewBtns.forEach((b) => b.classList.remove("active"));
-            e.target.classList.add("active");
-            currentView = e.target.dataset.view;
+            target.classList.add("active");
+            currentView = target.dataset.view;
             updateCharts();
-        });
-    });
-
-    aiBtn.addEventListener("click", () => {
-        alert("AI Narrative Analysis: Coming in next phase.");
-    });
+        }),
+    );
 </script>

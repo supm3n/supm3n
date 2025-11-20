@@ -1,82 +1,67 @@
 // src/scripts/financial-charts.js
-// Note: We assume Chart.js is loaded via CDN in the layout
 
-let charts = {};
+let mainChartInstance = null;
+let subChartInstance = null;
 
-const THEME = {
-  rev: "#3B82F6",  // Blue
-  net: "#10B981",  // Green
-  loss: "#EF4444", // Red
-  accent: "#8B5CF6", // Purple
-  grid: "rgba(255, 255, 255, 0.05)",
-  text: "#94a3b8",
-  font: "JetBrains Mono, monospace"
-};
+// Helper to parse "Q3 25" labels from data
+const getLabels = (data) => data.map(item => `${item.fp} ${item.fy.toString().slice(2)}`);
 
+// Common Chart Options for consistency
 const commonOptions = {
   responsive: true,
   maintainAspectRatio: false,
-  interaction: { mode: 'index', intersect: false },
+  interaction: {
+    mode: 'index',
+    intersect: false,
+  },
   plugins: {
-    legend: { labels: { color: THEME.text, font: { family: THEME.font } } },
-    tooltip: {
-      backgroundColor: 'rgba(11, 12, 16, 0.95)',
-      titleColor: '#fff',
-      bodyColor: '#e2e8f0',
-      borderColor: 'rgba(255, 255, 255, 0.1)',
-      borderWidth: 1,
-      padding: 12,
-      cornerRadius: 8,
-      callbacks: {
-        label: function (context) {
-          let label = context.dataset.label || '';
-          if (label) label += ': ';
-          let value = context.parsed.y;
-
-          // Format billions/millions
-          if (Math.abs(value) >= 1e9) {
-            return label + '$' + (value / 1e9).toFixed(2) + 'B';
-          } else if (Math.abs(value) >= 1e6) {
-            return label + '$' + (value / 1e6).toFixed(2) + 'M';
-          } else if (context.dataset.yAxisID === 'percentage') {
-            return label + value.toFixed(2) + '%';
-          }
-          return label + value;
-        }
+    legend: {
+      labels: {
+        color: 'rgba(150, 150, 150, 1)',
+        font: { family: 'monospace' }
       }
+    },
+    tooltip: {
+      backgroundColor: 'rgba(20, 20, 20, 0.9)',
+      titleColor: '#fff',
+      bodyColor: '#ccc',
+      borderColor: 'rgba(255, 255, 255, 0.1)',
+      borderWidth: 1
     }
   },
   scales: {
     x: {
-      grid: { display: false },
-      ticks: { color: THEME.text, font: { family: THEME.font, size: 11 } }
+      grid: { color: 'rgba(255, 255, 255, 0.05)' },
+      ticks: { color: 'rgba(150, 150, 150, 0.8)' }
     },
     y: {
-      grid: { color: THEME.grid },
-      ticks: {
-        color: THEME.text,
-        font: { family: THEME.font, size: 11 },
-        callback: function (value) {
-          if (Math.abs(value) >= 1e9) return '$' + (value / 1e9).toFixed(0) + 'B';
-          if (Math.abs(value) >= 1e6) return '$' + (value / 1e6).toFixed(0) + 'M';
-          return value;
-        }
-      }
+      grid: { color: 'rgba(255, 255, 255, 0.05)' },
+      ticks: { color: 'rgba(150, 150, 150, 0.8)' }
     }
   }
 };
 
 export function destroyCharts() {
-  Object.values(charts).forEach(chart => chart.destroy());
-  charts = {};
+  if (mainChartInstance) {
+    mainChartInstance.destroy();
+    mainChartInstance = null;
+  }
+  if (subChartInstance) {
+    subChartInstance.destroy();
+    subChartInstance = null;
+  }
 }
 
+// --- VIEW 1: GROWTH (Revenue vs Net Income + EPS) ---
 export function renderGrowthView(data, containers) {
-  const labels = data.map(d => `${d.fp} ${d.fy}`);
+  const ctxMain = document.getElementById(containers.main);
+  const ctxSub = document.getElementById(containers.sub1);
+  if (!ctxMain || !ctxSub) return;
 
-  // 1. Revenue vs Net Income (Mixed Bar/Line)
-  const ctx1 = document.getElementById(containers.main).getContext('2d');
-  charts.main = new Chart(ctx1, {
+  const labels = getLabels(data);
+
+  // Main: Revenue vs Net Income
+  mainChartInstance = new Chart(ctxMain, {
     type: 'bar',
     data: {
       labels,
@@ -84,101 +69,142 @@ export function renderGrowthView(data, containers) {
         {
           label: 'Revenue',
           data: data.map(d => d.revenue),
-          backgroundColor: 'rgba(59, 130, 246, 0.8)',
-          borderRadius: 4,
-          order: 2
+          backgroundColor: 'rgba(124, 58, 237, 0.6)', // Purple
+          borderRadius: 4
         },
         {
           label: 'Net Income',
           data: data.map(d => d.net_income),
-          borderColor: THEME.net,
-          backgroundColor: THEME.net,
-          type: 'line',
-          tension: 0.3,
-          borderWidth: 2,
-          pointRadius: 2,
-          order: 1
+          backgroundColor: 'rgba(16, 185, 129, 0.8)', // Green
+          borderRadius: 4
         }
       ]
     },
     options: commonOptions
   });
 
-  // 2. EPS
-  const ctx2 = document.getElementById(containers.sub1).getContext('2d');
-  charts.sub1 = new Chart(ctx2, {
+  // Sub: Diluted EPS (Line Chart)
+  // KEY FIX: Mapping 'eps_diluted' correctly
+  subChartInstance = new Chart(ctxSub, {
     type: 'line',
     data: {
       labels,
       datasets: [{
-        label: 'Diluted EPS',
-        data: data.map(d => d.diluted_eps),
-        borderColor: THEME.accent,
-        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+        label: 'Diluted EPS ($)',
+        data: data.map(d => d.eps_diluted || 0), // Fallback to 0 if null
+        borderColor: '#f59e0b', // Amber
+        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+        tension: 0.3,
         fill: true,
-        tension: 0.4,
-        pointRadius: 0,
-        pointHoverRadius: 4
+        pointRadius: 3
       }]
     },
-    options: {
-      ...commonOptions,
-      scales: {
-        ...commonOptions.scales,
-        y: { ...commonOptions.scales.y, ticks: { color: THEME.text, callback: v => '$' + v } }
-      }
-    }
+    options: commonOptions
   });
 }
 
+// --- VIEW 2: MARGINS (Operating vs Net + Efficiency) ---
 export function renderMarginsView(data, containers) {
-  const labels = data.map(d => `${d.fp} ${d.fy}`);
+  const ctxMain = document.getElementById(containers.main);
+  const ctxSub = document.getElementById(containers.sub1);
+  if (!ctxMain || !ctxSub) return;
 
-  const ctx1 = document.getElementById(containers.main).getContext('2d');
-  charts.main = new Chart(ctx1, {
+  const labels = getLabels(data);
+
+  // Main: Margin % Trends
+  // KEY FIX: Multiplying by 100 to show percentage, and mapping 'net_margin' / 'operating_margin'
+  mainChartInstance = new Chart(ctxMain, {
     type: 'line',
     data: {
       labels,
       datasets: [
-        { label: 'Operating Margin', data: data.map(d => d.operating_margin * 100), borderColor: THEME.rev, tension: 0.3 },
-        { label: 'Net Margin', data: data.map(d => d.net_margin * 100), borderColor: THEME.net, tension: 0.3 }
-      ]
-    },
-    options: {
-      ...commonOptions,
-      scales: {
-        ...commonOptions.scales,
-        y: { ticks: { color: THEME.text, callback: v => v + '%' }, grid: { color: THEME.grid } }
-      }
-    }
-  });
-}
-
-export function renderCashFlowView(data, containers) {
-  const labels = data.map(d => `${d.fp} ${d.fy}`);
-
-  const ctx1 = document.getElementById(containers.main).getContext('2d');
-  charts.main = new Chart(ctx1, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { label: 'Operating Cash Flow', data: data.map(d => d.operating_cash_flow), backgroundColor: THEME.net },
-        { label: 'CapEx', data: data.map(d => -Math.abs(d.capex)), backgroundColor: THEME.loss } // Show CapEx as negative
+        {
+          label: 'Operating Margin %',
+          data: data.map(d => (d.operating_margin * 100).toFixed(1)),
+          borderColor: '#3b82f6', // Blue
+          tension: 0.2
+        },
+        {
+          label: 'Net Margin %',
+          data: data.map(d => (d.net_margin * 100).toFixed(1)),
+          borderColor: '#10b981', // Green
+          tension: 0.2
+        }
       ]
     },
     options: commonOptions
   });
 
-  const ctx2 = document.getElementById(containers.sub1).getContext('2d');
-  charts.sub1 = new Chart(ctx2, {
+  // Sub: Profit Efficiency (Net Income as % of Revenue area chart)
+  subChartInstance = new Chart(ctxSub, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Efficiency (Net Margin)',
+        data: data.map(d => (d.net_margin * 100).toFixed(1)),
+        borderColor: '#8b5cf6',
+        backgroundColor: 'rgba(139, 92, 246, 0.2)',
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      ...commonOptions,
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(255, 255, 255, 0.05)' }
+        }
+      }
+    }
+  });
+}
+
+// --- VIEW 3: CASH FLOW (OCF vs CapEx + FCF) ---
+export function renderCashFlowView(data, containers) {
+  const ctxMain = document.getElementById(containers.main);
+  const ctxSub = document.getElementById(containers.sub1);
+  if (!ctxMain || !ctxSub) return;
+
+  const labels = getLabels(data);
+
+  // Main: OCF vs CapEx
+  mainChartInstance = new Chart(ctxMain, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Operating Cash Flow',
+          data: data.map(d => d.operating_cash_flow),
+          backgroundColor: '#0ea5e9', // Sky Blue
+        },
+        {
+          label: 'CapEx',
+          data: data.map(d => d.capital_expenditures ? d.capital_expenditures * -1 : 0), // Show as negative bars
+          backgroundColor: '#f43f5e', // Rose Red
+        }
+      ]
+    },
+    options: {
+      ...commonOptions,
+      scales: {
+        x: { stacked: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { stacked: true, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+
+  // Sub: Free Cash Flow Trend
+  subChartInstance = new Chart(ctxSub, {
     type: 'bar',
     data: {
       labels,
       datasets: [{
         label: 'Free Cash Flow',
         data: data.map(d => d.free_cash_flow),
-        backgroundColor: THEME.accent,
+        backgroundColor: 'rgba(16, 185, 129, 0.8)',
         borderRadius: 4
       }]
     },
