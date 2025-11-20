@@ -4,6 +4,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import "../styles/global.css";
 import "../styles/theme.css";
+import AdminControls from "../components/AdminControls.astro";
 
 const {
   title,
@@ -47,6 +48,10 @@ const {
 
     <Header />
     <slot />
+
+    <!-- Admin Controls (Hidden/Secret) -->
+    <AdminControls />
+
     <Footer />
 
     <script>
