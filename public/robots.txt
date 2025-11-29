@@ -1,6 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://supm3n.com/sitemap.xml
-
-
+Sitemap: https://supm3n.com/sitemap-index.xml
