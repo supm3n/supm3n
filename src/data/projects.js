@@ -1,11 +1,19 @@
 // src/data/projects.js
 export const projects = [
   {
-    name: "Stocks Viewer",
-    description: "Real-time stock charts using Alpha Vantage data.",
-    url: "/stock-viewer",
-    tag: "Finance",
-    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`,
+    name: "Alpaca Manager",
+    description: "Modern herd management software for alpaca breeders to track health, breeding, and fibre records.",
+    url: "https://www.alpacakeep.com/",
+    tag: "Tool",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M9 14h6"></path><path d="M9 18h6"></path><path d="M9 10h6"></path></svg>`,
+    featured: true
+  },
+  {
+    name: "The Dolomites Guide",
+    description: "Independent hiking and travel guide to the Dolomites.",
+    url: "https://thedolomitesguide.com/en/",
+    tag: "Travel",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20l9-16 9 16H3z"></path><path d="M9 20l3-5 3 5H9z"></path></svg>`,
     featured: true
   },
   {
@@ -19,13 +27,14 @@ export const projects = [
     featured: true
   },
   {
-    name: "The Dolomites Guide",
-    description: "Independent hiking and travel guide to the Dolomites.",
-    url: "https://thedolomitesguide.com/en/",
-    tag: "Travel",
-    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20l9-16 9 16H3z"></path><path d="M9 20l3-5 3 5H9z"></path></svg>`,
+    name: "Stocks Viewer",
+    description: "Real-time stock charts using Alpha Vantage data.",
+    url: "/stock-viewer",
+    tag: "Finance",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`,
     featured: true
   },
+
   {
     name: "Snake",
     description: "Classic snake game built with Vanilla JS.",
