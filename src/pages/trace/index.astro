@@ -3,69 +3,62 @@ import MainLayout from "../../layouts/MainLayout.astro";
 import "../../styles/trace.css";
 ---
 
-<MainLayout title="Network Trace">
-    <div class="trace-scope">
-        <main id="main-content" class="trace-page-container">
-            <div class="bg-noise"></div>
+<MainLayout
+  title="IP Trace"
+  description="Your IP address, and everything else your browser tells every website."
+>
+  <main id="main-content" class="trace">
+    <section class="stage" id="stage">
+      <div class="map-wrap">
+        <canvas id="map" class="map" aria-hidden="true"></canvas>
+        <div class="stage-title">
+          <h1>IP Trace</h1>
+          <p>What every website can see about you</p>
+        </div>
+        <div id="hud" class="hud" aria-hidden="true">MERCATOR · ×1.0</div>
+      </div>
 
-            <div class="console-wrapper">
-                <div class="ip-wrapper">
-                    <div id="big-ip" class="ip-display"></div>
-                </div>
+      <section class="terminal" aria-label="Trace log">
+        <header class="term-head">
+          <span class="term-title">trace › /api/whoami</span>
+          <span id="status" class="status">idle</span>
+          <button id="skip" class="term-btn" type="button" hidden>Skip</button>
+        </header>
+        <ol id="log" class="log" aria-live="polite"></ol>
+      </section>
 
-                <div class="terminal-window" id="terminal">
-                    <div class="corner-bracket cb-tl"></div>
-                    <div class="corner-bracket cb-tr"></div>
-                    <div class="corner-bracket cb-bl"></div>
-                    <div class="corner-bracket cb-br"></div>
+      <aside class="card" id="card" aria-label="Your connection">
+        <div class="ip-head">
+          <span class="label">Your IP address</span>
+          <span id="ip-version" class="badge" hidden></span>
+        </div>
+        <div class="ip-row">
+          <code id="ip" class="ip">···.···.···.···</code>
+          <button id="copy" class="copy-btn" type="button" disabled>Copy</button>
+        </div>
 
-                    <div class="panel-log">
-                        <div class="terminal-header">
-                            <span class="console-header-title"
-                                >CYBER_TRACE // V9</span
-                            >
-                            <span id="status-text" class="console-header-status"
-                                >STANDBY</span
-                            >
-                        </div>
-                        <div id="console-out" class="terminal-body">
-                            <div class="log-line">Awaiting input...</div>
-                        </div>
-                    </div>
+        <dl class="facts">
+          <div><dt>Location</dt><dd id="f-loc">—</dd></div>
+          <div><dt>Network</dt><dd id="f-net">—</dd></div>
+          <div><dt>Edge</dt><dd id="f-edge">—</dd></div>
+          <div><dt>Connection</dt><dd id="f-conn">—</dd></div>
+          <div><dt>Time zone</dt><dd id="f-tz">—</dd></div>
+          <div><dt>Device</dt><dd id="f-device">—</dd></div>
+        </dl>
 
-                    <div class="panel-visual">
-                        <div class="scan-line"></div>
-                        <div class="target-reticle" id="reticle"></div>
+        <div id="outro" class="outro" hidden>
+          <p id="outro-text">
+            Nobody hacked you. This is what every website you open can see.
+            Nothing here was stored.
+          </p>
+          <button id="replay" class="replay-btn" type="button">Run again</button>
+        </div>
+      </aside>
+    </section>
+  </main>
 
-                        <canvas id="neural-canvas"></canvas>
-
-                        <div id="summary" class="summary-grid">
-                            <div class="stat-block">
-                                <h4>ORIGIN</h4>
-                                <p id="val-loc">--</p>
-                            </div>
-                            <div class="stat-block">
-                                <h4>NODE</h4>
-                                <p id="val-isp">--</p>
-                            </div>
-                            <div class="stat-block">
-                                <h4>PING</h4>
-                                <p id="val-lat">--</p>
-                            </div>
-                        </div>
-
-                        <button id="rerun" class="rerun-btn">REBOOT</button>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script>
-        import { TraceSystem } from "../../scripts/traceLog.js";
-
-        document.addEventListener("DOMContentLoaded", () => {
-            new TraceSystem();
-        });
-    </script>
+  <script>
+    import { initTrace } from "../../scripts/trace/trace.js";
+    initTrace();
+  </script>
 </MainLayout>

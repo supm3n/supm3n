@@ -2,6 +2,9 @@
 
 Newest first. One entry per decision: what, and why. Add new entries at the top.
 
+## 2026-10-19 · Trace uses real request data, not a lookup service
+IP Trace was a fake "hacking" sequence around an ipapi.co lookup. It now reads `request.cf` in its own Pages Function (`/api/whoami`), so no third party sees visitors, there is no rate limit, and every log line is true. The ending says so: nobody hacked you, this is what every site can see.
+
 ## 2026-10-19 · Touch gets plain content
 Hover-only effects must not hide content on touch: the Uses text scramble only runs with `(hover: hover) and (pointer: fine)`. On phones (<600px) the financial charts show the last 16 quarters, and the stock chart uses 4 short date ticks.
 
