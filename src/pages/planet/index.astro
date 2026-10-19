@@ -55,8 +55,11 @@ import "../../styles/planet.css";
           <ol id="quake-list" class="quake-list" aria-label="Strongest earthquakes"></ol>
           <p id="quake-note" class="note" hidden>The earthquake feed is unavailable right now.</p>
           <p class="legend">
-            <span class="dot-fresh" aria-hidden="true"></span> last hours
-            <span class="dot-old" aria-hidden="true"></span> up to 24h ago · size = magnitude · M2.5+ from USGS
+            <span class="sev-key"><i data-sev="minor" aria-hidden="true"></i>Minor</span>
+            <span class="sev-key"><i data-sev="light" aria-hidden="true"></i>Light 4+</span>
+            <span class="sev-key"><i data-sev="moderate" aria-hidden="true"></i>Moderate 5+</span>
+            <span class="sev-key"><i data-sev="strong" aria-hidden="true"></i>Strong 6+</span>
+            <span class="legend-note">Bigger = stronger, faded = older. M2.5+ from USGS.</span>
           </p>
         </section>
 

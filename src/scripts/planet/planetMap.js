@@ -62,7 +62,18 @@ function pointInRing(ring, lon, lat) {
   return inside;
 }
 
-export const quakeRadius = (mag, small) => Math.max(2, 2 + (mag - 2.5) * 2.2) * (small ? 0.6 : 1);
+// USGS magnitude classes (the feed starts at M2.5, so "minor" covers 2.5-3.9).
+// planet.css repeats these colours for the list and legend ([data-sev]).
+export const QUAKE_CLASSES = [
+  { min: 6, key: "strong", name: "Strong", rgb: "225, 29, 72" },
+  { min: 5, key: "moderate", name: "Moderate", rgb: "239, 68, 68" },
+  { min: 4, key: "light", name: "Light", rgb: "251, 146, 60" },
+  { min: -Infinity, key: "minor", name: "Minor", rgb: "250, 204, 21" },
+];
+export const quakeClass = (mag) => QUAKE_CLASSES.find((c) => mag >= c.min);
+
+// Each magnitude step is ~32x the energy, so size grows exponentially too
+export const quakeRadius = (mag, small) => Math.min(22, 2 * Math.pow(1.55, mag - 2.5)) * (small ? 0.7 : 1);
 
 export class PlanetMap {
   constructor(base, overlay, world) {
@@ -453,13 +464,29 @@ export class PlanetMap {
       const [x, y] = this.toScreen(q.lon, q.lat);
       const r = quakeRadius(q.mag, this.small) * easeOut(p);
       const dim = this.selected && this.selected !== q.id ? 0.45 : 1;
-      ctx.fillStyle = `rgba(239, 68, 68, ${(lerp(0.7, 0.14, age) * dim).toFixed(3)})`;
-      ctx.strokeStyle = `rgba(252, 165, 165, ${(lerp(0.95, 0.3, age) * dim).toFixed(3)})`;
+      const cls = quakeClass(q.mag);
+      ctx.fillStyle = `rgba(${cls.rgb}, ${(lerp(0.75, 0.3, age) * dim).toFixed(3)})`;
+      ctx.strokeStyle = `rgba(${cls.rgb}, ${(lerp(1, 0.55, age) * dim).toFixed(3)})`;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.arc(x, y, r, 0, TAU);
       ctx.fill();
       ctx.stroke();
+      // Strong quakes: a white outer ring, and their magnitude on larger maps
+      if (cls.key === "strong" && p >= 1) {
+        ctx.strokeStyle = `rgba(255, 255, 255, ${(0.7 * dim).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(x, y, r + 3, 0, TAU);
+        ctx.stroke();
+        if (!this.small) {
+          const text = `M${q.mag.toFixed(1)}`;
+          ctx.font = `600 10px ${this.font}`;
+          const tw = ctx.measureText(text).width;
+          // Left of the dot when there's no room on the right
+          const lx = x + r + 7 + tw > this.x1 - 4 ? x - r - 7 - tw : x + r + 7;
+          this.label(text, lx, y + 4, "rgba(253, 164, 175, 0.95)");
+        }
+      }
 
       // One ping for quakes from the last hour, once, after the intro
       if (s.ping < 1 && now - q.time < HOUR) {

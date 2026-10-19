@@ -3,7 +3,7 @@
 // fills the panels. Sun and moon are computed in the browser; quakes, orbits
 // and the visitor's approximate location come from our own /api routes.
 
-import { PlanetMap, quakeRadius } from "./planetMap.js";
+import { PlanetMap, quakeRadius, quakeClass } from "./planetMap.js";
 import {
   subsolar, sublunar, sunElevation, daylightState, nextSunEvent, moonInfo,
   makeSat, satPosition, groundTrack,
@@ -243,6 +243,7 @@ export async function initPlanet() {
     if (top) {
       const mag = document.createElement("span");
       mag.className = "hl";
+      mag.dataset.sev = quakeClass(top.mag).key;
       mag.textContent = `M${top.mag.toFixed(1)}`;
       const where = top.place ? ` ${top.place.replace(/^\d+\s?km\s+\w+\s+of\s+/i, "near ")}` : ` at ${fmtPos(top)}`;
       summary.replaceChildren("Strongest: ", mag, `${where}, ${fmtAgo(top.time, now)}`);
@@ -258,7 +259,10 @@ export async function initPlanet() {
       btn.dataset.id = q.id;
       btn.setAttribute("aria-pressed", String(map.selected === q.id));
       const mag = document.createElement("span");
+      const cls = quakeClass(q.mag);
       mag.className = "mag";
+      mag.dataset.sev = cls.key;
+      mag.title = cls.name;
       mag.textContent = `M${q.mag.toFixed(1)}`;
       const place = document.createElement("span");
       place.className = "place";
@@ -290,7 +294,9 @@ export async function initPlanet() {
 
   function showTip(q) {
     const [x, y] = map.toScreen(q.lon, q.lat);
-    tip.querySelector(".tip-mag").textContent = `M${q.mag.toFixed(1)}`;
+    const tipMag = tip.querySelector(".tip-mag");
+    tipMag.dataset.sev = quakeClass(q.mag).key;
+    tipMag.textContent = `M${q.mag.toFixed(1)} · ${quakeClass(q.mag).name}`;
     tip.querySelector(".tip-place").textContent = q.place || fmtPos(q);
     tip.querySelector(".tip-meta").textContent =
       `${q.depth != null ? `${q.depth} km deep · ` : ""}${fmtAgo(q.time, Date.now())}`;

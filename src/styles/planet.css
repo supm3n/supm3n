@@ -87,7 +87,7 @@
 .planet .hud-summary .hl {
     font-family: var(--font-mono);
     font-weight: 700;
-    color: #fca5a5;
+    color: rgb(var(--sev));
 }
 
 .planet .map-note {
@@ -131,7 +131,7 @@
 .planet .tip-mag {
     font-family: var(--font-mono);
     font-weight: 700;
-    color: #fca5a5;
+    color: rgb(var(--sev, 252, 165, 165));
     flex-shrink: 0;
 }
 
@@ -306,10 +306,29 @@
     outline-offset: 1px;
 }
 
+/* Magnitude as a pill in its class colour */
 .planet .mag {
+    justify-self: start;
+    padding: 2px 6px;
+    border: 1px solid rgba(var(--sev), 0.55);
+    border-radius: 6px;
+    background: rgba(var(--sev), 0.14);
     font-family: var(--font-mono);
+    font-size: 0.78rem;
     font-weight: 700;
-    color: #fca5a5;
+    color: rgb(var(--sev));
+}
+
+/* Crimson text is too dark on the panels; strong uses a lighter rose */
+.planet .hl[data-sev="strong"],
+.planet .tip-mag[data-sev="strong"] {
+    color: #fda4af;
+}
+
+.planet .mag[data-sev="strong"] {
+    background: rgba(var(--sev), 0.3);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
 }
 
 .planet .place {
@@ -327,14 +346,15 @@
 }
 
 .planet .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 12px;
     margin: 10px 0 0;
     font-size: 0.7rem;
     line-height: 1.6;
     color: var(--pl-muted);
 }
 
-.planet .dot-fresh,
-.planet .dot-old,
 .planet .sun-dot,
 .planet .sat-dot {
     display: inline-block;
@@ -344,15 +364,44 @@
     vertical-align: 0;
 }
 
-.planet .dot-fresh {
-    background: rgba(239, 68, 68, 0.75);
-    border: 1px solid #fca5a5;
+/* Magnitude classes; the same colours as QUAKE_CLASSES in planetMap.js */
+.planet [data-sev] {
+    --sev: 250, 204, 21;
 }
 
-.planet .dot-old {
-    margin-left: 8px;
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(252, 165, 165, 0.35);
+.planet [data-sev="light"] {
+    --sev: 251, 146, 60;
+}
+
+.planet [data-sev="moderate"] {
+    --sev: 239, 68, 68;
+}
+
+.planet [data-sev="strong"] {
+    --sev: 225, 29, 72;
+}
+
+.planet .sev-key {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.planet .sev-key i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgba(var(--sev), 0.75);
+    border: 1px solid rgb(var(--sev));
+}
+
+.planet .sev-key i[data-sev="strong"] {
+    box-shadow: 0 0 0 2px var(--pl-bg), 0 0 0 3px rgba(255, 255, 255, 0.7);
+}
+
+.planet .legend-note {
+    flex-basis: 100%;
 }
 
 /* Sky */
