@@ -22,7 +22,7 @@ Personal hobby site: Astro 5 (static) + Cloudflare Pages Functions. Each mini-ap
 - Notable decision → one short entry at the top of `docs/decisions.md`.
 
 ## Don't read
-`docs/reference/` (multi-MB dumps), `*.sql`, `*.csv`, `public/data/world.json`, `src/data/cf-colos.json`, `dist/`, `.wrangler/`, `package-lock.json`.
+`docs/reference/` (multi-MB dumps), `*.sql`, `*.csv`, `public/data/world.json`, `public/data/stars.json`, `src/data/cf-colos.json`, `src/scripts/sky/dev-stub.js`, `src/scripts/planet/stub.js`, `dist/`, `.wrangler/`, `package-lock.json`.
 
 ## Gotchas
 - After editing scoped CSS, the dev browser can keep stale styles from HMR. Reload the page, or restart dev if that doesn't help.

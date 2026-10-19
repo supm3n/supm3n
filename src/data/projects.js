@@ -1,6 +1,30 @@
 // src/data/projects.js
 export const projects = [
   {
+    name: "Planet Now",
+    description: "Day and night, the last 24 hours of earthquakes and the ISS, live on a dotted world map.",
+    url: "/planet",
+    tag: "Live",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="6"></circle><ellipse cx="12" cy="12" rx="11" ry="4" transform="rotate(-20 12 12)"></ellipse></svg>`,
+    featured: true
+  },
+  {
+    name: "Above You",
+    description: "Your sky right now: stars, planets, the Moon and satellites passing overhead.",
+    url: "/sky",
+    tag: "Live",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`,
+    featured: true
+  },
+  {
+    name: "Fingerprint",
+    description: "How websites recognise your browser without cookies, turned into a sigil that is yours.",
+    url: "/fingerprint",
+    tag: "Privacy",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11a7 7 0 0 1 14 0v2"></path><path d="M8 9.5a4 4 0 0 1 8 0V14a4 4 0 0 1-1 2.6"></path><path d="M12 11v4"></path><path d="M8 13v1a4 4 0 0 0 1 2.6"></path><path d="M5 15a7 7 0 0 0 2 4.5"></path></svg>`,
+    featured: true
+  },
+  {
     name: "Settle Up",
     description: "A tool to split expenses (Ephemeral). No data is saved.",
     url: "/settleup",

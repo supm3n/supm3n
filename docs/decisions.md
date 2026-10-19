@@ -2,6 +2,12 @@
 
 Newest first. One entry per decision: what, and why. Add new entries at the top.
 
+## 2026-10-20 · Live apps share a header and a "More like this" row
+Trace, Fingerprint, Above You and Planet Now use `AppHeader.astro` (label, headline, one line of context) and end with `RelatedApps.astro`. Each page swaps the headline for its one live fact once data arrives, so the first thing read is the answer, not the app name.
+
+## 2026-10-20 · Live data apps fetch through our own Functions
+Planet Now and Above You need CelesTrak orbits and USGS earthquakes. Both are fetched by Pages Functions and edge-cached (4h / 5min), so visitors' browsers never contact them and we stay within CelesTrak's fetch limits. Astronomy is computed client-side with astronomy-engine and satellite.js (bundled, no CDN).
+
 ## 2026-10-19 · Trace uses real request data, not a lookup service
 IP Trace was a fake "hacking" sequence around an ipapi.co lookup. It now reads `request.cf` in its own Pages Function (`/api/whoami`), so no third party sees visitors, there is no rate limit, and every log line is true. The ending says so: nobody hacked you, this is what every site can see.
 
