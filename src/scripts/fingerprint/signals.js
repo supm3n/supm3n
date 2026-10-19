@@ -296,7 +296,9 @@ function cpuSignal() {
 function memorySignal() {
   const gb = navigator.deviceMemory;
   if (!gb) return { display: "not reported", raw: "none", gb: 0 };
-  return { display: `${gb} GB (rounded to a coarse step)`, raw: String(gb), gb };
+  // Browsers round down to a power of two and cap the value, so big machines
+  // read the same (64 GB shows as the cap)
+  return { display: `${gb} GB${gb >= 8 ? " or more" : ""}, as your browser reports it`, raw: String(gb), gb };
 }
 
 function touchSignal() {
@@ -428,7 +430,7 @@ export const SIGNALS = [
   { id: "cpu", label: "CPU threads", bits: 2, run: cpuSignal,
     why: "How many tasks your processor runs at once. One dot per thread in the sigil." },
   { id: "memory", label: "Memory", bits: 1.5, run: memorySignal,
-    why: "Device memory in rough steps. Coarse on purpose, but still a sorting key." },
+    why: "Browsers round your RAM down and cap it on purpose, so it can read lower than you have. Still a rough sorting key." },
   { id: "touch", label: "Touch points", bits: 1, run: touchSignal,
     why: "How many fingers the screen can track. Separates phones, tablets and laptops." },
   { id: "media", label: "Display preferences", bits: 2, run: mediaSignal,
