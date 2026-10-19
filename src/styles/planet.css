@@ -425,112 +425,42 @@
     fill: #e2e8f0;
 }
 
-/* --- Desktop: full-bleed map, panels floating along the bottom --- */
+/* --- Desktop: map on the left, panels in a sidebar; nothing covers the map --- */
 @media (min-width: 960px) {
-    #main-content.planet {
-        --pl-panels-h: clamp(196px, 26vh, 236px);
-    }
-
     .planet .stage {
-        position: relative;
-        display: block;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) clamp(300px, 24vw, 400px);
+        gap: 20px;
         height: calc(100dvh - var(--header-height));
-        min-height: 640px;
-        padding: 0;
-        overflow: hidden;
+        min-height: 600px;
+        padding: 20px 24px 24px;
     }
 
+    /* Title in flow at the top; planet.js fits the map into the space below */
     .planet .map-wrap {
-        position: absolute;
-        inset: 0;
-        height: auto;
+        min-height: 0;
+        padding-bottom: 0;
         margin: 0;
     }
 
-    /* Dots fade out behind the panel row instead of colliding with it */
-    .planet .map-wrap::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height: calc(var(--pl-panels-h) + 110px);
-        background: linear-gradient(to top, rgba(5, 6, 8, 0.94) 0, rgba(5, 6, 8, 0.86) calc(var(--pl-panels-h) - 20px), rgba(5, 6, 8, 0));
-        pointer-events: none;
-    }
-
-    /* Title block sits on the left column, just above the You panel, over the
-       south-east Pacific (open ocean in this projection) */
-    .planet .map-wrap {
-        padding: 0;
-    }
-
     .planet .stage-title {
-        position: absolute;
-        left: 32px;
-        bottom: calc(28px + var(--pl-panels-h) + 12px);
-        z-index: 1;
-        width: calc((100% - 64px - 32px) / 3.25);
-        padding: 14px 18px 12px;
-        background: rgba(10, 12, 16, 0.62);
-        border: 1px solid var(--pl-line);
-        border-radius: 14px;
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
+        padding: 4px 8px 0;
     }
 
-    .planet .planet-head .app-head-title {
-        font-size: clamp(1.1rem, 1.6vw, 1.4rem);
-    }
-
+    /* Short windows: the column scrolls rather than spilling out */
     .planet .panels {
-        position: absolute;
-        left: 32px;
-        right: 32px;
-        bottom: 28px;
-        /* One row, same height; planet.js fits the map to the row's top */
-        height: var(--pl-panels-h);
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr);
-        align-items: stretch;
-        gap: 16px;
-        pointer-events: none;
+        min-height: 0;
+        overflow-y: auto;
     }
 
     .planet .panel {
-        min-height: 0;
+        flex-shrink: 0;
+    }
+
+    /* The quake list takes the leftover height and scrolls */
+    .planet .panel.quakes {
+        flex: 1 1 auto;
+        min-height: 160px;
         overflow-y: auto;
-        pointer-events: auto;
-    }
-
-    .planet .sky-list > div {
-        padding: 6px 0;
-    }
-}
-
-/* Narrow desktops: the map is smaller, so keep the title block small enough
-   to stay over open ocean (the strongest quake is in the panel anyway) */
-@media (min-width: 960px) and (max-width: 1199px) {
-    .planet .stage-title {
-        max-width: 250px;
-    }
-
-    .planet .stage-title .hud-summary,
-    .planet .hud-date {
-        display: none;
-    }
-}
-
-@media (min-width: 1400px) {
-    .planet .stage-title {
-        left: calc(50% - 660px);
-        width: calc((1320px - 32px) / 3.25);
-    }
-
-    .planet .panels {
-        left: 50%;
-        right: auto;
-        width: 1320px;
-        transform: translateX(-50%);
     }
 }

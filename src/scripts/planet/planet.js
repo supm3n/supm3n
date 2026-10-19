@@ -99,33 +99,29 @@ export async function initPlanet() {
   // --- Layout ---
   function layout() {
     const c = wrap.getBoundingClientRect();
-    lastSize = `${Math.round(c.width)}x${Math.round(c.height)}`;
-    if (window.innerWidth >= 960) {
-      // As wide as possible: 76°N sits at the top and 40°S at the top of the
-      // panel row (fixed height in planet.css, so this doesn't jump); the
-      // mostly empty southern ocean runs on under the panels.
-      const panelsTop = $("panels").getBoundingClientRect().top - c.top;
-      map.resize({ x: 0, y: 8, w: c.width, h: Math.max(200, panelsTop - 8) }, 76, -40);
-    } else {
-      // Below the title block
-      const top = document.querySelector(".planet .stage-title").getBoundingClientRect().bottom - c.top + 4;
-      map.resize({ x: 0, y: top, w: c.width, h: c.height - top });
-    }
+    lastSize = sizeKey();
+    // Below the title block, never under it or under the panels
+    const top = title.getBoundingClientRect().bottom - c.top + 4;
+    map.resize({ x: 0, y: top, w: c.width, h: c.height - top });
     if (selectedQuake()) showTip(selectedQuake());
     else hideTip();
   }
   // Re-fit on window resizes and when the title block changes height (the
-  // live headline can wrap to more lines on phones)
+  // live headline can wrap to more lines)
+  const title = document.querySelector(".planet .stage-title");
+  const sizeKey = () => {
+    const r = wrap.getBoundingClientRect();
+    return `${Math.round(r.width)}x${Math.round(r.height)}x${Math.round(title.offsetHeight)}`;
+  };
   let resizeTimer;
   let lastSize = "";
-  new ResizeObserver(() => {
-    const r = wrap.getBoundingClientRect();
-    const size = `${Math.round(r.width)}x${Math.round(r.height)}`;
-    if (size === lastSize) return;
-    lastSize = size;
+  const observer = new ResizeObserver(() => {
+    if (sizeKey() === lastSize) return;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(layout, 150);
-  }).observe(wrap);
+  });
+  observer.observe(wrap);
+  observer.observe(title);
 
   // --- Sun, moon, clock ---
   function updateSky(now) {
@@ -253,7 +249,8 @@ export async function initPlanet() {
     } else {
       summary.textContent = "No M2.5+ quakes in the last 24 hours.";
     }
-    for (const q of strongest.slice(0, 5)) {
+    // The desktop sidebar has room for more (the panel scrolls if needed)
+    for (const q of strongest.slice(0, window.innerWidth >= 960 ? 12 : 5)) {
       const li = document.createElement("li");
       const btn = document.createElement("button");
       btn.type = "button";
@@ -308,11 +305,6 @@ export async function initPlanet() {
     left = Math.max(8, Math.min(wrap.clientWidth - w - 8, left));
     let top = y - r - h;
     if (top < 8) top = y + r;
-    // Desktop: a quake under the panel row gets its tooltip just above the row
-    if (window.innerWidth >= 960) {
-      const panelsTop = $("panels").getBoundingClientRect().top - wrap.getBoundingClientRect().top;
-      top = Math.min(top, panelsTop - h - 8);
-    }
     tip.style.transform = `translate(${Math.round(left)}px, ${Math.round(top)}px)`;
   }
 
