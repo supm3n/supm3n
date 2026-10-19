@@ -308,3 +308,19 @@ kbd {
     font-size: 1rem;
   }
 }
+
+/* Touch devices get no keyboard hints, so the start overlay explains swiping.
+   The overlay lets touches through so a swipe on it reaches the canvas. */
+#game-start {
+  pointer-events: none;
+}
+
+.touch-hint {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .touch-hint {
+    display: block;
+  }
+}

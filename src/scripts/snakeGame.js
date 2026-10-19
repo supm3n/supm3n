@@ -54,12 +54,25 @@ export class SnakeGame {
   setupEventListeners() {
     document.addEventListener('keydown', (e) => this.handleKeyPress(e));
     this.canvas.addEventListener('click', (e) => this.handleInputAt(e.clientX, e.clientY));
+    // Touch: a swipe steers (and starts the game); a short tap steers toward the tap
+    let touchStart = null;
     this.canvas.addEventListener('touchstart', (e) => {
       e.preventDefault();
       if (e.touches.length > 0) {
-        this.handleInputAt(e.touches[0].clientX, e.touches[0].clientY);
+        touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
       }
     }, { passive: false });
+    this.canvas.addEventListener('touchend', (e) => {
+      if (!touchStart || e.changedTouches.length === 0) return;
+      const deltaX = e.changedTouches[0].clientX - touchStart.x;
+      const deltaY = e.changedTouches[0].clientY - touchStart.y;
+      if (Math.max(Math.abs(deltaX), Math.abs(deltaY)) >= 24) {
+        this.handleSwipe(deltaX, deltaY);
+      } else {
+        this.handleInputAt(touchStart.x, touchStart.y);
+      }
+      touchStart = null;
+    });
 
     document.getElementById('start-btn')?.addEventListener('click', () => this.start());
     document.getElementById('pause-btn')?.addEventListener('click', () => this.togglePause());
@@ -138,9 +151,17 @@ export class SnakeGame {
     const head = this.snake[0];
     const headX = head.x * this.gridSize + this.gridSize / 2;
     const headY = head.y * this.gridSize + this.gridSize / 2;
-    const deltaX = x - headX;
-    const deltaY = y - headY;
+    this.steer(x - headX, y - headY);
+  }
 
+  handleSwipe(deltaX, deltaY) {
+    if (this.gamePaused) return;
+    if (this.isGameOver) this.reset();
+    if (!this.gameRunning) this.start();
+    this.steer(deltaX, deltaY);
+  }
+
+  steer(deltaX, deltaY) {
     let newDx = this.dx;
     let newDy = this.dy;
 
