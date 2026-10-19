@@ -6,6 +6,7 @@ import { projects } from "../data/projects.js";
 
 // Filter only featured projects
 const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
+const moreProjects = projects.filter((p) => !featuredProjects.includes(p));
 ---
 
 <MainLayout title="Home">
@@ -51,6 +52,28 @@ const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
                         ))
                     }
                 </div>
+
+                <a href="/projects" class="all-projects">
+                    <span class="all-text">
+                        <span class="all-label">All projects</span>
+                        <span class="all-title">{projects.length} projects, from live maps to a snake game</span>
+                        <span class="all-chips">
+                            {
+                                moreProjects.map((p) => (
+                                    <span class="all-chip">
+                                        <span class="all-chip-icon" set:html={p.icon} />
+                                        {p.name}
+                                    </span>
+                                ))
+                            }
+                        </span>
+                    </span>
+                    <span class="all-arrow" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M13 6l6 6-6 6"></path>
+                        </svg>
+                    </span>
+                </a>
             </div>
         </section>
     </main>
@@ -231,5 +254,122 @@ const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
+    }
+
+    /* Full-width link to /projects under the featured cards */
+    .all-projects {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-top: 2rem;
+        padding: 1.5rem 1.75rem;
+        border-radius: 16px;
+        background: var(--color-surface-2);
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        text-decoration: none;
+        transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .all-projects:hover,
+    .all-projects:focus-visible {
+        border-color: var(--color-accent-start);
+        transform: translateY(-3px);
+    }
+
+    .all-text {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .all-label {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--color-accent-start);
+    }
+
+    .all-title {
+        font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+        font-weight: 700;
+        color: var(--color-heading);
+    }
+
+    .all-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .all-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
+        border: 1px solid var(--glass-border);
+        font-size: 0.8rem;
+        color: var(--color-text-muted);
+    }
+
+    .all-chip-icon {
+        display: inline-flex;
+        width: 14px;
+        height: 14px;
+        color: var(--color-accent-start);
+    }
+
+    .all-chip-icon :global(svg) {
+        width: 100%;
+        height: 100%;
+    }
+
+    .all-arrow {
+        flex-shrink: 0;
+        display: grid;
+        place-items: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 1px solid var(--glass-border);
+        color: var(--color-text-primary);
+        transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .all-projects:hover .all-arrow,
+    .all-projects:focus-visible .all-arrow {
+        background: var(--color-accent-start);
+        border-color: var(--color-accent-start);
+        color: #fff;
+    }
+
+    @media (max-width: 600px) {
+        .all-projects {
+            align-items: flex-end;
+            padding: 1.25rem;
+            gap: 1rem;
+        }
+
+        .all-arrow {
+            width: 40px;
+            height: 40px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .all-projects,
+        .all-arrow {
+            transition: none;
+        }
+
+        .all-projects:hover,
+        .all-projects:focus-visible {
+            transform: none;
+        }
     }
 </style>
