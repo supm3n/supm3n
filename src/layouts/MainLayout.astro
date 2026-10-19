@@ -22,6 +22,7 @@ const {
         margin: 0;
         padding: 0;
         overflow-x: hidden; /* Prevents width jump from scrollbar appearing late */
+        overflow-x: clip; /* same, but keeps position: sticky working */
         background-color: #0b0c10; /* Match your theme bg to prevent white flash */
       }
       *,

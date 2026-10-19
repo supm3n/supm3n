@@ -2,6 +2,9 @@
 
 Newest first. One entry per decision: what, and why. Add new entries at the top.
 
+## 2026-10-20 · `overflow-x: clip` on html and body
+`hidden` on body made it a scroll container, which silently broke every `position: sticky` (the Fingerprint sigil). `clip` stops sideways scrolling without that; `hidden` stays as the fallback line for old browsers.
+
 ## 2026-10-20 · Live apps share a header and a "More like this" row
 Trace, Fingerprint, Above You and Planet Now use `AppHeader.astro` (label, headline, one line of context) and end with `RelatedApps.astro`. Each page swaps the headline for its one live fact once data arrives, so the first thing read is the answer, not the app name.
 

@@ -28,6 +28,8 @@ body {
 
 	min-height: 100vh;
 	overflow-x: hidden;
+	/* clip, unlike hidden, doesn't make body a scroll container, which breaks position: sticky */
+	overflow-x: clip;
 	display: flex;
 	flex-direction: column;
 }
