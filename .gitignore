@@ -26,3 +26,6 @@ pnpm-debug.log*
 .wrangler/
 db_dump.txt
 debug_*.sql
+
+# local Pages Functions secrets
+.dev.vars

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const REFERENCE_FILE = path.join(__dirname, '../docs/Financial Data stockanalysis.com.txt');
+const REFERENCE_FILE = path.join(__dirname, '../docs/reference/stockanalysis-financials.txt');
 const DB_DUMP_FILE = path.join(__dirname, '../debug_latest.sql');
 
 const COMPANY_MAP = {
