@@ -67,7 +67,7 @@ export function initFingerprint() {
     btn.append(top, value, why);
     li.append(btn);
     list.append(li);
-    rows[s.id] = { btn, value, tag, sw };
+    rows[s.id] = { btn, value, tag, sw, scale };
 
     btn.addEventListener("pointerenter", () => setHover(s.id));
     btn.addEventListener("pointerleave", () => setHover(null));
@@ -77,8 +77,24 @@ export function initFingerprint() {
   }
 
   // ---------- Highlight ----------
+  // The panel under the sigil shows the hovered or pinned detail, so it can be
+  // read without scrolling to its row in the list
+  const pick = $("fp-pick");
+  function showPick(id) {
+    pick.querySelector(".pick-empty").hidden = !!id;
+    pick.querySelector(".pick-body").hidden = !id;
+    if (!id) return;
+    const s = SIGNALS.find((x) => x.id === id);
+    const r = rows[id];
+    pick.querySelector(".pick-label").textContent = s.label;
+    pick.querySelector(".pick-scale").textContent = [r.scale, r.tag.textContent].filter(Boolean).join(" · ");
+    pick.querySelector(".pick-value").textContent = results[id]?.display ?? "reading…";
+    pick.querySelector(".pick-why").textContent = s.why;
+  }
+
   function paint() {
     const active = hovered || pinned;
+    showPick(rows[active] ? active : null);
     svg.classList.toggle("focusing", !!active);
     svg.querySelectorAll(".part").forEach((p) => p.classList.toggle("on", p.dataset.part === active));
     for (const [id, r] of Object.entries(rows)) {
@@ -104,7 +120,9 @@ export function initFingerprint() {
     const id = e.target.closest?.("[data-hit]")?.dataset.hit;
     if (!id) return setPinned(null);
     setPinned(pinned === id ? null : id);
-    if (pinned) {
+    // Desktop: the sigil stays in view, so also bring the row into view.
+    // Phones show the detail under the sigil instead of scrolling away.
+    if (pinned && window.innerWidth >= 960) {
       rows[id].btn.scrollIntoView({ block: "nearest", behavior: reduceMotion ? "auto" : "smooth" });
     }
   });

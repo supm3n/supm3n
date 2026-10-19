@@ -126,6 +126,61 @@
     color: var(--fp-muted);
 }
 
+/* Hovered or pinned detail, read in place under the sigil */
+.fp-pick {
+    min-height: 6.6rem;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--fp-line);
+    border-radius: 10px;
+    text-align: left;
+}
+
+.fp-pick p {
+    margin: 0;
+}
+
+.pick-empty {
+    font-size: 0.8rem;
+    color: var(--fp-muted);
+}
+
+.pick-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.pick-scale {
+    color: var(--fp-muted);
+    letter-spacing: 0.04em;
+    text-transform: none;
+    white-space: nowrap;
+}
+
+.fp-pick .pick-value {
+    margin-top: 4px;
+    font-size: 0.92rem;
+    line-height: 1.4;
+    color: #fff;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.fp-pick .pick-why {
+    margin-top: 2px;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--fp-muted);
+}
+
 .id-block {
     margin-top: 14px;
     padding-top: 14px;
@@ -502,7 +557,7 @@
 
     /* keep the sticky panel inside short viewports */
     .sigil-wrap {
-        max-width: min(520px, calc(100dvh - var(--header-height) - 250px));
+        max-width: min(520px, calc(100dvh - var(--header-height) - 380px));
         min-width: 300px;
     }
 

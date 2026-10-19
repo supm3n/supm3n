@@ -31,6 +31,15 @@ import "../../styles/fingerprint.css";
 
         <p id="fp-status" class="fp-status" aria-live="polite">Starting…</p>
 
+        <div id="fp-pick" class="fp-pick">
+          <p class="pick-empty">Tap a ring or a detail to see what it is.</p>
+          <div class="pick-body" hidden>
+            <div class="pick-top"><span class="pick-label"></span><span class="pick-scale"></span></div>
+            <p class="pick-value"></p>
+            <p class="pick-why"></p>
+          </div>
+        </div>
+
         <div class="id-block">
           <span class="label">Fingerprint ID</span>
           <div class="id-row">
