@@ -364,6 +364,24 @@ canvas#neural-canvas {
     font-weight: bold;
 }
 
+/* Phones: span the panel in three equal columns so values can't run off it */
+@media (max-width: 767px) {
+    .summary-grid {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        text-align: left;
+    }
+
+    .stat-block p {
+        font-size: 0.8rem;
+        overflow-wrap: anywhere;
+    }
+}
+
 /* RERUN BTN */
 .rerun-btn {
     position: absolute;

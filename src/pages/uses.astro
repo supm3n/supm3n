@@ -454,9 +454,13 @@ import MainLayout from "../layouts/MainLayout.astro";
     }
   }
 
-  // Initialize Decryptors
+  // Initialize Decryptors. Scrambling only makes sense with a mouse to hover:
+  // on touch (or reduced motion) the real text stays visible.
+  const canHover =
+    matchMedia("(hover: hover) and (pointer: fine)").matches &&
+    !matchMedia("(prefers-reduced-motion: reduce)").matches;
   const encryptedElements = [];
-  document.querySelectorAll(".encrypted-text").forEach((el) => {
+  if (canHover) document.querySelectorAll(".encrypted-text").forEach((el) => {
     // @ts-ignore
     encryptedElements.push({
       controller: new EncryptedText(el),

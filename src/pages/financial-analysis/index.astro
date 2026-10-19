@@ -258,11 +258,14 @@ const COMPANIES = [
         document.getElementById("title-sub1").textContent =
             titles[currentView][1];
 
-        if (currentView === "growth") renderGrowthView(currentData, containers);
+        // Phones: ~65 quarters are unreadable, so chart the last 4 years
+        const chartData =
+            window.innerWidth < 600 ? currentData.slice(-16) : currentData;
+        if (currentView === "growth") renderGrowthView(chartData, containers);
         else if (currentView === "margins")
-            renderMarginsView(currentData, containers);
+            renderMarginsView(chartData, containers);
         else if (currentView === "cashflow")
-            renderCashFlowView(currentData, containers);
+            renderCashFlowView(chartData, containers);
     }
 
     chipButtons.forEach((btn) =>

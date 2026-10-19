@@ -355,7 +355,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
   .range-btn.active {
     background: rgba(220, 38, 38, 0.2);
     border-color: var(--stocks-accent);
-    color: #fff;
+    color: var(--color-heading);
   }
 
   /* Empty State */
@@ -636,6 +636,21 @@ import MainLayout from "../../layouts/MainLayout.astro";
     const gradientEnd = isUp ? "rgba(16, 185, 129, 0)" : "rgba(239, 68, 68, 0)";
 
     const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+
+    // Site mono stack (with fallbacks); a bare "JetBrains Mono" fell back to serif
+    const monoFont =
+      getComputedStyle(document.documentElement)
+        .getPropertyValue("--font-mono")
+        .trim() || "monospace";
+    // Short x labels: "Mar 4" for short ranges, "Mar 2024" for long ones
+    const spanDays =
+      (new Date(labels[labels.length - 1]).getTime() -
+        new Date(labels[0]).getTime()) /
+      86400000;
+    const tickFormat =
+      spanDays > 400
+        ? { month: "short", year: "numeric" }
+        : { month: "short", day: "numeric" };
     gradient.addColorStop(0, gradientStart);
     gradient.addColorStop(1, gradientEnd);
 
@@ -678,9 +693,9 @@ import MainLayout from "../../layouts/MainLayout.astro";
             displayColors: false, // <--- FIX: REMOVES THE BLUE BOX
             backgroundColor: "rgba(11, 12, 16, 0.95)",
             titleColor: "#94a3b8",
-            titleFont: { family: "JetBrains Mono", size: 12 },
+            titleFont: { family: monoFont, size: 12 },
             bodyColor: "#e2e8f0",
-            bodyFont: { family: "JetBrains Mono", size: 14, weight: "bold" },
+            bodyFont: { family: monoFont, size: 14, weight: "bold" },
             borderColor: "rgba(255, 255, 255, 0.1)",
             borderWidth: 1,
             padding: 12,
@@ -711,11 +726,17 @@ import MainLayout from "../../layouts/MainLayout.astro";
         scales: {
           x: {
             ticks: {
-              maxTicksLimit: 6,
+              maxTicksLimit: window.innerWidth < 600 ? 4 : 6,
               color: "#64748b",
-              font: { family: "JetBrains Mono", size: 11 },
+              font: { family: monoFont, size: 11 },
               maxRotation: 0, // Keep dates horizontal
               autoSkip: true,
+              callback: function (value) {
+                // @ts-ignore
+                const d = new Date(this.getLabelForValue(value));
+                // @ts-ignore
+                return d.toLocaleDateString(undefined, tickFormat);
+              },
             },
             grid: { display: false },
           },
@@ -723,7 +744,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
             position: "right",
             ticks: {
               color: "#64748b",
-              font: { family: "JetBrains Mono", size: 11 },
+              font: { family: monoFont, size: 11 },
               callback: function (value) {
                 // Format Y-Axis numbers too
                 return "$" + Number(value).toLocaleString();

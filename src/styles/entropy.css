@@ -166,3 +166,39 @@ body {
     text-shadow: 0 1px 2px #000;
     pointer-events: none;
 }
+/* Full-screen toy: hide the site footer (same as Snake) */
+body footer.site-footer {
+    display: none !important;
+}
+
+#entropy-canvas {
+    touch-action: none;
+}
+
+/* Phones: one scrollable row instead of a wrapped block that eats the canvas */
+@media (max-width: 600px) {
+    .entropy-ui {
+        bottom: calc(1rem + env(safe-area-inset-bottom));
+        gap: 0.5rem;
+    }
+
+    .toolbar {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        max-width: 100%;
+        padding: 0.5rem;
+        scrollbar-width: none;
+    }
+
+    .toolbar > * {
+        flex-shrink: 0;
+    }
+
+    .tool-btn {
+        flex: 0 0 auto;
+        width: 52px;
+        height: 52px;
+        font-size: 0.6rem;
+    }
+}

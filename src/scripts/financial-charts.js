@@ -41,6 +41,23 @@ const commonOptions = {
   }
 };
 
+// Dollar axes in billions: 45000000000 -> "$45B", -5e9 -> "-$5B"
+const formatBillions = (v) =>
+  `${v < 0 ? '-' : ''}$${(Math.abs(v) / 1e9).toLocaleString(undefined, { maximumFractionDigits: 1 })}B`;
+
+// commonOptions with a $B y-axis; `stacked` keeps the shared tick/grid styling
+const moneyOptions = (stacked = false) => ({
+  ...commonOptions,
+  scales: {
+    x: { ...commonOptions.scales.x, stacked },
+    y: {
+      ...commonOptions.scales.y,
+      stacked,
+      ticks: { ...commonOptions.scales.y.ticks, callback: formatBillions }
+    }
+  }
+});
+
 export function destroyCharts() {
   if (mainChartInstance) {
     mainChartInstance.destroy();
@@ -80,7 +97,7 @@ export function renderGrowthView(data, containers) {
         }
       ]
     },
-    options: commonOptions
+    options: moneyOptions()
   });
 
   // Sub: Diluted EPS (Line Chart)
@@ -187,13 +204,7 @@ export function renderCashFlowView(data, containers) {
         }
       ]
     },
-    options: {
-      ...commonOptions,
-      scales: {
-        x: { stacked: true, grid: { color: 'rgba(255,255,255,0.05)' } },
-        y: { stacked: true, grid: { color: 'rgba(255,255,255,0.05)' } }
-      }
-    }
+    options: moneyOptions(true)
   });
 
   // Sub: Free Cash Flow Trend
@@ -208,6 +219,6 @@ export function renderCashFlowView(data, containers) {
         borderRadius: 4
       }]
     },
-    options: commonOptions
+    options: moneyOptions()
   });
 }
