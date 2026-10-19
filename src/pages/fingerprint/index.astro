@@ -1,0 +1,92 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import AppHeader from "../../components/AppHeader.astro";
+import RelatedApps from "../../components/RelatedApps.astro";
+import "../../styles/fingerprint.css";
+---
+
+<MainLayout
+  title="Fingerprint"
+  description="Your browser's fingerprint, read entirely in your browser and drawn as a sigil."
+>
+  <main id="main-content" class="fp">
+    <AppHeader
+      class="fp-head"
+      eyebrow="Fingerprint"
+      headline="Your browser, recognised without a single cookie."
+      sub="This page reads the small details your browser gives away and draws them as a sigil. Nothing is sent anywhere."
+    />
+
+    <div class="fp-grid">
+      <section class="panel sigil-panel" aria-label="Your sigil">
+        <div class="sigil-wrap">
+          <svg
+            id="sigil"
+            class="sigil"
+            viewBox="0 0 400 400"
+            role="img"
+            aria-label="A generated emblem made from your browser's fingerprint"
+          ></svg>
+        </div>
+
+        <p id="fp-status" class="fp-status" aria-live="polite">Starting…</p>
+
+        <div class="id-block">
+          <span class="label">Fingerprint ID</span>
+          <div class="id-row">
+            <code id="fp-id" class="fp-id empty">····.····.····.····</code>
+            <button id="copy-id" class="copy-btn" type="button" aria-label="Copy fingerprint ID" disabled>Copy</button>
+          </div>
+        </div>
+
+        <p id="fp-noise" class="fp-noise" hidden></p>
+
+        <div class="actions">
+          <button id="dl-svg" class="btn primary" type="button" disabled>Download SVG</button>
+          <button id="dl-png" class="btn" type="button" disabled>Download PNG</button>
+        </div>
+      </section>
+
+      <div class="fp-side">
+        <section class="panel signals-panel" aria-labelledby="signals-title">
+          <header class="signals-head">
+            <h2 id="signals-title" class="label">What your browser gives away</h2>
+            <span class="hint">Tap a detail to find its ring</span>
+          </header>
+          <ol id="signals" class="signals"></ol>
+        </section>
+
+        <section class="panel blend" aria-labelledby="blend-title">
+          <h2 id="blend-title" class="label">How to blend in</h2>
+          <p class="blend-lede">Clearing cookies won't help here: none were used. What helps is looking like everyone else.</p>
+          <ul class="tips">
+            <li><strong>Firefox</strong> with Enhanced Tracking Protection set to Strict blocks known fingerprinting scripts.</li>
+            <li><strong>Brave</strong> randomises canvas, audio and other readings per site, so your ID won't match from one site to the next.</li>
+            <li><strong>Safari</strong> shows trackers fewer, more generic details, most strongly in Private Browsing.</li>
+            <li><strong>Tor Browser</strong> makes every user look the same: same window size, fonts and settings. The strongest option, at some cost to speed.</li>
+            <li><strong>Careful with tweaks.</strong> Rare fonts, lots of extensions and unusual settings make you <em>more</em> unique, and blocking everything can stand out too.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <aside class="panel fp-note">
+      <p>
+        <strong>Nothing here left your browser.</strong> The readings are never sent or saved.
+        Open this page in another browser and you'll get a different sigil.
+      </p>
+      <p class="small">
+        "Very identifying", "somewhat" and "barely" are rough estimates of how much each detail
+        narrows you down, based on public fingerprinting studies, not measured on you.
+        Details overlap, so they don't simply add up.
+      </p>
+    </aside>
+
+    <RelatedApps current="/fingerprint" />
+  </main>
+
+  <script>
+    import { initFingerprint } from "../../scripts/fingerprint/fingerprint.js";
+    initFingerprint();
+  </script>
+</MainLayout>

@@ -1,0 +1,526 @@
+/* src/styles/fingerprint.css */
+
+#main-content.fp {
+    --fp-bg: #050608;
+    --fp-panel: rgba(10, 12, 16, 0.78);
+    --fp-line: rgba(148, 163, 184, 0.16);
+    --fp-text: #e2e8f0;
+    --fp-muted: #94a3b8;
+    --fp-red: #ef4444;
+    --fp-cyan: #22d3ee;
+    padding: 0 16px 48px;
+    background: var(--fp-bg);
+    color: var(--fp-text);
+}
+
+.fp > * {
+    max-width: 1240px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- Intro (shared AppHeader, widened to the content column) --- */
+#main-content.fp > .fp-head {
+    max-width: 1240px;
+    padding: 24px 0 18px;
+}
+
+.fp-head .app-head-sub {
+    max-width: 60ch;
+}
+
+/* --- Panels --- */
+.panel {
+    background: var(--fp-panel);
+    border: 1px solid var(--fp-line);
+    border-radius: 14px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.fp-grid,
+.fp-side {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.label {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fp-muted);
+}
+
+/* --- Sigil panel --- */
+.sigil-panel {
+    padding: 14px 14px 18px;
+    text-align: center;
+}
+
+.sigil-wrap {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.sigil {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    overflow: visible;
+}
+
+.sigil .part {
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.sigil.focusing .part:not(.on) {
+    opacity: 0.12;
+}
+
+.sigil.focusing .part.on {
+    filter: drop-shadow(0 0 3px rgba(226, 232, 240, 0.35));
+}
+
+.sigil .hits circle {
+    pointer-events: stroke;
+    cursor: pointer;
+}
+
+/* Draw-on, once, while the sigil assembles */
+.sigil.assembling .part:not(.shown) {
+    opacity: 0;
+}
+
+.sigil.assembling .part.shown:not(.muted) .s {
+    stroke-dasharray: 1 2;
+    animation: fp-draw 0.9s cubic-bezier(0.3, 0.6, 0.2, 1) both;
+}
+
+.sigil.assembling .part.shown .f,
+.sigil.assembling .part.muted.shown .s {
+    animation: fp-fade 0.6s ease 0.25s both;
+}
+
+@keyframes fp-draw {
+    from { stroke-dashoffset: 1; }
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes fp-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fp-status {
+    margin: 10px 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--fp-muted);
+}
+
+.id-block {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--fp-line);
+}
+
+.id-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.copy-btn {
+    flex-shrink: 0;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--fp-line);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--fp-muted);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.copy-btn:hover:not(:disabled) {
+    color: var(--fp-text);
+    border-color: var(--fp-muted);
+}
+
+.copy-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.fp-id {
+    display: block;
+    min-width: 0;
+    font-family: var(--font-mono);
+    font-size: clamp(1.05rem, 5vw, 1.45rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #fff;
+    background: none;
+    padding: 0;
+    overflow-wrap: anywhere;
+}
+
+.fp-id.empty {
+    color: rgba(148, 163, 184, 0.4);
+}
+
+.fp-noise {
+    max-width: 46ch;
+    margin: 12px auto 0;
+    padding: 10px 12px;
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    border-radius: 10px;
+    background: rgba(34, 211, 238, 0.06);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: #a5f3fc;
+    text-align: left;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.btn {
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--fp-line);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--fp-text);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.btn:hover:not(:disabled) {
+    border-color: var(--fp-muted);
+}
+
+.btn.primary {
+    border-color: rgba(239, 68, 68, 0.5);
+    background: rgba(239, 68, 68, 0.12);
+    color: #fecaca;
+}
+
+.btn.primary:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.25);
+}
+
+.btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.btn:focus-visible,
+.copy-btn:focus-visible,
+.sig:focus-visible {
+    outline: 2px solid var(--fp-cyan);
+    outline-offset: 2px;
+}
+
+/* --- Signals --- */
+.signals-panel {
+    overflow: hidden;
+}
+
+.signals-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 12px;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--fp-line);
+}
+
+.hint {
+    font-size: 0.75rem;
+    color: rgba(148, 163, 184, 0.75);
+}
+
+.signals {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.signals li + li {
+    border-top: 1px solid var(--fp-line);
+}
+
+.sig {
+    display: grid;
+    gap: 5px;
+    width: 100%;
+    min-height: 44px;
+    padding: 12px 16px 13px;
+    border: 0;
+    border-left: 2px solid transparent;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.sig.hot {
+    background: rgba(148, 163, 184, 0.07);
+    border-left-color: var(--fp-cyan);
+}
+
+.sig[aria-pressed="true"] {
+    border-left-color: var(--fp-red);
+}
+
+.sig-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.sig-swatch {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(148, 163, 184, 0.35);
+}
+
+.sig-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fp-text);
+}
+
+.sig-tag:empty {
+    display: none;
+}
+
+.sig-tag {
+    padding: 1px 7px;
+    border: 1px solid rgba(34, 211, 238, 0.4);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    white-space: nowrap;
+    color: #a5f3fc;
+}
+
+.sig.blocked .sig-tag {
+    border-color: rgba(239, 68, 68, 0.45);
+    color: #fca5a5;
+}
+
+.sig-bits {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    color: var(--fp-muted);
+}
+
+.bits-bar {
+    position: relative;
+    width: 34px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(148, 163, 184, 0.18);
+    overflow: hidden;
+}
+
+.bits-bar i {
+    position: absolute;
+    inset: 0 auto 0 0;
+    border-radius: 2px;
+    background: var(--fp-red);
+}
+
+.sig-value {
+    font-size: 0.92rem;
+    line-height: 1.4;
+    color: #fff;
+    overflow-wrap: anywhere;
+}
+
+.sig.pending .sig-value {
+    color: rgba(148, 163, 184, 0.6);
+}
+
+.sig.blocked .sig-value {
+    color: #fca5a5;
+}
+
+.sig-thumb {
+    display: block;
+    width: 120px;
+    height: 30px;
+    margin-bottom: 6px;
+    border: 1px solid var(--fp-line);
+    border-radius: 4px;
+}
+
+.sig-why {
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--fp-muted);
+}
+
+/* --- How to blend in --- */
+.blend {
+    padding: 16px 18px 18px;
+}
+
+.blend-lede {
+    margin: 8px 0 0;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--fp-text);
+}
+
+.tips {
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tips li {
+    position: relative;
+    padding: 9px 0 9px 16px;
+    border-top: 1px solid var(--fp-line);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--fp-muted);
+}
+
+.tips li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1.05em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--fp-cyan);
+}
+
+.tips li:last-child::before {
+    background: var(--fp-red);
+}
+
+.tips strong {
+    color: var(--fp-text);
+}
+
+/* --- Footer note --- */
+.fp-note {
+    margin-top: 14px;
+    padding: 16px 18px;
+}
+
+.fp-note p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--fp-muted);
+}
+
+.fp-note strong {
+    color: var(--fp-text);
+}
+
+.fp-note .small {
+    margin-top: 8px;
+    font-size: 0.78rem;
+}
+
+#main-content.fp > .related {
+    max-width: 1240px;
+    padding: 32px 0 0;
+}
+
+/* --- Desktop: sigil left and sticky, signals right --- */
+@media (min-width: 960px) {
+    #main-content.fp {
+        padding: 0 32px 64px;
+    }
+
+    #main-content.fp > .fp-head {
+        padding: 36px 0 24px;
+    }
+
+    .fp-side {
+        gap: 20px;
+    }
+
+    .fp-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        align-items: start;
+        gap: 20px;
+    }
+
+    .sigil-panel {
+        position: sticky;
+        top: calc(var(--header-height) + 16px);
+        padding: 24px 24px 22px;
+    }
+
+    /* keep the sticky panel inside short viewports */
+    .sigil-wrap {
+        max-width: min(520px, calc(100dvh - var(--header-height) - 250px));
+        min-width: 300px;
+    }
+
+    .fp-note {
+        margin-top: 20px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sigil .part,
+    .sig,
+    .btn,
+    .copy-btn {
+        transition: none;
+    }
+
+    .sigil.assembling .part.shown .s,
+    .sigil.assembling .part.shown .f {
+        animation: none;
+    }
+}
