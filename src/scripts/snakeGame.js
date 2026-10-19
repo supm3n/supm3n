@@ -1,10 +1,5 @@
 // src/scripts/snakeGame.js
 
-// Import Firebase SDKs from CDN
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
-import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
-import { getFirestore, doc, onSnapshot, setDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
-
 export class SnakeGame {
   constructor() {
     this.canvas = document.getElementById('game-canvas');
@@ -30,60 +25,8 @@ export class SnakeGame {
     this.gameLoop = null;
     this.nextDirection = null;
 
-    // Firebase Refs
-    this.db = null;
-    this.globalDocRef = null;
-
     // Initial Setup
     this.init();
-
-    // Start connection to global leaderboard
-    this.connectGlobalScore();
-  }
-
-  async connectGlobalScore() {
-    if (typeof __firebase_config === 'undefined') return;
-
-    try {
-      const config = JSON.parse(__firebase_config);
-      const appId = typeof __app_id !== 'undefined' ? __app_id : 'default';
-
-      const app = initializeApp(config);
-      const auth = getAuth(app);
-      const db = getFirestore(app);
-
-      this.globalDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'snake_scores', 'global');
-      this.db = db;
-
-      await signInAnonymously(auth);
-
-      onSnapshot(this.globalDocRef, (snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.data();
-          const remoteBest = data.score || 0;
-          if (remoteBest > this.highScore) {
-            this.highScore = remoteBest;
-            this.updateHighScore();
-            localStorage.setItem('snakeHighScore', this.highScore.toString());
-            this.flashHighScore("NEW RECORD");
-          }
-        }
-      });
-    } catch (err) {
-      console.warn("Could not connect to global scores:", err);
-    }
-  }
-
-  async uploadGlobalScore(newScore) {
-    if (!this.db || !this.globalDocRef) return;
-    try {
-      await setDoc(this.globalDocRef, {
-        score: newScore,
-        timestamp: new Date().toISOString()
-      });
-    } catch (err) {
-      console.error("Failed to upload score:", err);
-    }
   }
 
   init() {
@@ -105,6 +48,7 @@ export class SnakeGame {
     this.canvas.width = finalSize;
     this.canvas.height = finalSize;
     this.draw();
+    if (this.gamePaused) this.drawPaused();
   }
 
   setupEventListeners() {
@@ -286,30 +230,20 @@ export class SnakeGame {
       this.gameOver();
       return;
     }
-    // Collision (Self)
-    if (this.snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+    // Collision (Self) - the tail moves away this tick unless we're eating
+    const willGrow = head.x === this.food.x && head.y === this.food.y;
+    const body = willGrow ? this.snake : this.snake.slice(0, -1);
+    if (body.some(segment => segment.x === head.x && segment.y === head.y)) {
       this.gameOver();
       return;
     }
 
     this.snake.unshift(head);
 
-    if (head.x === this.food.x && head.y === this.food.y) {
+    if (willGrow) {
       this.score += 10;
       this.updateScore();
       this.food = this.generateFood();
-      // Prevent food spawning on snake
-      let safe = false;
-      while (!safe) {
-        safe = true;
-        for (let s of this.snake) {
-          if (s.x === this.food.x && s.y === this.food.y) {
-            this.food = this.generateFood();
-            safe = false;
-            break;
-          }
-        }
-      }
     } else {
       this.snake.pop();
     }
@@ -317,10 +251,14 @@ export class SnakeGame {
   }
 
   generateFood() {
-    return {
-      x: Math.floor(Math.random() * this.tileCount),
-      y: Math.floor(Math.random() * this.tileCount)
-    };
+    const free = [];
+    for (let x = 0; x < this.tileCount; x++) {
+      for (let y = 0; y < this.tileCount; y++) {
+        if (!this.snake.some(s => s.x === x && s.y === y)) free.push({ x, y });
+      }
+    }
+    // Board full: keep the old food (nothing left to eat)
+    return free.length ? free[Math.floor(Math.random() * free.length)] : this.food;
   }
 
   draw() {
@@ -369,19 +307,6 @@ export class SnakeGame {
     this.ctx.fillText("PAUSED", this.canvas.width / 2, this.canvas.height / 2);
   }
 
-  flashHighScore(msg) {
-    const el = document.getElementById('high-score-label');
-    if (el) {
-      const original = el.textContent;
-      el.textContent = msg;
-      el.style.color = '#fff';
-      setTimeout(() => {
-        el.textContent = original;
-        el.style.color = '';
-      }, 2000);
-    }
-  }
-
   gameOver() {
     this.gameRunning = false;
     this.isGameOver = true; // Activate strict game over state
@@ -391,7 +316,6 @@ export class SnakeGame {
       this.highScore = this.score;
       this.updateHighScore();
       localStorage.setItem('snakeHighScore', this.highScore.toString());
-      this.uploadGlobalScore(this.score);
     }
 
     const finalEl = document.getElementById('final-score');

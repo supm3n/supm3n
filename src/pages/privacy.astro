@@ -1,6 +1,6 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
-const lastUpdated = new Date().toLocaleDateString();
+const lastUpdated = "October 19, 2026";
 ---
 
 <MainLayout title="Privacy Policy">
@@ -24,36 +24,33 @@ const lastUpdated = new Date().toLocaleDateString();
 
             <div class="content-section">
               <h3>Data Collection</h3>
-              <p>This site collects minimal data:</p>
+              <p>This site has no analytics, no accounts and no tracking. The only things stored are in your own browser:</p>
               <ul class="content-list-bulleted">
-                <li>Basic analytics (if enabled) - page views, referrers, general location</li>
-                <li>Form submissions - if you contact me, I'll receive your message</li>
-                <li>Local storage - theme preferences are stored in your browser</li>
+                <li>Theme preference - saved in local storage and a <code>theme</code> cookie</li>
+                <li>Snake high score - saved in local storage</li>
               </ul>
+              <p>Settle Up keeps everything in the page; nothing is saved or sent anywhere.</p>
             </div>
 
             <div class="content-section">
               <h3>Third-Party Services</h3>
-              <p>This site may use:</p>
+              <p>Some pages talk to outside services, which see your IP address like any website you visit:</p>
               <ul class="content-list-bulleted">
-                <li>Cloudflare - for hosting and CDN services</li>
-                <li>Google Fonts - for web fonts (may collect IP addresses)</li>
+                <li>Cloudflare - hosts the whole site</li>
+                <li>ipapi.co - IP Trace looks up your own IP address and its approximate location there; the result is only shown to you</li>
+                <li>jsDelivr - serves the chart library on Stocks Viewer and Financial Analysis</li>
               </ul>
+              <p>Stock and financial data is fetched by this site's server (from Twelve Data and SEC filings), so your browser never contacts those providers.</p>
             </div>
 
             <div class="content-section">
               <h3>Your Rights</h3>
-              <p>You have the right to:</p>
-              <ul class="content-list-bulleted">
-                <li>Request access to your data</li>
-                <li>Request deletion of your data</li>
-                <li>Opt out of data collection where possible</li>
-              </ul>
+              <p>Since nothing about you is stored on the server, there is nothing to request or delete. Clearing this site's data in your browser removes the theme and high score.</p>
             </div>
 
             <div class="content-section">
               <h3>Contact</h3>
-              <p>If you have questions about this privacy policy, please reach out through other channels.</p>
+              <p>If you have questions about this privacy policy, email <a href="mailto:contact@supm3n.com">contact@supm3n.com</a>.</p>
             </div>
           </div>
         </div>

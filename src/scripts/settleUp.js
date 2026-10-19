@@ -170,11 +170,10 @@ function parseAmountToCents(value) {
     // Replace commas with dots for standardization
     clean = clean.replace(/,/g, '.');
 
-    // Check if it looks like a number
-    if (isNaN(clean) || clean === '') return null;
+    // Plain decimal only (isNaN would also accept "Infinity", "1e9", "0x10")
+    if (!/^(\d+\.?\d*|\.\d+)$/.test(clean)) return null;
 
     const floatVal = parseFloat(clean);
-    if (floatVal < 0) return null;
 
     // Convert to integer cents safely
     return Math.round(floatVal * 100);
@@ -557,11 +556,14 @@ function renderSettlementResults(transfers, financials, options = {}) {
         row.className = "transfer-line";
 
         const wrap = document.createElement("div");
-        wrap.innerHTML = `
-            <strong>${getPersonName(t.fromId)}</strong>
-            <span class="transfer-arrow">→</span>
-            <strong>${getPersonName(t.toId)}</strong>
-        `;
+        const from = document.createElement("strong");
+        from.textContent = getPersonName(t.fromId);
+        const arrow = document.createElement("span");
+        arrow.className = "transfer-arrow";
+        arrow.textContent = "→";
+        const to = document.createElement("strong");
+        to.textContent = getPersonName(t.toId);
+        wrap.append(from, " ", arrow, " ", to);
 
         const amt = document.createElement("span");
         amt.className = "transfer-money";

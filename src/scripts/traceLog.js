@@ -201,6 +201,14 @@ export class TraceSystem {
 
         // 2. Fetch Data
         const data = await this.fetchData();
+        if (!data) {
+            await this.typeLog("Trace failed: lookup service unreachable.", 0, 'danger');
+            this.setStatus('TRACE FAILED', 'locked');
+            this.mode = 'idle';
+            this.isTracing = false;
+            this.rerunBtn.classList.add('visible');
+            return;
+        }
 
         await this.wait(500);
         await this.typeLog("Analyzing packet headers...", 300);
@@ -208,7 +216,7 @@ export class TraceSystem {
         await this.typeLog("Bypassing proxy layer [2/3]...", 400);
 
         // 3. Threat Detection
-        await this.typeLog("Anomaly detected in sector: " + data.countryCode, 'highlight');
+        await this.typeLog("Anomaly detected in sector: " + data.countryCode, 50, 'highlight');
         await this.wait(800);
 
         // 4. Lock Sequence
@@ -221,7 +229,7 @@ export class TraceSystem {
         this.mode = 'locked';
         this.terminal.classList.add('locked');
         this.setStatus('TARGET LOCKED', 'locked');
-        await this.typeLog("HOST IDENTIFIED.", 'danger');
+        await this.typeLog("HOST IDENTIFIED.", 50, 'danger');
 
         // 5. Reveal
         this.reveal(data);
@@ -229,24 +237,25 @@ export class TraceSystem {
         // 6. Post-Lock Monitoring
         await this.wait(1000);
         await this.typeLog("Establishing persistent surveillance...", 500);
-        await this.typeLog("Intercepting data packets...", 'highlight');
+        await this.typeLog("Intercepting data packets...", 50, 'highlight');
     }
 
     async fetchData() {
         try {
             // Client-side fetch. In prod, use a backend proxy if CORS issues arise.
             const req = await fetch('https://ipapi.co/json/');
+            if (!req.ok) return null; // e.g. 429 rate limit
             const json = await req.json();
+            if (json.error || !json.ip) return null;
             return {
                 ip: json.ip,
-                loc: `${json.city}, ${json.country_name}`,
-                countryCode: json.country_code,
-                isp: json.org,
+                loc: [json.city, json.country_name].filter(Boolean).join(', ') || 'Unknown Region',
+                countryCode: json.country_code || 'XX',
+                isp: json.org || 'Unknown',
                 latency: Math.floor(Math.random() * 30 + 10)
             };
         } catch (e) {
-            // Fallback
-            return { ip: "192.168.0.X", loc: "Unknown Region", countryCode: "XX", isp: "Encrypted", latency: 1 };
+            return null;
         }
     }
 

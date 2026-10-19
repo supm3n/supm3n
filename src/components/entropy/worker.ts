@@ -4,6 +4,7 @@ import { MAT_EMPTY, MAT_DATA, MAT_CACHE, MAT_VIRUS, MAT_PROCESS, MAT_FIREWALL, M
 let width = 0;
 let height = 0;
 let grid: Int32Array;
+let running = false;
 
 self.onmessage = (e: MessageEvent) => {
     const { type, payload } = e.data;
@@ -12,7 +13,13 @@ self.onmessage = (e: MessageEvent) => {
         width = payload.width;
         height = payload.height;
         grid = new Int32Array(width * height).fill(MAT_EMPTY);
-        loop();
+        // Re-INIT (on resize) only swaps the grid; the loop is already running
+        if (!running) {
+            running = true;
+            loop();
+        }
+    } else if (!running) {
+        return; // PAINT/RESET before INIT
     } else if (type === 'PAINT') {
         const { x, y, brushSize, material } = payload;
         paint(x, y, brushSize, material);
