@@ -13,3 +13,6 @@ Shows visitors their IP and what every website can see about them: a dotted worl
 - `astro dev` doesn't run Functions, so the page shows its failure state locally. Use `npx wrangler pages dev ./dist`; locally there is no `cf-connecting-ip`, so `ip` is null.
 - 110m lacks ~70 small states and territories (MT, MC, many islands). For those there is no country highlight; the map zooms to a fixed level around the point.
 - Skip button and `prefers-reduced-motion` jump straight to the end state.
+- Map data: rings crossing the antimeridian (Russia, Fiji) are unwrapped to continuous longitudes in the build script; raw ±180 jumps draw a fake land band across the map. Regenerate with the script, don't hand-edit `world.json`.
+- Land test reads mask alpha, not colour: `getImageData` is not premultiplied, so anti-aliased slivers read full red.
+- The clock check compares UTC offsets, not zone names (browsers report legacy IDs like `Asia/Calcutta`; neighbours share offsets).

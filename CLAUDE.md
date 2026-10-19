@@ -3,7 +3,7 @@
 Personal hobby site: Astro 5 (static) + Cloudflare Pages Functions. Each mini-app lives in `src/pages/<app>/`. Pushing to `main` deploys supm3n.com.
 
 ## Commands
-- `npm run dev` → http://localhost:4321. `functions/` (the `/api/*` routes) does not run here; test API-backed apps on the live site or with `npx wrangler pages dev ./dist` (secrets in `.dev.vars`).
+- `npm run dev` → http://localhost:4321. `functions/` (the `/api/*` routes) does not run here; test API-backed apps on the live site, with `npx wrangler pages dev ./dist` (secrets in `.dev.vars`), or by stubbing `window.fetch` for `/api/...` in the dev browser.
 - `npm run build` must pass before committing.
 
 ## Where things are
@@ -22,7 +22,7 @@ Personal hobby site: Astro 5 (static) + Cloudflare Pages Functions. Each mini-ap
 - Notable decision → one short entry at the top of `docs/decisions.md`.
 
 ## Don't read
-`docs/reference/` (multi-MB dumps), `*.sql`, `*.csv`, `dist/`, `.wrangler/`, `package-lock.json`.
+`docs/reference/` (multi-MB dumps), `*.sql`, `*.csv`, `public/data/world.json`, `src/data/cf-colos.json`, `dist/`, `.wrangler/`, `package-lock.json`.
 
 ## Gotchas
 - After editing scoped CSS, the dev browser can keep stale styles from HMR. Reload the page, or restart dev if that doesn't help.
