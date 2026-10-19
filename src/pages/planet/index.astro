@@ -1,0 +1,100 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import AppHeader from "../../components/AppHeader.astro";
+import RelatedApps from "../../components/RelatedApps.astro";
+import "../../styles/planet.css";
+---
+
+<MainLayout
+  title="Planet Now"
+  description="The planet, right now: day and night, the last day of earthquakes, and where the ISS is."
+>
+  <main id="main-content" class="planet">
+    <section class="stage">
+      <div class="map-wrap" id="map-wrap">
+        <canvas id="base" class="map" aria-hidden="true"></canvas>
+        <canvas id="overlay" class="map overlay" aria-hidden="true"></canvas>
+
+        <div class="stage-title">
+          <AppHeader eyebrow="Planet Now" headline="Day and night, earthquakes and the ISS, live." class="planet-head" />
+          <div class="hud">
+            <span class="clock"><span class="label">UTC</span> <time id="utc">--:--:--</time></span>
+            <span id="utc-date" class="hud-date"></span>
+          </div>
+          <p id="quake-summary" class="hud-summary">Loading earthquakes…</p>
+        </div>
+
+        <p id="map-note" class="map-note" hidden>The map couldn't load. Try reloading the page.</p>
+
+        <div id="tip" class="tip" hidden>
+          <div class="tip-head"><span class="tip-mag"></span><span class="tip-place"></span></div>
+          <div class="tip-meta"></div>
+          <a href="https://earthquake.usgs.gov/" target="_blank" rel="noopener noreferrer">USGS event page ↗</a>
+        </div>
+      </div>
+
+      <div class="panels" id="panels">
+        <section class="panel" aria-labelledby="you-h">
+          <h2 id="you-h" class="label">You</h2>
+          <div id="you-body" hidden>
+            <div class="you-row">
+              <span id="you-time" class="big">--:--</span>
+              <span id="you-place" class="you-place"></span>
+            </div>
+            <p id="you-state" class="you-state"></p>
+            <p id="you-next" class="you-next"></p>
+          </div>
+          <p id="you-note" class="note">Finding your approximate location…</p>
+        </section>
+
+        <section class="panel quakes" aria-labelledby="quake-h">
+          <header class="panel-head">
+            <h2 id="quake-h" class="label">Earthquakes · 24h</h2>
+            <span id="quake-count" class="count"></span>
+          </header>
+          <ol id="quake-list" class="quake-list" aria-label="Strongest earthquakes"></ol>
+          <p id="quake-note" class="note" hidden>The earthquake feed is unavailable right now.</p>
+          <p class="legend">
+            <span class="dot-fresh" aria-hidden="true"></span> last hours
+            <span class="dot-old" aria-hidden="true"></span> up to 24h ago · size = magnitude · M2.5+ from USGS
+          </p>
+        </section>
+
+        <section class="panel sky" aria-labelledby="sky-h">
+          <h2 id="sky-h" class="label">Sky</h2>
+          <dl class="sky-list">
+            <div>
+              <dt><span class="sun-dot" aria-hidden="true"></span>Sun</dt>
+              <dd><span id="sun-pos" class="v"></span><span id="sun-over" class="sub"></span></dd>
+            </div>
+            <div>
+              <dt>
+                <svg class="moon-icon" viewBox="-11 -11 22 22" aria-hidden="true">
+                  <circle r="10" class="moon-dark"></circle>
+                  <path id="moon-lit" class="moon-lit" d=""></path>
+                </svg>Moon
+              </dt>
+              <dd><span id="moon-phase" class="v"></span><span id="moon-pos" class="sub"></span></dd>
+            </div>
+            <div id="sat-iss">
+              <dt><span class="sat-dot" aria-hidden="true"></span>ISS</dt>
+              <dd><span class="v">…</span><span class="sub"></span></dd>
+            </div>
+            <div id="sat-css">
+              <dt><span class="sat-dot alt" aria-hidden="true"></span>Tiangong</dt>
+              <dd><span class="v">…</span><span class="sub"></span></dd>
+            </div>
+          </dl>
+          <p id="sat-note" class="note" hidden>Orbit data is unavailable right now.</p>
+        </section>
+      </div>
+    </section>
+
+    <RelatedApps current="/planet" />
+  </main>
+
+  <script>
+    import { initPlanet } from "../../scripts/planet/planet.js";
+    initPlanet();
+  </script>
+</MainLayout>

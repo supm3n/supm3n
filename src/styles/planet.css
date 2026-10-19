@@ -1,0 +1,536 @@
+/* src/styles/planet.css */
+
+#main-content.planet {
+    --pl-bg: #050608;
+    --pl-panel: rgba(10, 12, 16, 0.78);
+    --pl-line: rgba(148, 163, 184, 0.16);
+    --pl-text: #e2e8f0;
+    --pl-muted: #94a3b8;
+    --pl-red: #ef4444;
+    --pl-cyan: #22d3ee;
+    --pl-sun: #fbbf24;
+    padding: 0;
+    background: var(--pl-bg);
+    color: var(--pl-text);
+}
+
+/* --- Stage (mobile first: map, then panels stacked) --- */
+.planet .stage {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 12px 24px;
+}
+
+.planet .map-wrap {
+    position: relative;
+    /* Title block in flow, then room for the map at its natural aspect ratio
+       (planet.js fits the map below the title) */
+    padding-bottom: 58vw;
+    margin: 0 -12px;
+    overflow: hidden;
+}
+
+.planet .map {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.planet .map:not(.overlay) {
+    pointer-events: none;
+}
+
+.planet .stage-title {
+    position: relative;
+    padding: 16px 16px 4px;
+    text-shadow: 0 0 6px var(--pl-bg), 0 0 2px var(--pl-bg);
+    pointer-events: none;
+}
+
+.planet .hud {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    margin-top: 10px;
+    font-family: var(--font-mono);
+}
+
+.planet .clock {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+}
+
+.planet .clock .label {
+    margin-right: 4px;
+}
+
+.planet .hud-date {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pl-muted);
+}
+
+.planet .stage-title .hud-summary {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: #cbd5e1;
+}
+
+.planet .hud-summary .hl {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: #fca5a5;
+}
+
+.planet .map-note {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 55%;
+    margin: 0;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--pl-muted);
+}
+
+/* --- Quake tooltip --- */
+.planet .tip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    max-width: min(280px, calc(100% - 16px));
+    padding: 10px 12px;
+    background: var(--pl-panel);
+    border: 1px solid var(--pl-line);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.planet .tip[hidden] {
+    display: none;
+}
+
+.planet .tip-head {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+}
+
+.planet .tip-mag {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: #fca5a5;
+    flex-shrink: 0;
+}
+
+.planet .tip-meta {
+    margin-top: 2px;
+    color: var(--pl-muted);
+    font-size: 0.75rem;
+}
+
+.planet .tip a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    color: var(--pl-cyan);
+    font-size: 0.75rem;
+    text-decoration: none;
+}
+
+.planet .tip a:hover {
+    text-decoration: underline;
+}
+
+.planet .tip a[hidden] {
+    display: none;
+}
+
+/* --- Panels --- */
+.planet .panels {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.planet .panel {
+    min-width: 0;
+    padding: 16px;
+    background: var(--pl-panel);
+    border: 1px solid var(--pl-line);
+    border-radius: 14px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.planet .label {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pl-muted);
+}
+
+.planet .panel > .label,
+.planet .panel-head {
+    margin-bottom: 10px;
+}
+
+.planet .panel-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.planet .count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: #fca5a5;
+}
+
+.planet .note {
+    margin: 8px 0 0;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--pl-muted);
+}
+
+/* You */
+.planet .you-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.planet .big {
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+}
+
+.planet .you-place {
+    color: var(--pl-text);
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+}
+
+.planet .you-state {
+    margin: 8px 0 0;
+    font-size: 0.85rem;
+    color: var(--pl-text);
+}
+
+.planet .you-state::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: #475569;
+    vertical-align: 1px;
+}
+
+.planet .you-state[data-state="day"]::before {
+    background: var(--pl-sun);
+}
+
+.planet .you-state[data-state="civil"]::before {
+    background: #f59e0b;
+    opacity: 0.75;
+}
+
+.planet .you-state[data-state="nautical"]::before {
+    background: #64748b;
+}
+
+.planet .you-next {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    color: var(--pl-muted);
+}
+
+/* Quakes */
+.planet .quake-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.planet .quake-item {
+    display: grid;
+    grid-template-columns: 3.2rem 1fr auto;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 40px;
+    padding: 4px 8px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--pl-text);
+    font: inherit;
+    font-size: 0.82rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+.planet .quake-item:hover {
+    background: rgba(148, 163, 184, 0.08);
+}
+
+.planet .quake-item[aria-pressed="true"] {
+    border-color: rgba(239, 68, 68, 0.5);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.planet .quake-item:focus-visible {
+    outline: 2px solid var(--pl-cyan);
+    outline-offset: 1px;
+}
+
+.planet .mag {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: #fca5a5;
+}
+
+.planet .place {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.planet .ago {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--pl-muted);
+    white-space: nowrap;
+}
+
+.planet .legend {
+    margin: 10px 0 0;
+    font-size: 0.7rem;
+    line-height: 1.6;
+    color: var(--pl-muted);
+}
+
+.planet .dot-fresh,
+.planet .dot-old,
+.planet .sun-dot,
+.planet .sat-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    vertical-align: 0;
+}
+
+.planet .dot-fresh {
+    background: rgba(239, 68, 68, 0.75);
+    border: 1px solid #fca5a5;
+}
+
+.planet .dot-old {
+    margin-left: 8px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(252, 165, 165, 0.35);
+}
+
+/* Sky */
+.planet .sky-list {
+    margin: 0;
+}
+
+.planet .sky-list > div {
+    display: grid;
+    grid-template-columns: 6.2rem 1fr;
+    gap: 10px;
+    padding: 8px 0;
+    border-top: 1px solid var(--pl-line);
+    font-size: 0.82rem;
+}
+
+.planet .sky-list > div[hidden] {
+    display: none;
+}
+
+.planet .sky-list dt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--pl-muted);
+}
+
+.planet .sky-list dd {
+    margin: 0;
+    min-width: 0;
+}
+
+.planet .sky-list .v {
+    display: block;
+    color: var(--pl-text);
+}
+
+.planet .sky-list .sub {
+    display: block;
+    color: var(--pl-muted);
+    font-size: 0.75rem;
+    overflow-wrap: anywhere;
+}
+
+.planet .sun-dot {
+    background: var(--pl-sun);
+}
+
+.planet .sat-dot {
+    background: var(--pl-cyan);
+}
+
+.planet .sat-dot.alt {
+    background: #a5b4fc;
+}
+
+.planet .moon-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.planet .moon-dark {
+    fill: rgba(148, 163, 184, 0.18);
+    stroke: rgba(148, 163, 184, 0.4);
+    stroke-width: 1;
+}
+
+.planet .moon-lit {
+    fill: #e2e8f0;
+}
+
+/* --- Desktop: full-bleed map, panels floating along the bottom --- */
+@media (min-width: 960px) {
+    #main-content.planet {
+        --pl-panels-h: clamp(196px, 26vh, 236px);
+    }
+
+    .planet .stage {
+        position: relative;
+        display: block;
+        height: calc(100dvh - var(--header-height));
+        min-height: 640px;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .planet .map-wrap {
+        position: absolute;
+        inset: 0;
+        height: auto;
+        margin: 0;
+    }
+
+    /* Dots fade out behind the panel row instead of colliding with it */
+    .planet .map-wrap::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: calc(var(--pl-panels-h) + 110px);
+        background: linear-gradient(to top, rgba(5, 6, 8, 0.94) 0, rgba(5, 6, 8, 0.86) calc(var(--pl-panels-h) - 20px), rgba(5, 6, 8, 0));
+        pointer-events: none;
+    }
+
+    /* Title block sits on the left column, just above the You panel, over the
+       south-east Pacific (open ocean in this projection) */
+    .planet .map-wrap {
+        padding: 0;
+    }
+
+    .planet .stage-title {
+        position: absolute;
+        left: 32px;
+        bottom: calc(28px + var(--pl-panels-h) + 12px);
+        z-index: 1;
+        width: calc((100% - 64px - 32px) / 3.25);
+        padding: 14px 18px 12px;
+        background: rgba(10, 12, 16, 0.62);
+        border: 1px solid var(--pl-line);
+        border-radius: 14px;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+    }
+
+    .planet .planet-head .app-head-title {
+        font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+    }
+
+    .planet .panels {
+        position: absolute;
+        left: 32px;
+        right: 32px;
+        bottom: 28px;
+        /* One row, same height; planet.js fits the map to the row's top */
+        height: var(--pl-panels-h);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr);
+        align-items: stretch;
+        gap: 16px;
+        pointer-events: none;
+    }
+
+    .planet .panel {
+        min-height: 0;
+        overflow-y: auto;
+        pointer-events: auto;
+    }
+
+    .planet .sky-list > div {
+        padding: 6px 0;
+    }
+}
+
+/* Narrow desktops: the map is smaller, so keep the title block small enough
+   to stay over open ocean (the strongest quake is in the panel anyway) */
+@media (min-width: 960px) and (max-width: 1199px) {
+    .planet .stage-title {
+        max-width: 250px;
+    }
+
+    .planet .stage-title .hud-summary,
+    .planet .hud-date {
+        display: none;
+    }
+}
+
+@media (min-width: 1400px) {
+    .planet .stage-title {
+        left: calc(50% - 660px);
+        width: calc((1320px - 32px) / 3.25);
+    }
+
+    .planet .panels {
+        left: 50%;
+        right: auto;
+        width: 1320px;
+        transform: translateX(-50%);
+    }
+}
