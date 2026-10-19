@@ -1,0 +1,53 @@
+---
+// Shared page header for the live apps (IP Trace, Fingerprint, Above You,
+// Planet Now): a small label, a headline that the page's script replaces with
+// the live fact once data arrives (via the headline id), and one line of context.
+// Pages position it themselves through `class`; this only sets the typography.
+interface Props {
+  eyebrow: string;
+  headline: string;
+  sub?: string;
+  headlineId?: string;
+  class?: string;
+}
+const { eyebrow, headline, sub, headlineId = "app-headline", class: className } = Astro.props;
+---
+
+<header class:list={["app-head", className]}>
+  <p class="app-head-eyebrow">{eyebrow}</p>
+  <h1 class="app-head-title" id={headlineId}>{headline}</h1>
+  {sub && <p class="app-head-sub">{sub}</p>}
+</header>
+
+<style>
+  .app-head {
+    max-width: 40rem;
+  }
+
+  .app-head-eyebrow {
+    margin: 0 0 6px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #ef4444;
+  }
+
+  .app-head-title {
+    margin: 0;
+    font-size: clamp(1.2rem, 2.4vw, 1.75rem);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: #f8fafc;
+    text-wrap: balance;
+  }
+
+  .app-head-sub {
+    margin: 6px 0 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #94a3b8;
+  }
+</style>

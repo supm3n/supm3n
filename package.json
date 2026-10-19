@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",
-    "astro": "^5.15.9"
+    "astro": "^5.15.9",
+    "astronomy-engine": "^2.1.19",
+    "satellite.js": "^7.1.0"
   }
 }
