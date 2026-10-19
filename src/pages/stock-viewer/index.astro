@@ -111,11 +111,18 @@ import MainLayout from "../../layouts/MainLayout.astro";
 
     <div id="chart-wrap" class="glass-panel">
       <div class="chart-controls hidden" id="chart-controls">
-        <button class="range-btn" data-range="1W">1W</button>
-        <button class="range-btn" data-range="1M">1M</button>
-        <button class="range-btn" data-range="3M">3M</button>
-        <button class="range-btn" data-range="1Y">1Y</button>
-        <button class="range-btn active" data-range="ALL">MAX</button>
+        <div class="quote" aria-live="polite">
+          <span id="quote-symbol" class="quote-symbol"></span>
+          <span id="quote-price" class="quote-price"></span>
+          <span id="quote-change" class="quote-change"></span>
+        </div>
+        <div class="range-group">
+          <button class="range-btn" data-range="1W">1W</button>
+          <button class="range-btn" data-range="1M">1M</button>
+          <button class="range-btn" data-range="3M">3M</button>
+          <button class="range-btn" data-range="1Y">1Y</button>
+          <button class="range-btn active" data-range="ALL">MAX</button>
+        </div>
       </div>
 
       <div class="chart-container-inner">
@@ -329,10 +336,46 @@ import MainLayout from "../../layouts/MainLayout.astro";
   /* Range Buttons */
   .chart-controls {
     display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
     margin-bottom: 1rem;
     z-index: 5;
+  }
+
+  .range-group {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  /* Quote: latest close and the change over the selected range */
+  .quote {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+    font-family: var(--font-mono);
+  }
+  .quote-symbol {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  .quote-price {
+    color: var(--color-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .quote-change {
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .quote-change.up {
+    color: #10b981;
+  }
+  .quote-change.down {
+    color: #ef4444;
   }
 
   .range-btn {
@@ -462,6 +505,10 @@ import MainLayout from "../../layouts/MainLayout.astro";
       height: 50vh;
     }
     .chart-controls {
+      justify-content: center;
+    }
+    .quote {
+      width: 100%;
       justify-content: center;
     }
   }
@@ -608,11 +655,36 @@ import MainLayout from "../../layouts/MainLayout.astro";
     return rows;
   }
 
-  // --- 5. RENDER CHART ---
+  // --- 5. QUOTE HEADER ---
+  function formatPrice(value) {
+    return Number(value).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  function renderQuote(data, symbol) {
+    const first = data[0];
+    const last = data[data.length - 1];
+    const change = last - first;
+    const pct = first ? (change / first) * 100 : 0;
+    const sign = change >= 0 ? "+" : "-";
+    const range =
+      document.querySelector(".range-btn.active")?.textContent || "MAX";
+
+    document.getElementById("quote-symbol").textContent = symbol;
+    document.getElementById("quote-price").textContent = `$${formatPrice(last)}`;
+    const changeEl = document.getElementById("quote-change");
+    changeEl.textContent = `${sign}$${formatPrice(Math.abs(change))} (${sign}${Math.abs(pct).toFixed(2)}%) ${range}`;
+    changeEl.className = `quote-change ${change >= 0 ? "up" : "down"}`;
+  }
+
+  // --- 6. RENDER CHART ---
   function render(rows, symbol) {
     if (!ctx) return;
     const labels = rows.map((r) => r.date);
     const data = rows.map((r) => r.close);
+    renderQuote(data, symbol);
 
     if (emptyState) emptyState.style.display = "none";
 
