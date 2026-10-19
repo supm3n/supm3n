@@ -207,6 +207,7 @@ export function initTrace() {
   }
 
   function resetUI() {
+    $("app-headline").textContent = "What every website can see about you.";
     log.replaceChildren();
     ipEl.textContent = "···.···.···.···";
     ipEl.classList.remove("v6");
@@ -256,6 +257,10 @@ export function initTrace() {
 
     const d = res.data;
     const device = deviceInfo();
+    const where = d.city || d.country;
+    if (where) {
+      $("app-headline").textContent = `Every website you open sees you in ${where}${d.isp ? `, on ${d.isp}` : ""}.`;
+    }
     await line("request", `GET /api/whoami → 200 in ${res.ms} ms`);
 
     // Edge: the Cloudflare data centre that answered

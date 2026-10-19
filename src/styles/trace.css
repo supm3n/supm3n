@@ -36,26 +36,7 @@
 }
 
 .stage-title {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    pointer-events: none;
-}
-
-.stage-title h1 {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--trace-red);
-}
-
-.stage-title p {
-    margin: 4px 0 0;
-    font-size: 0.85rem;
-    color: var(--trace-muted);
+    padding: 20px 4px 0;
 }
 
 .hud {
@@ -330,13 +311,16 @@
         margin: 0;
     }
 
+    /* Over the map, top-left; the shadow keeps it legible on lit dots */
     .stage-title {
+        position: absolute;
         top: 28px;
         left: 32px;
-    }
-
-    .stage-title h1 {
-        font-size: 0.9rem;
+        z-index: 2;
+        max-width: 30rem;
+        padding: 0;
+        pointer-events: none;
+        text-shadow: 0 1px 12px rgba(5, 6, 8, 0.9);
     }
 
     .hud {

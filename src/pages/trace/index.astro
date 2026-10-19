@@ -1,5 +1,7 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
+import AppHeader from "../../components/AppHeader.astro";
+import RelatedApps from "../../components/RelatedApps.astro";
 import "../../styles/trace.css";
 ---
 
@@ -9,12 +11,14 @@ import "../../styles/trace.css";
 >
   <main id="main-content" class="trace">
     <section class="stage" id="stage">
+      <AppHeader
+        class="stage-title"
+        eyebrow="IP Trace"
+        headline="What every website can see about you."
+        sub="Your IP address and connection, exactly as any site receives them."
+      />
       <div class="map-wrap">
         <canvas id="map" class="map" aria-hidden="true"></canvas>
-        <div class="stage-title">
-          <h1>IP Trace</h1>
-          <p>What every website can see about you</p>
-        </div>
         <div id="hud" class="hud" aria-hidden="true">MERCATOR · ×1.0</div>
       </div>
 
@@ -55,6 +59,7 @@ import "../../styles/trace.css";
         </div>
       </aside>
     </section>
+    <RelatedApps current="/trace" />
   </main>
 
   <script>
