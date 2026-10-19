@@ -1,0 +1,597 @@
+/* src/styles/sky.css */
+
+#main-content.sky {
+    --sky-bg: #050608;
+    --sky-panel: rgba(10, 12, 16, 0.78);
+    --sky-line: rgba(148, 163, 184, 0.16);
+    --sky-text: #e2e8f0;
+    --sky-muted: #94a3b8;
+    --sky-red: #ef4444;
+    --sky-cyan: #22d3ee;
+    padding: 0;
+    background: var(--sky-bg);
+    color: var(--sky-text);
+}
+
+/* --- Stage (mobile first: dome, then panels stacked) --- */
+#main-content.sky .sky-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 12px 28px;
+}
+
+#main-content.sky .dome-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+}
+
+#main-content.sky .sky-title {
+    align-self: stretch;
+    max-width: none;
+    padding: 18px 4px 10px;
+}
+
+#main-content.sky .dome-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    aspect-ratio: 1;
+}
+
+#main-content.sky .dome-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#main-content.sky .dome-canvas:last-of-type {
+    touch-action: manipulation;
+}
+
+#main-content.sky .tip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-width: 220px;
+    padding: 8px 10px;
+    background: rgba(10, 12, 16, 0.9);
+    border: 1px solid rgba(34, 211, 238, 0.35);
+    border-radius: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1.4;
+    color: var(--sky-muted);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+#main-content.sky .tip strong {
+    color: var(--sky-text);
+    font-size: 0.76rem;
+}
+
+#main-content.sky .tip[hidden] {
+    display: none;
+}
+
+#main-content.sky .dome-empty {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(280px, 80%);
+    padding: 18px;
+    text-align: center;
+    background: var(--sky-panel);
+    border: 1px solid var(--sky-line);
+    border-radius: 14px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+#main-content.sky .dome-empty[hidden] {
+    display: none;
+}
+
+#main-content.sky .dome-empty p {
+    margin: 0 0 12px;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--sky-muted);
+}
+
+#main-content.sky .legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 14px;
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    color: var(--sky-muted);
+}
+
+#main-content.sky .legend li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#main-content.sky .stub-note {
+    margin: 8px 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    color: #fbbf24;
+}
+
+#main-content.sky .stub-note[hidden] {
+    display: none;
+}
+
+/* Colour swatch dot (legend and list) */
+#main-content.sky .sw {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--c);
+}
+
+#main-content.sky .sw.hollow {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--c);
+}
+
+/* --- Panels --- */
+#main-content.sky .panels {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+#main-content.sky .panel {
+    padding: 16px;
+    background: var(--sky-panel);
+    border: 1px solid var(--sky-line);
+    border-radius: 14px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    min-width: 0;
+}
+
+#main-content.sky .pair {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+}
+
+/* Side by side only where both fit without wrapping */
+@media (min-width: 421px) and (max-width: 959px) {
+    #main-content.sky .pair {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+}
+
+#main-content.sky .pair .panel {
+    padding: 14px;
+}
+
+#main-content.sky .label {
+    margin: 0 0 8px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sky-muted);
+}
+
+#main-content.sky .panel-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+#main-content.sky .count {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--sky-muted);
+}
+
+#main-content.sky .big {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    overflow-wrap: anywhere;
+}
+
+#main-content.sky .sub {
+    margin: 2px 0 0;
+    font-size: 0.82rem;
+    color: var(--sky-muted);
+}
+
+#main-content.sky .accent {
+    margin: 8px 0 0;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: #a5f3fc;
+}
+
+#main-content.sky .accent:empty {
+    display: none;
+}
+
+#main-content.sky .muted {
+    color: var(--sky-muted);
+    font-size: 0.78rem;
+}
+
+#main-content.sky .note {
+    margin: 10px 0 0;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--sky-muted);
+}
+
+#main-content.sky .note:empty,
+#main-content.sky .note[hidden] {
+    display: none;
+}
+
+#main-content.sky .facts {
+    margin: 12px 0 0;
+    border-top: 1px solid var(--sky-line);
+}
+
+#main-content.sky .facts > div {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--sky-line);
+    font-size: 0.84rem;
+}
+
+#main-content.sky .facts.compact > div {
+    grid-template-columns: 2.6rem 1fr;
+    gap: 6px;
+    font-size: 0.78rem;
+}
+
+#main-content.sky .facts dt {
+    color: var(--sky-muted);
+}
+
+#main-content.sky .facts dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+    font-variant-numeric: tabular-nums;
+}
+
+#main-content.sky .moon-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#main-content.sky .sky-moon-icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+}
+
+#main-content.sky .btn {
+    min-height: 40px;
+    margin-top: 14px;
+    padding: 0 16px;
+    border: 1px solid var(--sky-line);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--sky-text);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+#main-content.sky .btn:hover:not(:disabled) {
+    border-color: var(--sky-muted);
+}
+
+#main-content.sky .btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+#main-content.sky .btn.primary {
+    margin-top: 0;
+    border-color: rgba(239, 68, 68, 0.5);
+    background: rgba(239, 68, 68, 0.12);
+    color: #fecaca;
+}
+
+#main-content.sky .btn.primary:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.25);
+}
+
+/* --- Up now list --- */
+#main-content.sky .up-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#main-content.sky .up-list button {
+    display: grid;
+    grid-template-columns: 8px minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 40px;
+    padding: 0 8px;
+    border: 0;
+    border-bottom: 1px solid var(--sky-line);
+    background: transparent;
+    color: var(--sky-text);
+    font: inherit;
+    font-size: 0.84rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+#main-content.sky .up-list li:last-child button {
+    border-bottom: 0;
+}
+
+#main-content.sky .up-list li.on button,
+#main-content.sky .up-list button:hover {
+    background: rgba(34, 211, 238, 0.08);
+}
+
+#main-content.sky .up-list li.on .nm {
+    color: #a5f3fc;
+}
+
+#main-content.sky .up-list button:focus-visible {
+    outline: 1px solid var(--sky-cyan);
+    outline-offset: -1px;
+}
+
+#main-content.sky .up-list li.dim .nm {
+    color: var(--sky-muted);
+}
+
+#main-content.sky .up-list .nm {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#main-content.sky .up-list .mt {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--sky-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+#main-content.sky .up-list .tg {
+    min-width: 3.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: right;
+    color: var(--sky-muted);
+}
+
+#main-content.sky .up-list .tg.visible {
+    color: #34d399;
+}
+
+#main-content.sky .up-list .tg.shadow {
+    color: rgba(148, 163, 184, 0.6);
+}
+
+/* --- ISS passes --- */
+#main-content.sky .countdown {
+    font-size: 1.5rem;
+    font-variant-numeric: tabular-nums;
+}
+
+#main-content.sky .iss.live .countdown {
+    color: #fca5a5;
+}
+
+#main-content.sky .pass-list {
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--sky-line);
+}
+
+#main-content.sky .pass-list li {
+    padding: 9px 0;
+    border-bottom: 1px solid var(--sky-line);
+}
+
+#main-content.sky .ps-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.84rem;
+}
+
+#main-content.sky .ps-time {
+    font-variant-numeric: tabular-nums;
+}
+
+#main-content.sky .pass-list li:not(.vis) .ps-time {
+    color: var(--sky-muted);
+}
+
+#main-content.sky .ps-badge {
+    flex-shrink: 0;
+    padding: 2px 8px;
+    border: 1px solid var(--sky-line);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sky-muted);
+}
+
+#main-content.sky .ps-badge.yes {
+    border-color: rgba(52, 211, 153, 0.45);
+    color: #6ee7b7;
+}
+
+#main-content.sky .ps-sub {
+    margin-top: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--sky-muted);
+}
+
+#main-content.sky .ps-empty {
+    font-size: 0.82rem;
+    color: var(--sky-muted);
+}
+
+/* No location yet: dim the data panels */
+#main-content.sky .no-loc .pair,
+#main-content.sky .no-loc .panels-right {
+    opacity: 0.55;
+}
+
+/* --- Desktop: dome in the middle, panels either side --- */
+@media (min-width: 960px) {
+    #main-content.sky .sky-stage {
+        display: grid;
+        grid-template-columns: minmax(260px, 300px) minmax(0, 1fr) minmax(300px, 340px);
+        grid-template-areas: "left dome right";
+        gap: 24px;
+        height: calc(100dvh - var(--header-height));
+        min-height: 660px;
+        padding: 24px 28px;
+    }
+
+    #main-content.sky .dome-col {
+        grid-area: dome;
+        min-height: 0;
+    }
+
+    #main-content.sky .sky-title {
+        padding: 0 0 8px;
+    }
+
+    #main-content.sky .dome-wrap {
+        max-width: none;
+        width: min(100%, calc(100dvh - var(--header-height) - 230px));
+        min-width: 400px;
+        margin: auto 0;
+    }
+
+    #main-content.sky .panels {
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(148, 163, 184, 0.25) transparent;
+    }
+
+    #main-content.sky .panels-left {
+        grid-area: left;
+    }
+
+    #main-content.sky .panels-right {
+        grid-area: right;
+    }
+
+    #main-content.sky .pair {
+        grid-template-columns: 1fr;
+    }
+
+    #main-content.sky .pair .panel {
+        padding: 16px;
+    }
+
+    #main-content.sky .facts.compact > div {
+        grid-template-columns: 3rem 1fr;
+        font-size: 0.82rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #main-content.sky .btn,
+    #main-content.sky .up-list button {
+        transition: none;
+    }
+}
+
+/* --- Highlights --- */
+#main-content.sky .hl-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#main-content.sky .hl-list li {
+    position: relative;
+    padding: 8px 0 8px 16px;
+    border-bottom: 1px solid var(--sky-line);
+    font-size: 0.86rem;
+    line-height: 1.45;
+}
+
+#main-content.sky .hl-list li:last-child {
+    border-bottom: 0;
+}
+
+#main-content.sky .hl-list li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 15px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c, var(--sky-muted));
+}
+
+#main-content.sky .hl-list strong {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* --- Up now: show all toggle --- */
+#main-content.sky .up-toggle {
+    width: 100%;
+    margin-top: 10px;
+}
+
+#main-content.sky .up-toggle[hidden] {
+    display: none;
+}
+
+/* --- More like this --- */
+.sky-related {
+    background: #050608;
+}

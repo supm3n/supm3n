@@ -1,0 +1,123 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import AppHeader from "../../components/AppHeader.astro";
+import RelatedApps from "../../components/RelatedApps.astro";
+import "../../styles/sky.css";
+---
+
+<MainLayout
+  title="Above You"
+  description="Your sky right now: stars, planets, the Moon and the satellites passing over you, live."
+>
+  <main id="main-content" class="sky">
+    <section class="sky-stage" id="sky-app">
+      <div class="dome-col">
+        <AppHeader
+          eyebrow="Above You"
+          headline="Your sky, right now"
+          sub="Stars, planets and satellites over your location, live."
+          class="sky-title"
+        />
+
+        <div class="dome-wrap" id="dome-wrap">
+          <canvas id="dome-base" class="dome-canvas" aria-hidden="true"></canvas>
+          <canvas id="dome-live" class="dome-canvas" aria-label="All-sky chart: zenith in the middle, horizon on the rim, north up, east left"></canvas>
+          <div id="tip" class="tip" role="status" hidden></div>
+          <div id="dome-empty" class="dome-empty" hidden>
+            <p class="label">Location unavailable</p>
+            <p id="empty-msg">Share your location to see your sky. It stays in this browser.</p>
+            <button id="empty-locate" class="btn primary" type="button">Use my location</button>
+          </div>
+        </div>
+
+        <ul class="legend" aria-label="Legend">
+          <li><i class="sw" style="--c:#ef4444"></i>ISS</li>
+          <li><i class="sw" style="--c:#f8fafc"></i>Visible now</li>
+          <li><i class="sw" style="--c:#94a3b8"></i>Too bright to see</li>
+          <li><i class="sw hollow" style="--c:#94a3b8"></i>In shadow</li>
+        </ul>
+        <p id="stub-note" class="stub-note" hidden>Dev mode: APIs not running, using stub data.</p>
+      </div>
+
+      <div class="panels panels-left">
+        <section class="panel" aria-labelledby="hl-h">
+          <h2 class="label" id="hl-h">Highlights</h2>
+          <ul id="hl-list" class="hl-list">
+            <li>Working out what's worth a look…</li>
+          </ul>
+        </section>
+
+        <section class="panel" aria-labelledby="loc-h">
+          <h2 class="label" id="loc-h">Location</h2>
+          <p class="big" id="loc-name">Locating…</p>
+          <p class="sub" id="loc-coords">—</p>
+          <dl class="facts">
+            <div><dt>Local time</dt><dd><span id="loc-time">—</span> <span class="muted" id="loc-tz"></span></dd></div>
+            <div><dt>Sky</dt><dd id="loc-sky">—</dd></div>
+          </dl>
+          <p class="note" id="loc-note"></p>
+          <button id="precise" class="btn" type="button">Use precise location</button>
+        </section>
+
+        <div class="pair">
+          <section class="panel" aria-labelledby="sun-h">
+            <h2 class="label" id="sun-h">Sun</h2>
+            <p class="big" id="sun-alt">—</p>
+            <p class="sub" id="sun-phase">—</p>
+            <p class="accent" id="sun-next"></p>
+            <dl class="facts compact">
+              <div><dt>Rise</dt><dd id="sun-rise">—</dd></div>
+              <div><dt>Set</dt><dd id="sun-set">—</dd></div>
+            </dl>
+          </section>
+
+          <section class="panel" aria-labelledby="moon-h">
+            <h2 class="label" id="moon-h">Moon</h2>
+            <div class="moon-head">
+              <canvas id="moon-icon" class="sky-moon-icon" width="44" height="44" aria-hidden="true"></canvas>
+              <div>
+                <p class="big" id="moon-illum">—</p>
+                <p class="sub" id="moon-name">—</p>
+              </div>
+            </div>
+            <p class="accent" id="moon-alt"></p>
+            <dl class="facts compact">
+              <div><dt>Rise</dt><dd id="moon-rise">—</dd></div>
+              <div><dt>Set</dt><dd id="moon-set">—</dd></div>
+            </dl>
+          </section>
+        </div>
+      </div>
+
+      <div class="panels panels-right">
+        <section class="panel" aria-labelledby="up-h">
+          <div class="panel-head">
+            <h2 class="label" id="up-h">Up now</h2>
+            <span class="count" id="up-count"></span>
+          </div>
+          <ul id="up-list" class="up-list"></ul>
+          <p id="up-note" class="note">Loading…</p>
+          <button id="up-toggle" class="btn up-toggle" type="button" aria-expanded="false" hidden>Show all</button>
+        </section>
+
+        <section class="panel iss" id="iss-panel" aria-labelledby="iss-h">
+          <h2 class="label" id="iss-h">Next ISS pass</h2>
+          <p class="big countdown" id="iss-next" aria-live="off">—</p>
+          <p class="sub" id="iss-when">Working out passes…</p>
+          <ol id="iss-list" class="pass-list"></ol>
+          <p class="note">Passes peaking above 10° in the next 3 days. Visible means the station is
+            sunlit while your sky is dark: look for a steady, bright moving point.</p>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div class="sky-related">
+    <RelatedApps current="/sky" />
+  </div>
+
+  <script>
+    import { initSky } from "../../scripts/sky/sky.js";
+    initSky();
+  </script>
+</MainLayout>
