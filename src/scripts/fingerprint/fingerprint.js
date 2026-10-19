@@ -73,7 +73,11 @@ export function initFingerprint() {
     btn.addEventListener("pointerleave", () => setHover(null));
     btn.addEventListener("focus", () => setHover(s.id));
     btn.addEventListener("blur", () => setHover(null));
-    btn.addEventListener("click", () => setPinned(pinned === s.id ? null : s.id));
+    btn.addEventListener("click", () => {
+      setPinned(pinned === s.id ? null : s.id);
+      // Reveal a row that was partly off screen or under the header
+      if (pinned) btn.scrollIntoView({ block: "nearest", behavior: reduceMotion ? "auto" : "smooth" });
+    });
   }
 
   // ---------- Highlight ----------

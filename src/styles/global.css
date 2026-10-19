@@ -12,6 +12,9 @@
 
 html {
 	scroll-behavior: smooth;
+	/* Scrolled-to elements stop below the sticky header, not under it */
+	scroll-padding-top: calc(var(--header-height) + 16px);
+	scroll-padding-bottom: 16px;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
