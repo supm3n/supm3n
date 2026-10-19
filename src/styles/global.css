@@ -61,7 +61,7 @@ body {
 	--color-surface-2: #1A1D26;
 	--color-text-primary: #E6E9F0;
 	--color-text-muted: #A9B1C6;
-	--color-accent-start: #7C3AED;
+	--color-accent-start: #DC2626;
 	--color-accent-end: #06B6D4;
 	--color-red-cape: #EF4444;
 
@@ -163,7 +163,7 @@ body {
 	right: 0;
 	bottom: 0;
 	background:
-		radial-gradient(ellipse 100% 60% at 50% -10%, rgba(124, 58, 237, 0.15), transparent 70%),
+		radial-gradient(ellipse 100% 60% at 50% -10%, rgba(220, 38, 38, 0.15), transparent 70%),
 		radial-gradient(ellipse 80% 50% at 80% 100%, rgba(6, 182, 212, 0.12), transparent 70%),
 		radial-gradient(ellipse 60% 40% at 20% 50%, rgba(239, 68, 68, 0.08), transparent 70%);
 	pointer-events: none;
@@ -174,7 +174,7 @@ body {
 
 [data-theme="light"] body::before {
 	background:
-		radial-gradient(ellipse 100% 60% at 50% -10%, rgba(124, 58, 237, 0.08), transparent 70%),
+		radial-gradient(ellipse 100% 60% at 50% -10%, rgba(220, 38, 38, 0.08), transparent 70%),
 		radial-gradient(ellipse 80% 50% at 80% 100%, rgba(6, 182, 212, 0.06), transparent 70%),
 		radial-gradient(ellipse 60% 40% at 20% 50%, rgba(239, 68, 68, 0.04), transparent 70%);
 }

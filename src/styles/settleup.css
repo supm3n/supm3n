@@ -182,7 +182,7 @@
 .app-main select:focus {
   background: var(--field-bg-active);
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.3);
 }
 
 /* Fix for Dropdown Options Visibility */
@@ -208,7 +208,7 @@
   outline: none;
   border-color: var(--accent);
   background: var(--field-bg-active);
-  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.3);
 }
 
 .app-main input::placeholder {

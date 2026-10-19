@@ -5,7 +5,7 @@
     --glass-border: rgba(255, 255, 255, 0.1);
     --text-muted: #9ca3af;
     --text-main: #f3f4f6;
-    --accent: #8b5cf6;
+    --accent: #ef4444;
     --card-bg: rgba(18, 18, 23, 0.6);
     --success: #10b981;
     --danger: #ef4444;
@@ -16,7 +16,7 @@
     --glass-border: rgba(0, 0, 0, 0.08);
     --text-muted: #6b7280;
     --text-main: #111827;
-    --accent: #7c3aed;
+    --accent: #dc2626;
     --card-bg: rgba(255, 255, 255, 0.95);
 }
 
@@ -75,7 +75,7 @@
     background: var(--accent);
     color: white;
     border-color: var(--accent);
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.35);
 }
 
 /* --- EXECUTIVE SUMMARY (The Strip Design) --- */
@@ -113,14 +113,14 @@
 }
 
 .period-badge {
-    background: rgba(139, 92, 246, 0.1);
+    background: rgba(239, 68, 68, 0.1);
     color: var(--accent);
     padding: 4px 10px;
     border-radius: 6px;
     font-family: monospace;
     font-weight: bold;
     font-size: 0.9rem;
-    border: 1px solid rgba(139, 92, 246, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .date-group {

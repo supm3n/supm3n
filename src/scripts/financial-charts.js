@@ -69,7 +69,7 @@ export function renderGrowthView(data, containers) {
         {
           label: 'Revenue',
           data: data.map(d => d.revenue),
-          backgroundColor: 'rgba(124, 58, 237, 0.6)', // Purple
+          backgroundColor: 'rgba(14, 165, 233, 0.6)', // Blue
           borderRadius: 4
         },
         {
@@ -143,8 +143,8 @@ export function renderMarginsView(data, containers) {
       datasets: [{
         label: 'Efficiency (Net Margin)',
         data: data.map(d => (d.net_margin * 100).toFixed(1)),
-        borderColor: '#8b5cf6',
-        backgroundColor: 'rgba(139, 92, 246, 0.2)',
+        borderColor: '#0ea5e9',
+        backgroundColor: 'rgba(14, 165, 233, 0.2)',
         fill: true,
         tension: 0.4
       }]
