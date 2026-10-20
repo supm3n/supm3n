@@ -17,7 +17,7 @@ Browser ── static pages (dist/) ── Cloudflare Pages
 ## Apps
 | Route | What | Data / external |
 |---|---|---|
-| `/stock-viewer` | Price history chart | `/api/price/[symbol]` → Twelve Data (cached 15 min), Chart.js from jsDelivr |
+| `/stock-viewer` | Price history chart | `/api/price/[symbol]` → Twelve Data (cached 15 min), Chart.js bundled from npm |
 | `/financial-analysis` | Quarterly fundamentals, big-9 tech | `/api/financials/[ticker]` → D1. See `apps/financial-analysis.md` |
 | `/settleup` | Expense splitter | none; in-page only |
 | `/snake` | Snake | high score in localStorage |

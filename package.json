@@ -12,6 +12,7 @@
     "@astrojs/sitemap": "^3.7.4",
     "astro": "^5.18.2",
     "astronomy-engine": "^2.1.19",
+    "chart.js": "^4.5.1",
     "satellite.js": "^7.1.0"
   }
 }

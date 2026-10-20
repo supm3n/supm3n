@@ -4,8 +4,6 @@ import MainLayout from "../../layouts/MainLayout.astro";
 ---
 
 <MainLayout title="Stock Chart">
-  <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <div class="container stocks-page-container">
     <section class="hero">
       <h1 class="hero-title">Stock Viewer</h1>
@@ -515,6 +513,8 @@ import MainLayout from "../../layouts/MainLayout.astro";
 </style>
 
 <script>
+  import Chart from "chart.js/auto";
+
   // --- VARIABLES (Module Scope) ---
   let isLoading = false;
   let chart;

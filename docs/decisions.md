@@ -2,6 +2,9 @@
 
 Newest first. One entry per decision: what, and why. Add new entries at the top.
 
+## 2026-10-20 · Chart.js bundled from npm, not jsDelivr
+The chart pages loaded an unpinned `chart.js` from jsDelivr, so a new major could break them without a deploy, and visitors' browsers contacted a third party. It is now an npm dependency (`^4`, locked) imported from `chart.js/auto`. Cloudflare is the only outside service the browser talks to.
+
 ## 2026-10-20 · `overflow-x: clip` on html and body
 `hidden` on body made it a scroll container, which silently broke every `position: sticky` (the Fingerprint sigil). `clip` stops sideways scrolling without that; `hidden` stays as the fallback line for old browsers.
 

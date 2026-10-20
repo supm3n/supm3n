@@ -1,4 +1,5 @@
 // src/scripts/financial-charts.js
+import Chart from "chart.js/auto";
 
 let mainChartInstance = null;
 let subChartInstance = null;
