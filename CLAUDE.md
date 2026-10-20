@@ -27,3 +27,4 @@ Personal hobby site: Astro 7 (static) + Cloudflare Pages Functions. Each mini-ap
 ## Gotchas
 - After editing scoped CSS, the dev browser can keep stale styles from HMR. Reload the page, or restart dev if that doesn't help.
 - Financial data only updates when triggered manually (Ctrl+Shift+U admin panel). See `docs/apps/financial-analysis.md`.
+- Cloudflare's build runs `npm ci` with npm 10.9.2; local npm 11 can write a lock file it rejects. After dependency changes, regenerate with `npx npm@10.9.2 install`.
