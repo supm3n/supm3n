@@ -90,11 +90,13 @@ export function satPosition(sat, date) {
   };
 }
 
-// Ground track from -minutes to +minutes around date, as [{ lon, lat, t }]
-export function groundTrack(sat, date, minutes = 90, stepSec = 30) {
+// Ground track from -past to +future minutes around date, as [{ lon, lat, t }].
+// Kept under one lap (~93 min): longer, and the Earth's turn under the orbit
+// draws the next pass as a second, offset line.
+export function groundTrack(sat, date, past = 30, future = 60, stepSec = 30) {
   const pts = [];
   const t0 = date.getTime();
-  for (let s = -minutes * 60; s <= minutes * 60; s += stepSec) {
+  for (let s = -past * 60; s <= future * 60; s += stepSec) {
     const p = satPosition(sat, new Date(t0 + s * 1000));
     if (p) pts.push({ lon: p.lon, lat: p.lat, t: s });
   }
