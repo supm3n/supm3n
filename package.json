@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
-    "astro": "^6.4.8",
+    "astro": "^7.4.1",
     "astronomy-engine": "^2.1.19",
     "satellite.js": "^7.1.0"
   }

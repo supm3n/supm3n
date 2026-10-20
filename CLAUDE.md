@@ -1,6 +1,6 @@
 # Supm3n
 
-Personal hobby site: Astro 5 (static) + Cloudflare Pages Functions. Each mini-app lives in `src/pages/<app>/`. Pushing to `main` deploys supm3n.com.
+Personal hobby site: Astro 7 (static) + Cloudflare Pages Functions. Each mini-app lives in `src/pages/<app>/`. Pushing to `main` deploys supm3n.com.
 
 ## Commands
 - `npm run dev` → http://localhost:4321. `functions/` (the `/api/*` routes) does not run here; test API-backed apps on the live site, with `npx wrangler pages dev ./dist` (secrets in `.dev.vars`), or by stubbing `window.fetch` for `/api/...` in the dev browser.
