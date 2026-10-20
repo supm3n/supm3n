@@ -7,6 +7,8 @@ export default defineConfig({
   build: {
     // Removed "format: 'file'" to prevent redirect conflicts
   },
+  // Astro 7 defaults to 'jsx' whitespace rules, which drop spaces between inline elements.
+  compressHTML: true,
 
   integrations: [sitemap()]
 });

@@ -1,7 +1,7 @@
 # Architecture
 
 ## Overview
-Static Astro 5 site on Cloudflare Pages. Cloudflare builds on every push to `main` (`npm run build` → `dist/`). The few server needs (API keys, database) are handled by Cloudflare Pages Functions in `functions/`.
+Static Astro 7 site on Cloudflare Pages. Cloudflare builds on every push to `main` (`npm run build` → `dist/`), on the Node version pinned in `.nvmrc`. The few server needs (API keys, database) are handled by Cloudflare Pages Functions in `functions/`.
 
 ```
 Browser ── static pages (dist/) ── Cloudflare Pages

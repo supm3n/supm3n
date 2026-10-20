@@ -2,6 +2,9 @@
 
 Newest first. One entry per decision: what, and why. Add new entries at the top.
 
+## 2026-10-20 · Astro 7, with v5 whitespace kept
+Upgraded Astro 5 → 6 → 7 (Vite 8). Astro 7 needs Node ≥ 22.22, newer than Cloudflare's default build image, so `.nvmrc` pins it. `compressHTML: true` keeps the old whitespace handling: the new `'jsx'` default glued inline elements together (card tags read `[LIVE]`, Settle Up's buttons touched). Output was checked against the v5 build: same page text, same CSS once minifier differences are normalized, same sitemap.
+
 ## 2026-10-20 · Chart.js bundled from npm, not jsDelivr
 The chart pages loaded an unpinned `chart.js` from jsDelivr, so a new major could break them without a deploy, and visitors' browsers contacted a third party. It is now an npm dependency (`^4`, locked) imported from `chart.js/auto`. Cloudflare is the only outside service the browser talks to.
 
