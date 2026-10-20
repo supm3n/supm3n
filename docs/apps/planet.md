@@ -7,7 +7,7 @@ The dotted world map with live day and night, the last 24 hours of earthquakes (
 - `src/scripts/planet/planet.js`: loads data, fills panels and the live headline, refreshes on a timer.
 - `src/scripts/planet/planetMap.js`: same land-mask idea as Trace's `worldMap.js`, but the camera is fixed, so the mask is built once per resize and each dot is shaded by the Sun's elevation.
 - `src/scripts/planet/astro.js`: subsolar point and ISS position (satellite.js via `src/scripts/lib/satellite.js`).
-- `functions/api/quakes.js`: USGS `2.5_day` feed, trimmed, edge-cached 5 min. `functions/api/tle.js`: CelesTrak groups, cached 4 h (shared with /sky).
+- `functions/api/quakes.js`: USGS `2.5_day` feed, trimmed, edge-cached 5 min. `functions/api/tle.js`: CelesTrak groups, cached 4 h (shared with /sky); falls back to the last good copy, then ARISS for the ISS.
 
 ## Notes
 - Locally, open `/planet?stub` to use `stub.js` (one day of real events, times kept relative to now).
