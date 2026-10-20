@@ -10,10 +10,14 @@ const GROUPS = new Set(['stations', 'visual', 'starlink']);
 const TTL = 4 * 60 * 60; // CelesTrak updates a few times a day
 const STALE_TTL = 3 * 24 * 60 * 60;
 const FALLBACK_TTL = 30 * 60;
+const FAILURE_TTL = 10 * 60; // CelesTrak hangs rather than refusing; don't make every visitor wait
 const ISS_FALLBACK = 'https://live.ariss.org/iss.txt';
 
 async function fetchTle(url) {
-  const upstream = await fetch(url, { headers: { 'User-Agent': 'supm3n.com (TLE cache, refreshes every 4h)' } });
+  const upstream = await fetch(url, {
+    headers: { 'User-Agent': 'supm3n.com (TLE cache, refreshes every 4h)' },
+    signal: AbortSignal.timeout(5000),
+  });
   if (!upstream.ok) throw new Error(`${new URL(url).host} returned ${upstream.status}`);
 
   const lines = (await upstream.text()).split(/\r?\n/).map((l) => l.trimEnd()).filter(Boolean);
@@ -65,5 +69,10 @@ export const onRequestGet = async ({ request }) => {
     }
   }
 
-  return Response.json({ error: 'TLE fetch failed', details: errors }, { status: 502 });
+  const failure = Response.json({ error: 'TLE fetch failed', details: errors }, {
+    status: 502,
+    headers: { 'Cache-Control': `public, max-age=${FAILURE_TTL}` },
+  });
+  await cache.put(cacheKey, failure.clone()).catch(() => {});
+  return failure;
 };
