@@ -9,8 +9,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.6.0",
-    "astro": "^5.15.9",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^6.4.8",
     "astronomy-engine": "^2.1.19",
     "satellite.js": "^7.1.0"
   }
