@@ -29,3 +29,6 @@ debug_*.sql
 
 # local Pages Functions secrets
 .dev.vars
+
+# Windows thumbnail cache
+Thumbs.db
