@@ -393,7 +393,8 @@ export class PlanetMap {
     this.label("YOU", x + 13, y - 9, "rgba(252, 165, 165, 0.95)");
   }
 
-  // Ground track: solid behind, dashed ahead, continuous over the antimeridian
+  // Ground track: solid behind, dashed ahead, continuous over the antimeridian.
+  // The far half of each fades out, so the ends read as tails, not a break.
   drawTrack(sat) {
     if (!sat.track?.length || !sat.pos) return;
     const ctx = this.octx;
@@ -402,29 +403,36 @@ export class PlanetMap {
     for (const p of sat.track) (p.t <= tNow ? past : future).push([p.lon, p.lat]);
     past.push([sat.pos.lon, sat.pos.lat]);
     future.unshift([sat.pos.lon, sat.pos.lat]);
-    const line = (pts) => {
+    // nearSat(f): how close point f (0 = first, 1 = last) is to the satellite, 0..1
+    const line = (pts, alpha, nearSat) => {
       const unwrapped = [];
       for (const [lon, lat] of pts) {
         let l = lon;
         if (unwrapped.length) l += Math.round((unwrapped[unwrapped.length - 1][0] - l) / 360) * 360;
         unwrapped.push([l, lat]);
       }
-      ctx.beginPath();
+      const n = unwrapped.length - 1;
       for (const off of [-360, 0, 360]) {
-        unwrapped.forEach(([lon, lat], i) => {
-          const [x, y] = this.toScreen(lon + off, lat);
-          i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
-        });
+        let dist = 0; // carries the dash pattern across segments
+        for (let i = 1; i <= n; i++) {
+          const [x0, y0] = this.toScreen(unwrapped[i - 1][0] + off, unwrapped[i - 1][1]);
+          const [x1, y1] = this.toScreen(unwrapped[i][0] + off, unwrapped[i][1]);
+          ctx.strokeStyle = `rgba(34, 211, 238, ${alpha * Math.min(1, 2 * nearSat(i / n))})`;
+          ctx.lineDashOffset = dist;
+          ctx.beginPath();
+          ctx.moveTo(x0, y0);
+          ctx.lineTo(x1, y1);
+          ctx.stroke();
+          dist += Math.hypot(x1 - x0, y1 - y0);
+        }
       }
-      ctx.stroke();
     };
     ctx.lineWidth = 1.25;
-    ctx.strokeStyle = "rgba(34, 211, 238, 0.55)";
-    line(past);
+    line(past, 0.55, (f) => f);
     ctx.setLineDash([3, 4]);
-    ctx.strokeStyle = "rgba(34, 211, 238, 0.4)";
-    line(future);
+    line(future, 0.4, (f) => 1 - f);
     ctx.setLineDash([]);
+    ctx.lineDashOffset = 0;
   }
 
   drawSat(sat) {
