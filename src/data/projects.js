@@ -25,6 +25,14 @@ export const projects = [
     featured: true
   },
   {
+    name: "Black-Peg Mastermind",
+    description: "Solver and simulator for Mastermind where only right-place pegs are given.",
+    url: "/black-peg-mastermind",
+    tag: "Puzzle",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="9" r="2.5"></circle><circle cx="12" cy="9" r="2.5"></circle><circle cx="19.5" cy="9" r="2.5"></circle><line x1="3" y1="17" x2="21" y2="17"></line><circle cx="8" cy="17" r="1" fill="currentColor"></circle><circle cx="12" cy="17" r="1" fill="currentColor"></circle></svg>`,
+    featured: true
+  },
+  {
     name: "Settle Up",
     description: "A tool to split expenses (Ephemeral). No data is saved.",
     url: "/settleup",

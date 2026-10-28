@@ -1,0 +1,320 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import AppHeader from "../../components/AppHeader.astro";
+import HowItWorks from "../../components/blackpeg/HowItWorks.astro";
+import "../../styles/blackpeg.css";
+
+const title = "Black-Peg Mastermind Solver & Simulator";
+const description =
+  "Free black-peg Mastermind solver and simulator: crack any code where only exact hits are counted, play against a random secret, and compare strategies.";
+---
+
+<MainLayout title={title} description={description}>
+  <main id="main-content" class="bp">
+    <div class="bp-top">
+      <AppHeader
+        class="bp-head"
+        eyebrow="Puzzle"
+        headline="Black-peg Mastermind solver and simulator"
+        sub="Solves any black-peg-only Mastermind game, where each guess only tells you how many symbols sit in exactly the right place. The black-peg Mastermind simulator lets you play one yourself or compare strategies over many games, all in your browser."
+      />
+
+      <!-- Game size: shared by every mode -->
+      <section class="bp-panel bp-size" aria-labelledby="size-title">
+        <h2 id="size-title" class="bp-label">Game size</h2>
+        <div class="bp-size-row">
+          <div class="bp-stepper" role="group" aria-labelledby="n-label">
+            <span id="n-label" class="bp-stepper-label">Code length</span>
+            <span class="bp-stepper-ctl">
+              <button type="button" class="bp-step" data-dim="N" data-step="-1" aria-label="Shorter code">−</button>
+              <output id="size-n" class="bp-step-value" aria-live="polite">10</output>
+              <button type="button" class="bp-step" data-dim="N" data-step="1" aria-label="Longer code">+</button>
+            </span>
+          </div>
+          <div class="bp-stepper" role="group" aria-labelledby="k-label">
+            <span id="k-label" class="bp-stepper-label">Symbols</span>
+            <span class="bp-stepper-ctl">
+              <button type="button" class="bp-step" data-dim="K" data-step="-1" aria-label="Fewer symbols">−</button>
+              <output id="size-k" class="bp-step-value" aria-live="polite">12</output>
+              <button type="button" class="bp-step" data-dim="K" data-step="1" aria-label="More symbols">+</button>
+            </span>
+          </div>
+          <div class="bp-presets" role="group" aria-label="Presets">
+            <button type="button" class="bp-chip" data-n="4" data-k="6" aria-pressed="false">Classic 4 × 6</button>
+            <button type="button" class="bp-chip" data-n="5" data-k="8" aria-pressed="false">5 × 8</button>
+            <button type="button" class="bp-chip" data-n="10" data-k="12" aria-pressed="true">10 × 12</button>
+          </div>
+        </div>
+        <p class="bp-size-line">
+          <span id="size-count">12¹⁰ = 61,917,364,224 possible codes</span>
+          <span id="size-symbols" class="bp-muted">Symbols A to L</span>
+        </p>
+        <div id="size-confirm" class="bp-confirm" hidden aria-live="polite">
+          <span class="bp-confirm-msg"></span>
+          <span class="bp-confirm-actions">
+            <button type="button" class="bp-btn bp-btn-primary" data-yes>Switch size</button>
+            <button type="button" class="bp-btn" data-no>Keep</button>
+          </span>
+        </div>
+      </section>
+    </div>
+
+    <div class="bp-tabs" role="tablist" aria-label="Mode">
+      <button type="button" role="tab" id="tab-solve" class="bp-tab" data-tab="solve" aria-controls="panel-solve" aria-selected="true" tabindex="0">Solve<span class="bp-tab-more"> my game</span></button>
+      <button type="button" role="tab" id="tab-play" class="bp-tab" data-tab="play" aria-controls="panel-play" aria-selected="false" tabindex="-1">Play</button>
+      <button type="button" role="tab" id="tab-simulate" class="bp-tab" data-tab="simulate" aria-controls="panel-simulate" aria-selected="false" tabindex="-1">Compare<span class="bp-tab-more"> strategies</span></button>
+    </div>
+
+    <!-- SOLVE: guess + score | history | stats + heatmap -->
+    <section id="panel-solve" class="bp-view bp-solve" role="tabpanel" aria-labelledby="tab-solve">
+      <div class="bp-grid">
+        <section class="bp-panel bp-next" aria-labelledby="s-title">
+          <div class="bp-panel-head">
+            <h2 id="s-title">Your next guess</h2>
+            <div class="bp-head-actions">
+              <button type="button" id="s-undo" class="bp-btn" disabled>Undo last</button>
+              <button type="button" id="s-reset" class="bp-btn" disabled>New game</button>
+            </div>
+          </div>
+          <div id="s-confirm" class="bp-confirm" hidden aria-live="polite">
+            <span class="bp-confirm-msg"></span>
+            <span class="bp-confirm-actions">
+              <button type="button" class="bp-btn bp-btn-primary" data-yes>Clear</button>
+              <button type="button" class="bp-btn" data-no>Keep</button>
+            </span>
+          </div>
+
+          <div class="bp-guess-block">
+            <p id="s-guess-label" class="bp-label">Type this into your game</p>
+            <div id="s-guess" class="bp-guess-big"></div>
+            <div class="bp-row">
+              <button type="button" id="s-copy" class="bp-btn" disabled>Copy</button>
+              <button type="button" id="s-pick-back" class="bp-btn bp-btn-quiet" hidden>Back to the suggestion</button>
+              <span id="s-copy-msg" class="bp-muted" aria-live="polite"></span>
+            </div>
+            <p id="s-info" class="bp-info"></p>
+          </div>
+
+          <div class="bp-score-block">
+            <h3 class="bp-h3">Then tap the score your game showed</h3>
+            <div id="s-scores" class="bp-scores" role="group" aria-label="Score shown by your game"></div>
+          </div>
+
+          <details id="s-own" class="bp-own">
+            <summary>I typed something different</summary>
+            <div class="bp-own-body">
+              <label for="s-own-input" class="bp-field-label">My guess</label>
+              <div class="bp-row">
+                <input id="s-own-input" class="bp-code-input" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="s-own-help s-own-err" />
+                <div id="s-own-preview" class="bp-own-preview" aria-hidden="true"></div>
+              </div>
+              <p id="s-own-help" class="bp-help">Type the guess you entered, then tap its score above.</p>
+              <p id="s-own-err" class="bp-error" aria-live="polite"></p>
+            </div>
+          </details>
+        </section>
+
+        <section class="bp-panel bp-hist-panel" aria-labelledby="s-hist-title">
+          <div class="bp-panel-head">
+            <h2 id="s-hist-title">Your guesses</h2>
+          </div>
+          <ol id="s-history" class="bp-history"></ol>
+          <p id="s-history-empty" class="bp-help bp-empty">No guesses yet.</p>
+          <div id="s-cands-box" class="bp-cands-box" hidden>
+            <h3 class="bp-h3">Codes that still fit</h3>
+            <p class="bp-help">Tap one to use it as your next guess.</p>
+            <ul id="s-cands" class="bp-cands"></ul>
+          </div>
+        </section>
+
+        <section class="bp-panel bp-where" aria-labelledby="s-where-title">
+          <div class="bp-panel-head">
+            <h2 id="s-where-title">Where you are</h2>
+          </div>
+          <div class="bp-stats">
+            <div class="bp-stat">
+              <span class="bp-label">Codes still possible</span>
+              <span id="s-total" class="bp-stat-value">61,917,364,224</span>
+            </div>
+            <div class="bp-stat">
+              <span class="bp-label">Guesses so far</span>
+              <span id="s-count" class="bp-stat-value">0</span>
+            </div>
+          </div>
+          <p id="s-status" class="bp-status" aria-live="polite">Loading the solver…</p>
+        </section>
+
+        <section class="bp-panel bp-heat-panel" aria-labelledby="s-heat-title">
+          <div class="bp-panel-head bp-panel-head-stack">
+            <h2 id="s-heat-title">Where each symbol can be</h2>
+            <p id="s-heat-note" class="bp-help">Chance of each symbol at each position.</p>
+          </div>
+          <div class="bp-heat-wrap" tabindex="0" role="region" aria-label="Chance of each symbol at each position">
+            <table id="s-heat" class="bp-heat"></table>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- PLAY: board | compose + controls (compose first on small screens) -->
+    <section id="panel-play" class="bp-view bp-play" role="tabpanel" aria-labelledby="tab-play" hidden>
+      <div class="bp-grid">
+        <section class="bp-panel bp-play-side" aria-labelledby="p-side-title">
+          <div class="bp-panel-head">
+            <h2 id="p-side-title">Your game</h2>
+            <div class="bp-head-actions">
+              <button type="button" id="p-new" class="bp-btn">New secret</button>
+            </div>
+          </div>
+          <div id="p-confirm" class="bp-confirm" hidden aria-live="polite">
+            <span class="bp-confirm-msg"></span>
+            <span class="bp-confirm-actions">
+              <button type="button" class="bp-btn bp-btn-primary" data-yes>New secret</button>
+              <button type="button" class="bp-btn" data-no>Keep playing</button>
+            </span>
+          </div>
+
+          <div id="p-compose" class="bp-compose">
+            <h3 class="bp-h3" id="p-compose-title">Your guess</h3>
+            <div id="p-slots" class="bp-slots" role="group" aria-labelledby="p-compose-title"></div>
+            <div id="p-palette" class="bp-palette" role="group" aria-label="Symbols"></div>
+            <div class="bp-compose-row">
+              <label class="bp-inline-field bp-compose-field">
+                <span class="bp-field-label">Or type it</span>
+                <input id="p-input" class="bp-code-input" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="p-keys p-err" />
+              </label>
+              <button type="button" id="p-clear" class="bp-btn bp-btn-quiet">Clear</button>
+              <button type="button" id="p-submit" class="bp-btn bp-btn-primary" disabled>Guess</button>
+            </div>
+            <p id="p-keys" class="bp-help">Keyboard: type letters, Backspace to remove, Enter to guess. Tap a filled slot to clear it.</p>
+            <p id="p-err" class="bp-error" aria-live="polite"></p>
+          </div>
+
+          <!-- feedback right under the input, so it shows on a phone after Guess -->
+          <p id="p-status" class="bp-status" aria-live="polite">Make your first guess.</p>
+          <div id="p-result" class="bp-result" hidden aria-live="polite"></div>
+
+          <div class="bp-row">
+            <button type="button" id="p-hint" class="bp-btn">Hint</button>
+            <button type="button" id="p-reveal" class="bp-btn">Reveal / give up</button>
+          </div>
+          <div id="p-hint-box" class="bp-hint" hidden aria-live="polite">
+            <h3 class="bp-h3">The solver would guess</h3>
+            <div id="p-hint-pegs"></div>
+            <p id="p-hint-note" class="bp-help"></p>
+            <button type="button" id="p-hint-use" class="bp-btn">Use this guess</button>
+          </div>
+
+          <div class="bp-stats">
+            <div class="bp-stat">
+              <span class="bp-label">Codes still possible</span>
+              <span id="p-total" class="bp-stat-value">61,917,364,224</span>
+            </div>
+            <div class="bp-stat">
+              <span class="bp-label">Guesses</span>
+              <span id="p-count" class="bp-stat-value">0</span>
+            </div>
+            <div class="bp-stat">
+              <span class="bp-label">Hints</span>
+              <span id="p-hints" class="bp-stat-value">0</span>
+            </div>
+          </div>
+          <div id="p-secret-box" class="bp-secret" hidden>
+            <h3 class="bp-h3">The secret</h3>
+            <div id="p-secret"></div>
+          </div>
+        </section>
+
+        <section class="bp-panel bp-board-panel" aria-labelledby="p-title">
+          <div class="bp-panel-head bp-panel-head-stack">
+            <h2 id="p-title">Crack the secret</h2>
+            <p class="bp-help">The computer picked a secret code. After each guess you only learn how many symbols are in exactly the right place.</p>
+          </div>
+          <ol id="p-board" class="bp-history bp-board"></ol>
+          <p id="p-board-empty" class="bp-help bp-empty">Your guesses will appear here.</p>
+        </section>
+      </div>
+    </section>
+
+    <!-- COMPARE STRATEGIES: settings | results + watch -->
+    <section id="panel-simulate" class="bp-view bp-sim" role="tabpanel" aria-labelledby="tab-simulate" hidden>
+      <div class="bp-sim-side">
+        <section class="bp-panel bp-sim-settings" aria-labelledby="c-title">
+          <div class="bp-panel-head bp-panel-head-stack">
+            <h2 id="c-title">Compare strategies</h2>
+            <p class="bp-help">Every method plays the same random secret codes. A game counts every guess, including the final one that hits every position.</p>
+          </div>
+          <fieldset class="bp-strats-set">
+            <legend class="bp-h3">Methods</legend>
+            <div id="c-strats" class="bp-strats"></div>
+          </fieldset>
+          <div class="bp-sim-controls">
+            <label class="bp-inline-field">
+              <span class="bp-field-label">Games</span>
+              <input id="c-games" type="number" min="1" max="100000" step="1" value="200" inputmode="numeric" />
+            </label>
+            <label class="bp-inline-field">
+              <span class="bp-field-label">Seed (optional)</span>
+              <input id="c-seed" type="text" placeholder="random" autocomplete="off" spellcheck="false" />
+            </label>
+            <div class="bp-run-row">
+              <button type="button" id="c-run" class="bp-btn bp-btn-primary">Run</button>
+              <button type="button" id="c-stop" class="bp-btn" disabled>Stop</button>
+            </div>
+          </div>
+          <div class="bp-progress" aria-hidden="true"><div id="c-progress"></div></div>
+          <p id="c-prog-text" class="bp-help bp-num" aria-live="off"></p>
+          <p id="c-note" class="bp-status" aria-live="polite">Pick the methods, then press Run.</p>
+        </section>
+      </div>
+
+      <div class="bp-sim-main">
+        <section id="c-results" class="bp-panel" aria-labelledby="c-res-title" hidden>
+          <div class="bp-panel-head">
+            <h2 id="c-res-title">Results</h2>
+          </div>
+          <div class="bp-table-wrap" tabindex="0" role="region" aria-label="Results table">
+            <table id="c-table" class="bp-table"></table>
+          </div>
+          <p class="bp-help">± is the 95% confidence interval. "Extra vs best" compares each method with the best one on exactly the same secret codes.</p>
+          <h3 class="bp-h3">How many guesses each game took</h3>
+          <div id="c-chart" class="bp-chart"></div>
+        </section>
+
+        <section class="bp-panel" aria-labelledby="w-title">
+          <div class="bp-panel-head bp-panel-head-stack">
+            <h2 id="w-title">Watch one game</h2>
+            <p class="bp-help">Pick a method and a secret, then replay the game guess by guess.</p>
+          </div>
+          <div class="bp-watch-controls">
+            <label class="bp-inline-field">
+              <span class="bp-field-label">Method</span>
+              <select id="w-strat"></select>
+            </label>
+            <label class="bp-inline-field bp-watch-secret">
+              <span class="bp-field-label">Secret</span>
+              <input id="w-secret" class="bp-code-input" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="w-err" />
+            </label>
+            <button type="button" id="w-rand" class="bp-btn">Random</button>
+            <button type="button" id="w-play" class="bp-btn">Play</button>
+          </div>
+          <p id="w-err" class="bp-error" aria-live="polite"></p>
+          <p class="bp-help">Ringed pegs are the hits. The real game never shows which ones: it only gives the count.</p>
+          <p id="w-note" class="bp-status" aria-live="polite"></p>
+          <ol id="w-log" class="bp-history"></ol>
+        </section>
+      </div>
+    </section>
+
+    <noscript>
+      <p class="bp-panel bp-noscript">This solver runs in your browser and needs JavaScript.</p>
+    </noscript>
+
+    <HowItWorks />
+  </main>
+
+  <script>
+    import { initBlackPeg } from "../../scripts/blackpeg/app.js";
+    initBlackPeg();
+  </script>
+</MainLayout>

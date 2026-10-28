@@ -2,6 +2,12 @@
 
 Newest first. One entry per decision: what, and why. Add new entries at the top.
 
+## 2026-10-28 · Black-peg Mastermind uses the full width, on opaque cards
+The tool sat in a 1100px strip with translucent panels that matched the particle canvas (1.0:1). It now fills a 1680px container (Solve in three columns, Play and Compare with a sticky side column) on near-opaque cards with a visible edge and shadow, inset groups one step off the card, and control borders at 3:1 or better. In light theme `blackpeg.css` tints `--bg-gradient` slate for this page only, since white cards on the white page centre had no edge.
+
+## 2026-10-28 · Black-peg Mastermind runs entirely in the browser
+Solving and simulating run in a module Web Worker, so long simulations don't freeze the page and no guesses or codes leave the browser. The prototype's luck correction was dropped: its constants were tuned for 10 × 12 only and would be wrong at other sizes; plain averages with paired differences are honest at any size. Two-step lookahead is hidden and never computed, since it matched Max information within noise at about 3× the cost.
+
 ## 2026-10-20 · TLE function survives CelesTrak failures
 On the live site the CelesTrak fetch failed (Cloudflare 502), so Planet Now and Above You lost the ISS. `/api/tle` now catches the error, serves the last good copy (kept 3 days), and for `stations` falls back to ARISS's ISS-only TLE (cached 30 min so CelesTrak is retried). Failures return JSON with the reason.
 

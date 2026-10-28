@@ -1,0 +1,471 @@
+---
+// Explanatory text and FAQ shown below the Black-Peg Mastermind tool.
+// The FAQ list feeds both the visible questions and the FAQPage JSON-LD,
+// so the structured data always matches what is on the page.
+const faq = [
+  {
+    q: "Can I use it for a game that only tells me how many are in the right place?",
+    a: "Yes. That is exactly black-peg Mastermind. Enter each guess and the number of positions that matched, and the solver shows how many codes still fit and which guess to try next."
+  },
+  {
+    q: "Does it work with repeated symbols?",
+    a: "Yes. Codes may repeat symbols, and guesses may too. A code like AABA is as valid as ABCD."
+  },
+  {
+    q: "What sizes are supported?",
+    a: "Codes of 2 to 12 positions, with 2 to 16 symbols (the letters A to P). The presets are classic 4 × 6, 5 × 8 and 10 × 12."
+  },
+  {
+    q: "Can I simulate games, not just solve them?",
+    a: "Yes. The page is also a black-peg Mastermind simulator. Play lets you crack a random secret yourself, and Compare strategies plays many games with every strategy on the same secret codes, then reports the average, median and worst number of guesses. You can also watch a single game step by step."
+  },
+  {
+    q: "Is anything sent to a server?",
+    a: "No. Everything runs in your browser, in background workers. Your guesses, answers and secret codes never leave the page."
+  },
+  {
+    q: "Why does the solver suggest a code that can't be the answer?",
+    a: "Because it picks the guess whose answer tells it the most, and that is often a code already ruled out. Such a guess can put known-wrong symbols in some positions to isolate the others. When only a few codes remain, it prefers ones that could win right away."
+  },
+  {
+    q: "What if my game also gives \"right colour, wrong place\"?",
+    a: "Then it is classic Mastermind, and this solver ignores that extra information. You can still use it with only the right-place count, but a classic Mastermind solver will need fewer guesses."
+  }
+];
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "Black-Peg Mastermind Solver & Simulator",
+    url: new URL(Astro.url.pathname, Astro.site).href, // same as the page's canonical
+    applicationCategory: "GameApplication",
+    operatingSystem: "Any",
+    browserRequirements: "Requires JavaScript and Web Workers. Runs entirely in the browser.",
+    isAccessibleForFree: true,
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    description:
+      "Solver and simulator for black-peg Mastermind, where each guess only reveals how many symbols are in the right place. Counts the remaining codes exactly, suggests the most informative guess and compares strategies, for 2 to 12 positions and 2 to 16 symbols."
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map(({ q, a }) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: { "@type": "Answer", text: a }
+    }))
+  }
+];
+---
+
+<section class="bp-how" aria-label="About black-peg Mastermind">
+  <article class="bp-how-card bp-how-intro" aria-labelledby="bp-how-rules">
+    <h2 id="bp-how-rules">What is black-peg Mastermind?</h2>
+    <div class="bp-how-text">
+      <p>
+        A secret code has <em>N</em> positions, each holding one of <em>K</em> symbols. Repeats are allowed.
+        You guess any code of the same length, and the only answer is the number of positions where your
+        guess and the secret have the same symbol, from 0 to <em>N</em>. You never learn <em>which</em>
+        positions matched. The game ends when the answer is <em>N</em>/<em>N</em>; that final guess counts.
+      </p>
+      <p>
+        Classic Mastermind answers with two kinds of pegs: black for the right colour in the right place and
+        white for the right colour in the wrong place. Black-peg Mastermind, also called black-peg only
+        Mastermind, gives just the black pegs. One count can be explained in many different ways, which is
+        what makes it hard.
+      </p>
+    </div>
+    <div class="bp-example">
+      <p class="bp-example-title">Example</p>
+      <p>
+        Secret <code>GGHHKGAGHF</code>, guess <code>HHHHHHHHHH</code>. The H in positions 3, 4 and 9
+        matches, so the answer is <strong>3</strong>. Nothing says which three.
+      </p>
+    </div>
+  </article>
+
+  <article class="bp-how-card" aria-labelledby="bp-how-solver">
+    <h2 id="bp-how-solver">How the solver works</h2>
+    <p>
+      The solver keeps track of every code that still fits all answers so far, without ever listing them.
+      For each code, the number of matches with each past guess forms a tally. Going position by position,
+      a dynamic program counts how many codes reach every possible tally, and only the codes whose tally
+      equals the answers exactly are kept. That gives the exact number of remaining codes, even when it is
+      in the billions.
+    </p>
+    <p>
+      The same counts let it draw remaining codes uniformly at random and give the chance of each symbol
+      at each position. To choose a guess, it looks for the one whose answer is the least predictable over
+      those codes, i.e. carries the most information (entropy). It starts from several random and
+      frequency-weighted guesses and improves each by hill climbing: repeatedly applying the single-symbol
+      change that raises the information most.
+    </p>
+    <p>
+      The best guess is often <em>not</em> a possible answer. Placing symbols already known to be wrong in
+      some positions makes the count speak only about the others. Near the end, when few codes remain, the
+      solver prefers guesses that could also win.
+    </p>
+  </article>
+
+  <article class="bp-how-card" aria-labelledby="bp-how-count">
+    <h2 id="bp-how-count">How many guesses does it take?</h2>
+    <p>
+      There are <em>K</em><sup><em>N</em></sup> possible codes, so finding one takes
+      log<sub>2</sub>(<em>K</em><sup><em>N</em></sup>) bits of information. An answer from 0 to <em>N</em>
+      can carry at most log<sub>2</sub>(<em>N</em>&nbsp;+&nbsp;1) bits, so no strategy can always succeed
+      in fewer than log<sub>2</sub>(<em>K</em><sup><em>N</em></sup>)&nbsp;/&nbsp;log<sub>2</sub>(<em>N</em>&nbsp;+&nbsp;1)
+      answered guesses.
+    </p>
+    <p>
+      For 10 positions and 12 symbols that is 35.85 bits, with at most 3.46 bits per answer: about 10.4
+      guesses. Real answers are far from evenly spread. Against a fresh code each position matches with
+      probability 1/12, so the first answer carries only about 1.70 bits, whatever the first guess is.
+      Measured averages at 10 × 12:
+    </p>
+    <div class="bp-how-table-wrap">
+      <table class="bp-how-table">
+        <thead>
+          <tr><th scope="col">Strategy</th><th scope="col">Average guesses</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Max information</td><td>≈ 17.9</td></tr>
+          <tr><td>Any possible code</td><td>≈ 18.5</td></tr>
+          <tr><td>Count, then halve</td><td>≈ 30.0</td></tr>
+          <tr><td>Count, then one by one</td><td>≈ 32.8</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>For other sizes, run <strong>Compare strategies</strong> above; every strategy plays the same secrets.</p>
+  </article>
+
+  <article class="bp-how-card" aria-labelledby="bp-how-strats">
+    <h2 id="bp-how-strats">The strategies</h2>
+    <dl class="bp-how-strats">
+      <dt>Max information <span class="bp-how-tag">recommended</span></dt>
+      <dd>
+        Each turn, picks the guess whose answer splits the remaining codes as evenly as possible across all
+        possible answers, found by the hill climb described above.
+      </dd>
+      <dt>Any possible code</dt>
+      <dd>
+        Each turn, guesses a random code that still fits every answer. Simple and surprisingly strong, but
+        it never uses the more informative "impossible" probes.
+      </dd>
+      <dt>Count, then halve</dt>
+      <dd>
+        First counts each symbol with guesses like <code>AAAA</code>, <code>BBBB</code>, and picks an absent
+        symbol as a blank filler. Then finds each symbol's positions by binary search: put it in half of the
+        open positions, blanks elsewhere, and split again. The best method that is easy to run by hand.
+      </dd>
+      <dt>Count, then one by one</dt>
+      <dd>
+        Counts each symbol the same way, then fills the positions in turn, trying the most frequent remaining
+        candidate with blanks everywhere else until the answer confirms it.
+      </dd>
+    </dl>
+    <p class="bp-note">
+      Both count methods need a symbol that is certainly absent, which is only guaranteed when there are more
+      symbols than positions. With <em>K</em> ≤ <em>N</em> they are unavailable.
+    </p>
+  </article>
+
+  <article class="bp-how-card" aria-labelledby="bp-how-known">
+    <h2 id="bp-how-known">Known results</h2>
+    <p>
+      For classic 4 × 6 Mastermind with white pegs, Knuth (1976) showed every code can be found in at most
+      five guesses. For black-peg Mastermind the research is about how the number of guesses grows with very
+      large codes:
+    </p>
+    <ul>
+      <li>
+        Doerr, Spöhel, Thomas and Winzen,
+        <a href="https://arxiv.org/abs/1207.0773" rel="noopener" target="_blank">Playing Mastermind with Many Colors</a>,
+        give bounds that hold even with black pegs only.
+      </li>
+      <li>
+        Martinsson and Su,
+        <a href="https://arxiv.org/abs/2011.05921" rel="noopener" target="_blank">Mastermind with a Linear Number of Queries</a>,
+        settle the randomised query complexity of black-peg Mastermind: Θ(<em>n</em> log <em>k</em> / log <em>n</em> + <em>k</em>).
+      </li>
+    </ul>
+    <p>
+      None of these gives the optimal strategy for a specific size like 10 × 12, which is far beyond
+      exhaustive search. A greedy one-step method like Max information is the practical approach.
+    </p>
+  </article>
+
+  <article class="bp-how-card bp-how-faq" aria-labelledby="bp-how-faq">
+    <h2 id="bp-how-faq">FAQ</h2>
+    <div class="bp-faq">
+      {faq.map(({ q, a }) => (
+        <div class="bp-faq-item">
+          <h3>{q}</h3>
+          <p>{a}</p>
+        </div>
+      ))}
+    </div>
+  </article>
+</section>
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+<style>
+  /* Lives inside main.bp, so the card and inset tokens come from blackpeg.css. */
+  .bp-how {
+    --how-text: var(--bp-text);
+    --how-muted: var(--bp-muted);
+    --how-heading: var(--bp-heading);
+    --how-link: var(--bp-link);
+    --how-link-hover: var(--bp-accent-text);
+    --how-accent: var(--bp-accent-text);
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 48px;
+    color: var(--how-text);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .bp-how-card {
+    min-width: 0;
+    padding: 20px;
+    background: var(--bp-panel);
+    border: 1px solid var(--bp-line);
+    border-radius: 16px;
+    box-shadow: var(--bp-shadow);
+  }
+
+  .bp-how-card > *,
+  .bp-how-text > * {
+    max-width: 75ch;
+  }
+
+  .bp-how h2 {
+    margin: 0 0 12px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--how-heading);
+    text-wrap: balance;
+  }
+
+  .bp-how h3 {
+    margin: 0 0 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--how-heading);
+  }
+
+  .bp-how p,
+  .bp-how ul {
+    margin: 0 0 16px;
+  }
+
+  .bp-how-card > :last-child,
+  .bp-how-text > :last-child {
+    margin-bottom: 0;
+  }
+
+  .bp-how ul {
+    padding-left: 1.25rem;
+  }
+
+  .bp-how li {
+    margin-bottom: 8px;
+  }
+
+  .bp-how a {
+    color: var(--how-link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .bp-how a:hover {
+    color: var(--how-link-hover);
+  }
+
+  .bp-how code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    padding: 0.05em 0.35em;
+    border-radius: 4px;
+    background: var(--bp-inset);
+    border: 1px solid var(--bp-inset-line);
+    letter-spacing: 0.05em;
+  }
+
+  .bp-example,
+  .bp-how-table-wrap,
+  .bp-faq-item {
+    background: var(--bp-inset);
+    border: 1px solid var(--bp-inset-line);
+    border-radius: 10px;
+  }
+
+  .bp-example {
+    padding: 16px;
+    margin: 0 0 16px;
+  }
+
+  .bp-example-title {
+    margin: 0 0 4px !important;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--how-accent);
+  }
+
+  .bp-how-table-wrap {
+    margin: 0 0 16px;
+    overflow-x: auto;
+  }
+
+  .bp-how-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  .bp-how-table th,
+  .bp-how-table td {
+    padding: 8px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--bp-inset-line);
+  }
+
+  .bp-how-table tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .bp-how-table th {
+    font-weight: 600;
+    color: var(--how-muted);
+  }
+
+  .bp-how-table td:last-child,
+  .bp-how-table th:last-child {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bp-how-strats {
+    margin: 0 0 16px;
+  }
+
+  .bp-how-strats dt {
+    font-weight: 600;
+    color: var(--how-heading);
+  }
+
+  .bp-how-strats dd {
+    margin: 2px 0 16px;
+    color: var(--how-text);
+  }
+
+  .bp-how-tag {
+    margin-left: 6px;
+    padding: 0.1em 0.5em;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    vertical-align: 0.15em;
+    color: var(--how-accent);
+    border: 1px solid var(--bp-accent-line);
+  }
+
+  .bp-note {
+    color: var(--how-muted);
+    font-size: 0.95rem;
+  }
+
+  .bp-faq {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .bp-how-faq > .bp-faq {
+    max-width: none;
+  }
+
+  .bp-faq-item {
+    padding: 16px;
+  }
+
+  .bp-faq-item p {
+    margin: 0;
+    max-width: 75ch;
+    color: var(--how-muted);
+  }
+
+  @media (min-width: 640px) {
+    .bp-how-card {
+      padding: 24px;
+    }
+  }
+
+  @media (min-width: 760px) {
+    .bp-faq {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* an odd last question takes the whole row instead of leaving a hole */
+    .bp-faq > :last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .bp-how {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* intro and FAQ run the full width; the four topic cards pair up */
+    .bp-how-intro,
+    .bp-how-faq {
+      grid-column: 1 / -1;
+    }
+
+    .bp-how-intro {
+      display: grid;
+      grid-template-columns: minmax(0, 75ch) minmax(18rem, 1fr);
+      grid-template-rows: auto 1fr;
+      column-gap: 32px;
+    }
+
+    /* the example fills its track instead of stopping at the text measure */
+    .bp-how-intro > .bp-example {
+      max-width: none;
+    }
+
+    .bp-how-intro > h2 {
+      grid-column: 1 / -1;
+    }
+
+    .bp-how-intro .bp-example {
+      align-self: start;
+      margin: 0;
+    }
+  }
+
+  /* three topic cards per row; the fourth pairs with the FAQ */
+  @media (min-width: 1600px) {
+    .bp-how {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .bp-how-faq {
+      grid-column: span 2;
+    }
+  }
+</style>

@@ -26,6 +26,7 @@ Browser ── static pages (dist/) ── Cloudflare Pages
 | `/sky` | Live all-sky view for the visitor's location | `/api/whoami`, `/api/tle`, `public/data/stars.json`, astronomy-engine + satellite.js. See `apps/sky.md` |
 | `/fingerprint` | Browser fingerprint signals turned into a sigil | none; browser only, sends nothing. See `apps/fingerprint.md` |
 | `/entropy` | Falling-sand automaton | Web Worker (`src/components/entropy/worker.ts`) |
+| `/black-peg-mastermind` | Black-peg Mastermind solver and strategy simulator | none; Web Worker (`src/scripts/blackpeg/worker.js`), sends nothing. See `apps/black-peg-mastermind.md` |
 
 Adding an app: create `src/pages/<app>/index.astro` using `MainLayout`, then add an entry to `src/data/projects.js`.
 

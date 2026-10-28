@@ -1,0 +1,1992 @@
+/* src/styles/blackpeg.css: Black-peg Mastermind solver and simulator
+   Scales: radius 16 card / 10 inset / 8 control; spacing 4 8 12 16 24 32. */
+
+/* ---------- tokens (dark is the site default) ---------- */
+.bp {
+    color-scheme: dark;
+
+    /* surfaces: page canvas > card > inset group */
+    --bp-panel: rgba(18, 21, 28, 0.97);
+    --bp-panel-solid: #12151c;
+    --bp-line: #343d4f;           /* card edge, 1.76:1 on the page */
+    --bp-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 8px 24px rgba(0, 0, 0, 0.45);
+    --bp-inset: #1d222c;
+    --bp-inset-line: #3a4457;     /* 1.9:1 on the card */
+    --bp-inset-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+    --bp-cell: #283040;           /* heatmap cell base, must stay a 6-digit hex */
+
+    /* controls */
+    --bp-control-line: #6b7a90;   /* 3.6:1 on inset, 4.2:1 on card */
+    --bp-control-hover: #94a3b8;
+    --bp-disabled-line: #4b5568;
+    --bp-field: #0c0e13;
+    --bp-hover: rgba(148, 163, 184, 0.1);
+    --bp-tab-on: #262d3a;
+
+    /* text */
+    --bp-text: #e2e8f0;
+    --bp-muted: #94a3b8;
+    --bp-heading: #f8fafc;
+
+    /* accent: solid fill for the one primary action, the rest for selection and labels */
+    --bp-primary: #dc2626;        /* white text 4.83:1 */
+    --bp-primary-hover: #b91c1c;
+    --bp-on-primary: #ffffff;
+    --bp-accent: #ef4444;
+    --bp-accent-soft: rgba(239, 68, 68, 0.14);
+    --bp-accent-mid: rgba(239, 68, 68, 0.24);
+    --bp-accent-line: rgba(239, 68, 68, 0.5);
+    --bp-accent-text: #fca5a5;
+    --bp-link: #f87171;
+    --bp-focus: #22d3ee;
+    --bp-selection: rgba(239, 68, 68, 0.35);
+
+    /* pegs */
+    --bp-hole: #0a0c10;
+    --bp-ring: rgba(255, 255, 255, 0.35); /* 3.2:1 on the card */
+    --bp-shade: rgba(0, 0, 0, 0.45);
+    --bp-ink-dark: #000000;
+    --bp-ink-light: #ffffff;
+
+    /* states */
+    --bp-ok: #4ade80;
+    --bp-ok-bg: rgba(74, 222, 128, 0.12);
+    --bp-hit-text: #fbbf24;
+    --bp-error: #fca5a5;
+    --bp-warn-bg: rgba(251, 191, 36, 0.08);
+    --bp-warn-line: rgba(251, 191, 36, 0.45);
+
+    /* strategy series */
+    --bp-s0: #ef4444;
+    --bp-s1: #22d3ee;
+    --bp-s2: #fbbf24;
+    --bp-s3: #a78bfa;
+
+    /* 16 peg colours (A..P) and the letter colour on each (all >= 4.5:1) */
+    --bp-p0: #c8303a;  --bp-i0: #ffffff;
+    --bp-p1: #2f6fdf;  --bp-i1: #ffffff;
+    --bp-p2: #22a55b;  --bp-i2: #0b1410;
+    --bp-p3: #f5c518;  --bp-i3: #111827;
+    --bp-p4: #8448d6;  --bp-i4: #ffffff;
+    --bp-p5: #f97316;  --bp-i5: #111827;
+    --bp-p6: #22c3e6;  --bp-i6: #111827;
+    --bp-p7: #c42a72;  --bp-i7: #ffffff;
+    --bp-p8: #f1f5f9;  --bp-i8: #111827;
+    --bp-p9: #1f2937;  --bp-i9: #ffffff;
+    --bp-p10: #8b5a2b; --bp-i10: #ffffff;
+    --bp-p11: #a3e635; --bp-i11: #111827;
+    --bp-p12: #8b95a5; --bp-i12: #111827;
+    --bp-p13: #9f1239; --bp-i13: #ffffff;
+    --bp-p14: #c4b5fd; --bp-i14: #111827;
+    --bp-p15: #d6b98c; --bp-i15: #111827;
+
+    padding: 0 clamp(16px, 3vw, 48px) 64px;
+    color: var(--bp-text);
+}
+
+:root[data-theme="light"] .bp {
+    color-scheme: light;
+
+    --bp-panel: #ffffff;
+    --bp-panel-solid: #ffffff;
+    --bp-line: #b8c3d1;           /* 1.6:1 on the page */
+    --bp-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.08);
+    --bp-inset: #f1f5f9;
+    --bp-inset-line: #cfd6df;
+    --bp-inset-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05);
+    --bp-cell: #e4e9ef;
+
+    --bp-control-line: #78849a;   /* 3.4:1 on inset, 3.8:1 on white */
+    --bp-control-hover: #475569;
+    --bp-disabled-line: #a3afbf;
+    --bp-field: #ffffff;
+    --bp-hover: rgba(15, 23, 42, 0.05);
+    --bp-tab-on: #eef2f6;
+
+    --bp-text: #0f172a;
+    --bp-muted: #475569;
+    --bp-heading: #0f172a;
+
+    --bp-primary: #dc2626;
+    --bp-primary-hover: #b91c1c;
+    --bp-accent: #dc2626;
+    --bp-accent-soft: rgba(220, 38, 38, 0.08);
+    --bp-accent-mid: rgba(220, 38, 38, 0.14);
+    --bp-accent-line: rgba(220, 38, 38, 0.45);
+    --bp-accent-text: #b91c1c;
+    --bp-link: #b91c1c;
+    --bp-focus: #0891b2;
+    --bp-selection: rgba(220, 38, 38, 0.2);
+
+    --bp-hole: #e2e8f0;
+    --bp-ring: rgba(15, 23, 42, 0.5);  /* 3.4:1 on white */
+    --bp-shade: rgba(15, 23, 42, 0.18);
+
+    --bp-ok: #166534;             /* 6:1 on the tinted inset */
+    --bp-ok-bg: rgba(22, 101, 52, 0.08);
+    --bp-hit-text: #92400e;
+    --bp-error: #b91c1c;
+    --bp-warn-bg: #fffbeb;
+    --bp-warn-line: rgba(217, 119, 6, 0.5);
+
+    --bp-s0: #dc2626;
+    --bp-s1: #0891b2;
+    --bp-s2: #d97706;
+    --bp-s3: #7c3aed;
+
+    --bp-p8: #ffffff;
+    --bp-p3: #f2c200;
+}
+
+/* A light slate page so the white cards read (this stylesheet only loads here) */
+:root[data-theme="light"] {
+    --bg-gradient: radial-gradient(circle at center, #eef2f6 0%, #e2e8f0 100%);
+}
+
+/* the UA [hidden] rule loses to any display set below */
+.bp [hidden] {
+    display: none !important;
+}
+
+.bp ::selection {
+    background: var(--bp-selection);
+}
+
+/* ---------- page container: every block shares one edge ---------- */
+.bp > * {
+    max-width: 1680px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bp > * + * {
+    margin-top: 16px;
+}
+
+.bp-top {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#main-content .bp-head {
+    max-width: none;
+    padding: 16px 0 0;
+}
+
+.bp-head .app-head-sub {
+    max-width: 72ch;
+}
+
+:root[data-theme="light"] .bp .app-head-title {
+    color: var(--bp-heading);
+}
+
+:root[data-theme="light"] .bp .app-head-sub {
+    color: var(--bp-muted);
+}
+
+:root[data-theme="light"] .bp .app-head-eyebrow {
+    color: var(--bp-accent-text);
+}
+
+/* ---------- type ---------- */
+.bp h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--bp-heading);
+    text-wrap: balance;
+}
+
+.bp .bp-h3 {
+    margin: 0;
+    font-size: 0.94rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--bp-heading);
+}
+
+.bp .bp-label,
+.bp h2.bp-label {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bp-muted);
+}
+
+.bp p {
+    margin: 0;
+}
+
+.bp-muted,
+.bp-help {
+    color: var(--bp-muted);
+}
+
+.bp-help {
+    font-size: 0.84rem;
+    line-height: 1.5;
+    max-width: 75ch;
+}
+
+.bp-status {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--bp-text);
+}
+
+.bp-info {
+    font-size: 0.86rem;
+    line-height: 1.5;
+    color: var(--bp-muted);
+    min-height: 1.3em;
+}
+
+.bp-error {
+    font-size: 0.84rem;
+    color: var(--bp-error);
+}
+
+.bp-error:empty {
+    display: none;
+}
+
+.bp-num {
+    font-variant-numeric: tabular-nums;
+}
+
+.bp-sr {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ---------- cards and inset groups ---------- */
+.bp-panel {
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+    padding: 16px;
+    background: var(--bp-panel);
+    border: 1px solid var(--bp-line);
+    border-radius: 16px;
+    box-shadow: var(--bp-shadow);
+}
+
+.bp-panel-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    min-height: 40px;
+}
+
+.bp-panel-head-stack {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 4px;
+    min-height: 0;
+}
+
+.bp-head-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* one step off the card, with its own edge */
+.bp-scores,
+.bp-stats,
+.bp-history,
+.bp-heat-wrap,
+.bp-table-wrap,
+.bp-compose,
+.bp-secret,
+.bp-hint {
+    background: var(--bp-inset);
+    border: 1px solid var(--bp-inset-line);
+    border-radius: 10px;
+    box-shadow: var(--bp-inset-shadow);
+}
+
+.bp-empty {
+    padding: 16px;
+    border: 1px dashed var(--bp-inset-line);
+    border-radius: 10px;
+    text-align: center;
+    max-width: none;
+}
+
+.bp-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.bp-view {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.bp-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ---------- buttons and fields ---------- */
+.bp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--bp-control-line);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--bp-text);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.bp-btn:hover:not(:disabled) {
+    border-color: var(--bp-control-hover);
+    background: var(--bp-hover);
+}
+
+.bp-btn-primary {
+    min-width: 6.5rem;
+    border-color: var(--bp-primary);
+    background: var(--bp-primary);
+    color: var(--bp-on-primary);
+}
+
+.bp-btn-primary:hover:not(:disabled) {
+    border-color: var(--bp-primary-hover);
+    background: var(--bp-primary-hover);
+}
+
+.bp-btn-quiet {
+    border-color: transparent;
+    color: var(--bp-muted);
+}
+
+.bp-btn-quiet:hover:not(:disabled) {
+    border-color: transparent;
+    color: var(--bp-text);
+}
+
+.bp-btn:disabled,
+.bp-btn-primary:disabled {
+    border-style: dashed;
+    border-color: var(--bp-disabled-line);
+    background: transparent;
+    color: var(--bp-muted);
+    cursor: not-allowed;
+}
+
+/* keeps a button shape, unlike the borderless tertiary next to it */
+.bp-btn-primary:disabled {
+    background: var(--bp-hover);
+}
+
+.bp-btn-quiet:disabled {
+    border-color: transparent;
+}
+
+.bp input[type="text"],
+.bp input[type="number"],
+.bp select {
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--bp-control-line);
+    border-radius: 8px;
+    background: var(--bp-field);
+    color: var(--bp-text);
+    font: inherit;
+    font-size: 0.9rem;
+    transition: border-color 0.15s;
+}
+
+.bp input[type="text"]:hover:not(:disabled),
+.bp input[type="number"]:hover:not(:disabled),
+.bp select:hover:not(:disabled) {
+    border-color: var(--bp-control-hover);
+}
+
+.bp input:disabled {
+    border-style: dashed;
+    color: var(--bp-muted);
+    cursor: not-allowed;
+}
+
+.bp input::placeholder {
+    color: var(--bp-muted);
+    opacity: 1;
+}
+
+.bp-code-input {
+    width: max(calc(var(--bp-n, 10) * 1.25ch + 3rem), 14ch);
+    max-width: 100%;
+    font-family: var(--font-mono) !important;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.bp-code-input::placeholder {
+    text-transform: none;
+    letter-spacing: 0.02em;
+}
+
+.bp-field-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--bp-muted);
+}
+
+.bp-inline-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.bp-inline-field input,
+.bp-inline-field select {
+    width: 100%;
+}
+
+.bp :is(button, input, select, summary, a, [tabindex]):focus-visible {
+    outline: 2px solid var(--bp-focus);
+    outline-offset: 2px;
+}
+
+/* ---------- inline confirm ---------- */
+.bp-confirm {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 12px;
+    border: 1px solid var(--bp-warn-line);
+    border-radius: 10px;
+    background: var(--bp-warn-bg);
+    font-size: 0.88rem;
+}
+
+.bp-confirm-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+/* ---------- game size bar ---------- */
+.bp-size {
+    container-type: normal;
+    gap: 12px;
+}
+
+.bp-size-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: end;
+    gap: 12px;
+}
+
+.bp-stepper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bp-stepper-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--bp-text);
+}
+
+.bp-stepper-ctl {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.bp-step {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--bp-control-line);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--bp-text);
+    font: inherit;
+    font-size: 1.15rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+.bp-step:hover:not(:disabled) {
+    border-color: var(--bp-control-hover);
+    background: var(--bp-hover);
+}
+
+.bp-step:disabled {
+    border-style: dashed;
+    border-color: var(--bp-disabled-line);
+    color: var(--bp-muted);
+    cursor: not-allowed;
+}
+
+.bp-step-value {
+    min-width: 2.4ch;
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    font-weight: 700;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    color: var(--bp-heading);
+}
+
+.bp-presets {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.bp-chip {
+    flex: 0 0 auto;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--bp-control-line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--bp-text);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.bp-chip:hover {
+    border-color: var(--bp-control-hover);
+    background: var(--bp-hover);
+}
+
+.bp-chip[aria-pressed="true"] {
+    border-color: var(--bp-accent);
+    background: var(--bp-accent-soft);
+    color: var(--bp-accent-text);
+}
+
+.bp-size-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 16px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--bp-text);
+}
+
+/* ---------- tabs ---------- */
+.bp-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--bp-line);
+    border-radius: 12px;
+    background: var(--bp-panel);
+    box-shadow: var(--bp-shadow);
+}
+
+.bp-tab {
+    flex: 1 1 0;
+    min-height: 40px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--bp-muted);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.bp-tab:hover {
+    color: var(--bp-text);
+    background: var(--bp-hover);
+}
+
+.bp-tab[aria-selected="true"] {
+    background: var(--bp-tab-on);
+    color: var(--bp-heading);
+    box-shadow: inset 0 -2px 0 var(--bp-accent);
+}
+
+/* ---------- pegs ---------- */
+.bp .s0 { --c: var(--bp-p0); --ink: var(--bp-i0); }
+.bp .s1 { --c: var(--bp-p1); --ink: var(--bp-i1); }
+.bp .s2 { --c: var(--bp-p2); --ink: var(--bp-i2); }
+.bp .s3 { --c: var(--bp-p3); --ink: var(--bp-i3); }
+.bp .s4 { --c: var(--bp-p4); --ink: var(--bp-i4); }
+.bp .s5 { --c: var(--bp-p5); --ink: var(--bp-i5); }
+.bp .s6 { --c: var(--bp-p6); --ink: var(--bp-i6); }
+.bp .s7 { --c: var(--bp-p7); --ink: var(--bp-i7); }
+.bp .s8 { --c: var(--bp-p8); --ink: var(--bp-i8); }
+.bp .s9 { --c: var(--bp-p9); --ink: var(--bp-i9); }
+.bp .s10 { --c: var(--bp-p10); --ink: var(--bp-i10); }
+.bp .s11 { --c: var(--bp-p11); --ink: var(--bp-i11); }
+.bp .s12 { --c: var(--bp-p12); --ink: var(--bp-i12); }
+.bp .s13 { --c: var(--bp-p13); --ink: var(--bp-i13); }
+.bp .s14 { --c: var(--bp-p14); --ink: var(--bp-i14); }
+.bp .s15 { --c: var(--bp-p15); --ink: var(--bp-i15); }
+
+.bp-pegs {
+    --gap: 6px;
+    --sz: min(2.5rem, calc(100cqw / var(--n) - var(--gap)));
+    display: flex;
+    flex-wrap: nowrap;
+    gap: var(--gap);
+    min-width: 0;
+}
+
+.bp-pegs-lg {
+    --sz: min(3.5rem, calc((100cqw + var(--gap)) / var(--n) - var(--gap)));
+}
+
+.bp-pegs-md {
+    --gap: 5px;
+    --sz: min(2.5rem, calc((100cqw + var(--gap)) / var(--n) - var(--gap)));
+}
+
+.bp-pegs-sm {
+    --gap: 4px;
+    --max: 1.8rem;
+    --sz: min(var(--max), calc((100cqw + var(--gap)) / var(--n) - var(--gap)));
+}
+
+.bp-pegs-xs {
+    --gap: 3px;
+    --sz: min(1.3rem, calc((100cqw - 1.5rem) / var(--n) - var(--gap)));
+}
+
+.bp-peg {
+    --c: var(--bp-hole);
+    --ink: var(--bp-text);
+    flex: 0 0 auto;
+    display: inline-grid;
+    place-items: center;
+    width: var(--sz, 2rem);
+    height: var(--sz, 2rem);
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    font-family: var(--font-mono);
+    font-size: calc(var(--sz, 2rem) * 0.5);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ink);
+    /* small highlight kept clear of the letter */
+    background:
+        radial-gradient(circle at 26% 20%, rgba(255, 255, 255, 0.42) 0, rgba(255, 255, 255, 0) 15%),
+        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.2) 100%),
+        var(--c);
+    box-shadow:
+        inset 0 -2px 3px rgba(0, 0, 0, 0.2),
+        0 0 0 1px var(--bp-ring),
+        0 2px 4px var(--bp-shade);
+    user-select: none;
+}
+
+.bp-peg.is-empty {
+    background: var(--bp-hole);
+    box-shadow:
+        inset 0 2px 4px rgba(0, 0, 0, 0.3),
+        0 0 0 1px var(--bp-control-line);
+}
+
+/* neutral ring that no peg colour shares, with a gap of surface around the peg */
+.bp-peg.is-hit {
+    outline: 2px solid var(--bp-heading);
+    outline-offset: 1px;
+}
+
+/* room between neighbouring rings */
+#w-log .bp-hrow {
+    --pgap: 8px;
+}
+
+/* long codes in a narrow card: two even rows, so the letters stay readable */
+@container (max-width: 440px) {
+    .bp[data-len="long"] .bp-pegs-lg {
+        flex-wrap: wrap;
+        --sz: min(3.5rem, calc((100cqw + var(--gap)) / var(--bp-half, 5) - var(--gap)));
+    }
+}
+
+.bp-guess-block {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.bp-guess-big {
+    display: flex;
+    min-height: 3.6rem;
+    align-items: center;
+}
+
+.bp-guess-big .bp-pegs {
+    transition: opacity 0.2s;
+}
+
+.bp-solve.is-thinking .bp-guess-big .bp-pegs {
+    opacity: 0.4;
+}
+
+.bp-chip-peg {
+    --sz: 1.25rem;
+}
+
+/* one-shot pop for new pegs and badges */
+@keyframes bp-pop {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: none; opacity: 1; }
+}
+
+.bp-pop {
+    animation: bp-pop 0.2s cubic-bezier(0.2, 0.8, 0.3, 1.15) both;
+    animation-delay: var(--d, 0ms);
+}
+
+/* ---------- score pad: the primary control in Solve ---------- */
+.bp-score-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.bp-scores {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(2.75rem, 1fr));
+    gap: 6px;
+    padding: 8px;
+}
+
+.bp-score {
+    min-height: 48px;
+    border: 1px solid var(--bp-control-line);
+    border-radius: 8px;
+    background: var(--bp-panel-solid);
+    color: var(--bp-heading);
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+.bp-score:hover:not(:disabled) {
+    border-color: var(--bp-accent);
+    background: var(--bp-accent-mid);
+}
+
+.bp-score.is-full {
+    border-color: var(--bp-ok);
+    color: var(--bp-ok);
+}
+
+.bp-score.is-full:hover:not(:disabled) {
+    background: var(--bp-ok-bg);
+    border-color: var(--bp-ok);
+}
+
+.bp-score:disabled {
+    border-color: var(--bp-inset-line);
+    background: transparent;
+    color: var(--bp-muted);
+    cursor: default;
+}
+
+/* ---------- "I typed something different" ---------- */
+.bp-own summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    min-height: 40px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--bp-muted);
+    cursor: pointer;
+}
+
+.bp-own summary:hover {
+    color: var(--bp-text);
+}
+
+.bp-own-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.bp-own-preview {
+    display: flex;
+    flex: 1 1 8rem;
+    min-width: 0;
+}
+
+/* ---------- stats ---------- */
+.bp-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+    padding: 12px 16px;
+}
+
+.bp-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.bp-stat-value {
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+    color: var(--bp-heading);
+    overflow-wrap: anywhere;
+}
+
+/* ---------- history rows ---------- */
+.bp-history {
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.bp-history:empty {
+    display: none;
+}
+
+.bp-cands-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* narrow: number + pegs, then the score line under the pegs */
+.bp-hrow {
+    display: grid;
+    grid-template-columns: 1.6rem minmax(0, 1fr);
+    grid-template-areas: "n pegs" ". meta";
+    align-items: center;
+    gap: 6px 10px;
+    padding: 8px 12px 8px 8px;
+}
+
+.bp-hrow + .bp-hrow {
+    border-top: 1px solid var(--bp-inset-line);
+}
+
+.bp-hrow-n {
+    grid-area: n;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--bp-muted);
+}
+
+.bp-hrow-pegs {
+    grid-area: pegs;
+    container-type: inline-size;
+    min-width: 0;
+}
+
+/* the Play board is the main content of its column: let its pegs grow */
+.bp-hrow {
+    --max: 1.8rem;
+    --pgap: 4px;
+}
+
+.bp-hrow .bp-pegs-sm {
+    --gap: var(--pgap);
+}
+
+.bp-board .bp-hrow,
+.bp-board .bp-pegs-sm {
+    --max: 2.25rem;
+}
+
+/* long codes in a narrow row: two even rows of readable pegs */
+@container (max-width: 300px) {
+    .bp[data-len="long"] .bp-hrow .bp-pegs-sm {
+        flex-wrap: wrap;
+        --sz: min(var(--max), calc((100cqw + var(--gap)) / var(--bp-half, 5) - var(--gap)));
+    }
+}
+
+.bp-hrow-meta {
+    grid-area: meta;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+/* one line when the row has room for pegs plus the score: the score sits
+   right after the pegs, in a column that lines up on every row, and the
+   codes-left count closes the row, right-aligned like a table column */
+@container (min-width: 360px) {
+    .bp[data-len="short"] .bp-hrow {
+        grid-template-columns: 1.6rem minmax(0, calc(var(--bp-n, 4) * (var(--max) + var(--pgap)))) minmax(max-content, 1fr);
+        grid-template-areas: "n pegs meta";
+        column-gap: 12px;
+        padding-right: 12px;
+    }
+
+    .bp[data-len="short"] .bp-left {
+        min-width: 0;
+    }
+}
+
+@container (min-width: 600px) {
+    .bp[data-len="long"] .bp-hrow {
+        grid-template-columns: 1.6rem minmax(0, calc(var(--bp-n, 10) * (var(--max) + var(--pgap)))) minmax(max-content, 1fr);
+        grid-template-areas: "n pegs meta";
+        column-gap: 12px;
+        padding-right: 12px;
+    }
+
+    .bp[data-len="long"] .bp-left {
+        min-width: 0;
+    }
+}
+
+/* the Play board and the replay log stay a compact table, not a band that
+   runs across a wide column with most of every row empty */
+.bp-board,
+#w-log {
+    max-width: calc(var(--bp-n, 4) * 2.6rem + 24rem);
+}
+
+.bp-badge {
+    padding: 3px 10px;
+    border: 1px solid var(--bp-inset-line);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    color: var(--bp-muted);
+    background: var(--bp-panel-solid);
+}
+
+.bp-badge b {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--bp-heading);
+}
+
+.bp-badge.is-full {
+    border-color: var(--bp-ok);
+    background: var(--bp-ok-bg);
+    color: var(--bp-ok);
+}
+
+.bp-badge.is-full b {
+    color: var(--bp-ok);
+}
+
+.bp-left {
+    min-width: 6.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--bp-muted);
+}
+
+/* ---------- candidates ---------- */
+.bp-cands {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.bp-cand {
+    display: flex;
+    padding: 8px;
+    border: 1px solid var(--bp-control-line);
+    border-radius: 8px;
+    background: var(--bp-inset);
+    cursor: pointer;
+    transition: border-color 0.15s, background-color 0.15s;
+}
+
+.bp-cand:hover {
+    border-color: var(--bp-control-hover);
+    background: var(--bp-hover);
+}
+
+.bp-cand[aria-pressed="true"] {
+    border-color: var(--bp-accent);
+    background: var(--bp-accent-soft);
+}
+
+/* ---------- heatmap ---------- */
+.bp-heat-wrap {
+    width: fit-content;
+    overflow-x: auto;
+    max-width: 100%;
+    padding: 8px;
+    scrollbar-color: var(--bp-control-line) transparent;
+}
+
+/* sized to its column (100cqw is the card's content box; 18px is the inset's
+   padding and border) so the inset hugs the table instead of framing space */
+.bp-heat {
+    width: min(100cqw - 18px, calc(var(--bp-n, 10) * 4.5rem + 2.5rem));
+    border-collapse: separate;
+    border-spacing: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.bp-heat th {
+    padding: 0 4px;
+    font-weight: 400;
+    color: var(--bp-muted);
+}
+
+.bp-heat tbody th {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    width: 1.75rem;
+    padding: 0 4px 0 0;
+    background: var(--bp-inset);
+}
+
+.bp-heat tbody th .bp-peg {
+    vertical-align: middle;
+}
+
+.bp-heat td {
+    position: relative;
+    min-width: 1.6rem;
+    height: 1.75rem;
+    padding: 0 2px;
+    border-radius: 6px;
+    text-align: center;
+    color: var(--bp-text);
+    background: var(--bp-cell);
+    isolation: isolate;
+}
+
+.bp-heat td::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--c);
+    opacity: var(--p, 0);
+}
+
+.bp-heat td.is-ink-dark {
+    color: var(--bp-ink-dark);
+}
+
+.bp-heat td.is-ink-light {
+    color: var(--bp-ink-light);
+}
+
+.bp-heat td.is-strong {
+    font-weight: 700;
+}
+
+.bp-heat td.is-sure {
+    box-shadow: inset 0 0 0 1px var(--bp-ring);
+}
+
+.bp-heat td.is-low::after {
+    content: "·";
+}
+
+/* ---------- play ---------- */
+.bp-board:empty {
+    display: none;
+}
+
+.bp-compose {
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+}
+
+.bp-compose.is-off .bp-slots,
+.bp-compose.is-off .bp-palette {
+    opacity: 0.45;
+}
+
+.bp-slots {
+    --gap: 5px;
+    --sz: min(2.75rem, calc((100cqw + var(--gap)) / var(--n, 10) - var(--gap)));
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap);
+}
+
+/* long codes in a narrow column: two even rows of bigger slots */
+@container (max-width: 440px) {
+    .bp[data-len="long"] .bp-slots {
+        --gap: 6px;
+        --sz: min(2.75rem, calc((100cqw + var(--gap)) / var(--bp-half, 5) - var(--gap)));
+        max-width: calc(var(--bp-half, 5) * (var(--sz) + var(--gap)));
+    }
+}
+
+.bp-slot {
+    cursor: pointer;
+}
+
+.bp-slot.is-next {
+    box-shadow:
+        inset 0 2px 4px rgba(0, 0, 0, 0.3),
+        0 0 0 2px var(--bp-accent);
+}
+
+.bp-slot:disabled {
+    cursor: default;
+}
+
+.bp-palette {
+    --sz: 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 8), var(--sz));
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.bp-peg-btn {
+    cursor: pointer;
+    transition: transform 0.12s;
+}
+
+.bp-peg-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.bp-peg-btn:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.bp-peg-btn:disabled {
+    cursor: default;
+}
+
+.bp-compose-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: end;
+    gap: 8px;
+}
+
+.bp-compose-field .bp-code-input {
+    width: 100%;
+}
+
+@container (max-width: 380px) {
+    .bp-compose-row {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .bp-compose-field {
+        grid-column: 1 / -1;
+    }
+}
+
+.bp-result {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 16px;
+    border: 1px solid var(--bp-ok);
+    border-radius: 10px;
+    background: var(--bp-ok-bg);
+}
+
+.bp-result-main {
+    font-weight: 700;
+    color: var(--bp-heading);
+}
+
+.bp-secret,
+.bp-hint {
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px;
+}
+
+.bp-secret > div,
+.bp-hint > div {
+    align-self: stretch;
+}
+
+/* ---------- compare strategies ---------- */
+.bp-sim-side,
+.bp-sim-main {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+}
+
+.bp-strats-set {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.bp-strats-set legend {
+    margin-bottom: 8px;
+    padding: 0;
+}
+
+.bp-strats {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+}
+
+.bp-strat {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 10px;
+    align-items: start;
+    padding: 12px;
+    border: 1px solid var(--bp-inset-line);
+    border-radius: 10px;
+    background: transparent;
+    cursor: pointer;
+    transition: border-color 0.15s, background-color 0.15s;
+}
+
+.bp-strat:hover {
+    border-color: var(--bp-control-line);
+}
+
+.bp-strat:has(input:checked) {
+    border-color: var(--bp-control-line);
+    background: var(--bp-inset);
+}
+
+.bp-strat input {
+    width: 18px;
+    height: 18px;
+    margin: 2px 0 0;
+    accent-color: var(--bp-primary);
+}
+
+.bp-strat.is-off {
+    cursor: default;
+}
+
+.bp-strat.is-off input,
+.bp-strat.is-off .bp-strat-name,
+.bp-strat.is-off .bp-strat-desc {
+    opacity: 0.6;
+}
+
+.bp-strat-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bp-strat-name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--bp-heading);
+}
+
+.bp-strat-desc {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: var(--bp-muted);
+}
+
+.bp-strat-why {
+    font-size: 0.8rem;
+    color: var(--bp-hit-text);
+}
+
+.bp-swatch {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+    border-radius: 3px;
+    vertical-align: 0;
+}
+
+.bp-strat-name .bp-swatch {
+    margin-right: 0;
+}
+
+.bp-tag {
+    padding: 1px 8px;
+    border: 1px solid var(--bp-accent-line);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--bp-accent-text);
+}
+
+.bp-sim-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: end;
+    gap: 12px;
+}
+
+.bp-run-row {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+}
+
+.bp-watch-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: end;
+    gap: 12px;
+}
+
+.bp-watch-controls .bp-inline-field {
+    grid-column: 1 / -1;
+}
+
+.bp-progress {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--bp-inset);
+    box-shadow: inset 0 0 0 1px var(--bp-inset-line);
+}
+
+.bp-progress > div {
+    width: 0;
+    height: 100%;
+    border-radius: 4px;
+    background: var(--bp-accent);
+    transition: width 0.2s;
+}
+
+.bp-progress + .bp-help:empty {
+    display: none;
+}
+
+.bp-table-wrap {
+    overflow-x: auto;
+    max-width: 100%;
+    scrollbar-color: var(--bp-control-line) transparent;
+}
+
+.bp-table {
+    width: 100%;
+    min-width: 640px;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.bp-table th,
+.bp-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--bp-inset-line);
+    text-align: right;
+    white-space: nowrap;
+}
+
+.bp-table tbody tr:last-child > * {
+    border-bottom: 0;
+}
+
+.bp-table thead th {
+    min-width: 4.5rem;
+    white-space: normal;
+    vertical-align: bottom;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bp-muted);
+}
+
+.bp-table th:first-child {
+    position: sticky;
+    left: 0;
+    text-align: left;
+    background: var(--bp-inset);
+}
+
+.bp-table tbody th {
+    font-weight: 600;
+    color: var(--bp-heading);
+}
+
+.bp-table tr.is-best > * {
+    background: linear-gradient(var(--bp-hover), var(--bp-hover)), var(--bp-inset);
+}
+
+.bp-table tr.is-best td b,
+.bp-table tr.is-best th {
+    color: var(--bp-heading);
+}
+
+.bp-pm {
+    font-size: 0.78rem;
+    color: var(--bp-muted);
+}
+
+.bp-chart {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.bp-chart svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.bp-chart .bp-ch-lab {
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 600;
+    fill: var(--bp-heading);
+}
+
+.bp-chart .bp-ch-txt {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    fill: var(--bp-muted);
+}
+
+.bp-chart .bp-ch-axis {
+    stroke: var(--bp-muted);
+}
+
+.bp-chart .bp-ch-mean {
+    stroke: var(--bp-heading);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 2;
+}
+
+.bp-noscript {
+    color: var(--bp-text);
+}
+
+/* ---------- small screens ---------- */
+@media (max-width: 479px) {
+    .bp-tab-more {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    /* phones: get the first guess and the score pad into the first screen */
+    .bp-top,
+    .bp-view,
+    .bp-grid {
+        gap: 12px;
+    }
+
+    .bp > * + * {
+        margin-top: 12px;
+    }
+
+    #main-content .bp-head {
+        padding-top: 8px;
+    }
+
+    .bp-head .app-head-sub {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        overflow: hidden;
+        font-size: 0.86rem;
+    }
+
+    .bp-panel {
+        gap: 12px;
+        padding: 16px 12px;
+    }
+
+    .bp-size {
+        gap: 8px;
+    }
+
+    .bp-size-row {
+        gap: 8px 12px;
+    }
+
+    .bp-size-line {
+        font-size: 0.72rem;
+    }
+
+    .bp-guess-block {
+        gap: 8px;
+    }
+
+    .bp-guess-big {
+        min-height: 0;
+    }
+
+    .bp-confirm-actions {
+        margin-left: 0;
+    }
+
+    /* the site header already spaces the page; keep the tool high */
+    #main-content.bp {
+        padding-top: 12px;
+    }
+
+    #main-content .bp-head {
+        padding-top: 0;
+    }
+
+    /* the stepper labels name the card; keep its title for screen readers */
+    .bp-size > .bp-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    .bp-size-line #size-symbols {
+        display: none;
+    }
+
+    /* the guess, then straight to the score pad: Copy rides on the label's
+       line and the "its answer should tell you" note follows the pad */
+    .bp-next {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-auto-flow: row dense;
+        align-items: center;
+    }
+
+    .bp-next > *,
+    .bp-next > .bp-panel-head > *,
+    .bp-guess-block > * {
+        grid-column: 1 / -1;
+    }
+
+    .bp-guess-block {
+        display: contents;
+    }
+
+    .bp-guess-block > .bp-label {
+        grid-column: 1;
+    }
+
+    /* the full-size target overlaps the gaps around the line, not the layout */
+    .bp-guess-block > .bp-row {
+        grid-column: 2;
+        justify-content: flex-end;
+        margin-block: -14px;
+    }
+
+    .bp-next #s-copy {
+        padding: 0 8px;
+        border-color: transparent;
+        color: var(--bp-link);
+    }
+
+    .bp-next #s-copy:disabled {
+        color: var(--bp-muted);
+    }
+
+    .bp-next #s-info,
+    .bp-next .bp-own {
+        order: 1;
+    }
+}
+
+/* Undo / New game go to the end of a narrow card, where beside the title they
+   would wrap onto their own line above the guess */
+@container (max-width: 400px) {
+    .bp-next > .bp-panel-head {
+        display: contents;
+    }
+
+    .bp-next .bp-head-actions {
+        order: 2;
+        padding-top: 12px;
+        border-top: 1px solid var(--bp-inset-line);
+    }
+
+    .bp-next #s-confirm {
+        order: 3;
+    }
+}
+
+/* the sticky method column wraps, so more of the numbers fit beside it */
+@media (max-width: 899px) {
+    .bp-table tbody th {
+        width: 7.5rem;
+        min-width: 7.5rem;
+        white-space: normal;
+        line-height: 1.3;
+    }
+}
+
+/* ---------- touch: 44px targets ---------- */
+@media (pointer: coarse) {
+    .bp-btn,
+    .bp-chip,
+    .bp-tab,
+    .bp-own summary,
+    .bp input[type="text"],
+    .bp input[type="number"],
+    .bp select {
+        min-height: 44px;
+    }
+
+    .bp-step {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* 16px keeps iOS from zooming into a focused field */
+    .bp input[type="text"],
+    .bp input[type="number"],
+    .bp select {
+        font-size: 16px;
+    }
+
+    .bp-palette {
+        --sz: 2.75rem;
+    }
+}
+
+/* ---------- wider screens ---------- */
+@media (min-width: 560px) {
+    .bp-size-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px 24px;
+    }
+
+    .bp-stepper {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .bp-presets {
+        overflow: visible;
+    }
+}
+
+@media (min-width: 640px) {
+    .bp-panel {
+        padding: 20px;
+    }
+
+    .bp-strats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .bp-watch-controls {
+        grid-template-columns: minmax(10rem, 16rem) minmax(14rem, 22rem) auto auto;
+        justify-content: start;
+    }
+
+    .bp-watch-controls .bp-inline-field {
+        grid-column: auto;
+    }
+}
+
+@media (min-width: 760px) {
+    #main-content .bp-head {
+        padding-top: 24px;
+    }
+
+    /* left-aligned on the container edge, also past 1680px */
+    .bp-tabs {
+        width: fit-content;
+        margin-left: max(0px, calc((100% - 1680px) / 2));
+    }
+
+    .bp-tab {
+        flex: 0 0 auto;
+        padding: 0 20px;
+    }
+
+    .bp-table {
+        min-width: 0;
+    }
+
+    /* Solve: input | history + stats, heatmap below */
+    .bp-solve .bp-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        grid-template-rows: auto 1fr auto;
+        grid-template-areas:
+            "next hist"
+            "next where"
+            "heat heat";
+        align-items: start;
+    }
+
+    /* a short code's heatmap is narrow: it joins the right column */
+    .bp[data-len="short"] .bp-solve .bp-grid {
+        grid-template-rows: auto auto 1fr;
+        grid-template-areas:
+            "next hist"
+            "next where"
+            "next heat";
+    }
+
+    .bp-next { grid-area: next; }
+    .bp-hist-panel { grid-area: hist; }
+    .bp-where { grid-area: where; }
+    .bp-heat-panel { grid-area: heat; }
+
+    /* stacked under the title, the size card is as wide as its controls */
+    .bp-size {
+        align-self: flex-start;
+        max-width: 100%;
+    }
+}
+
+@media (min-width: 640px) and (max-width: 1099px) {
+    /* full-width settings card: short fields, Run and Stop on the same row */
+    .bp-sim-controls {
+        grid-template-columns: minmax(8rem, 12rem) minmax(10rem, 16rem) auto;
+        justify-content: start;
+    }
+
+    .bp-run-row {
+        grid-column: auto;
+        grid-template-columns: auto auto;
+    }
+
+    #c-run {
+        min-width: 8rem;
+    }
+}
+
+@media (min-width: 760px) and (min-height: 800px) {
+    .bp-next {
+        position: sticky;
+        top: calc(var(--header-height) + 16px);
+    }
+}
+
+@media (min-width: 1000px) {
+    /* Play: board | compose + controls */
+    .bp-play .bp-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(380px, 1fr);
+        align-items: start;
+    }
+
+    .bp-board-panel {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .bp-play-side {
+        grid-column: 2;
+        grid-row: 1;
+    }
+}
+
+@media (min-width: 1000px) and (min-height: 860px) {
+    .bp-play-side {
+        position: sticky;
+        top: calc(var(--header-height) + 16px);
+    }
+}
+
+@media (min-width: 1100px) {
+    /* Compare: settings | results + watch */
+    .bp-sim {
+        display: grid;
+        grid-template-columns: minmax(340px, 380px) minmax(0, 1fr);
+        align-items: start;
+        gap: 16px;
+    }
+
+    .bp-sim .bp-strats {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 6px;
+    }
+
+    .bp-sim .bp-strat {
+        padding: 10px 12px;
+    }
+
+    .bp-sim .bp-strat-desc {
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+
+    .bp-sim-settings {
+        gap: 12px;
+    }
+}
+
+@media (min-width: 1100px) and (min-height: 860px) {
+    .bp-sim-side {
+        position: sticky;
+        top: calc(var(--header-height) + 16px);
+    }
+}
+
+@media (min-width: 960px) {
+    /* title and game size share the first row, so the tool starts higher */
+    .bp-top {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: start;
+        gap: 32px;
+    }
+}
+
+@media (min-width: 960px) and (max-width: 1419px) {
+    /* steppers on one line, presets under them, until the one-line card
+       leaves the title one line and the subtitle its full 72ch */
+    .bp-size {
+        max-width: 29rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .bp-panel {
+        padding: 24px;
+    }
+
+    /* Solve: input | history | stats + heatmap */
+    .bp-solve .bp-grid,
+    .bp[data-len="short"] .bp-solve .bp-grid {
+        grid-template-columns: minmax(360px, 1.1fr) minmax(320px, 1fr) minmax(320px, 1fr);
+        grid-template-rows: auto 1fr;
+        grid-template-areas:
+            "next hist where"
+            "next hist heat";
+    }
+}
+
+@media (min-width: 1400px) {
+    .bp-sim {
+        grid-template-columns: minmax(360px, 400px) minmax(0, 1fr);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bp-pop {
+        animation: none;
+    }
+
+    .bp-btn,
+    .bp-step,
+    .bp-chip,
+    .bp-tab,
+    .bp-score,
+    .bp-cand,
+    .bp-strat,
+    .bp-peg-btn,
+    .bp input,
+    .bp select,
+    .bp-progress > div,
+    .bp-guess-big .bp-pegs {
+        transition: none;
+    }
+
+    .bp-peg-btn:hover:not(:disabled),
+    .bp-peg-btn:active:not(:disabled) {
+        transform: none;
+    }
+}
